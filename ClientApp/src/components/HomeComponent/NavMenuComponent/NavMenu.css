@@ -1,0 +1,92 @@
+﻿a.navbar-brand {
+  white-space: normal;
+  text-align: center;
+  word-break: break-all;
+}
+
+html {
+  font-size: 14px;
+}
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.box-shadow {
+  box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.05);
+}
+
+.nav-menu {
+  background-color: white;
+  padding: 20px;
+}
+
+.nav-menu-name {
+  text-decoration: none;
+  font-size: 25px;
+  color: #0a0f1c;
+  font-weight: bold;
+  transition: color 0.3s ease-in-out;
+  font-family: "Figtree", sans-serif;
+}
+
+.nav-menu-name:hover {
+  color: #524c4cda;
+}
+
+.nav-menu-link {
+  text-decoration: none;
+  font-size: 16px;
+  color: #0a0f1c;
+  font-weight: 100;
+  transition: color 0.3s ease-in-out;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.nav-menu-link:hover {
+  color: #524c4cda;
+}
+
+.nav-menu-add-link {
+  text-decoration: none;
+  font-size: 20px;
+  color: #0a0f1c;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.nav-menu-add-link:hover {
+  color: #0a0f1c;
+}
+
+.nav-menu-image {
+  background-image: url("./../../../../public/home-page-image.svg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow-x: hidden;
+  height: 900px;
+}
+
+.nav-menu-image-text {
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 700;
+  color: #0a0f1c;
+}
+
+.nav-menu-image-subtext {
+  margin-top: 50px;
+  color: #726f6c;
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 25px;
+}
+
+.currency-btn {
+  text-transform: none;
+}
+
+.currency-btn:hover {
+  background-color: #bebebe !important;
+}

@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Grid } from "@mui/material";
-import { NavMenu } from "./NavMenu";
+import { NavMenu } from "./NavMenuComponent/NavMenu";
 
 export const Home = () => {
   return (
