@@ -1,10 +1,31 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
+using System.IdentityModel.Tokens.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var connectingString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectingString));
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = "your_issuer", // издатель токена
+            ValidAudience = "your_audience", // потребитель токена
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("My_super_long_secret_key_here123!@#"))
+        };
+    });
+
+builder.Services.AddAuthorization();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
@@ -20,6 +41,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",

@@ -17,9 +17,6 @@ export const NavMenu = () => {
             </NavLink>
           </Stack>
           <Stack flexDirection="row" alignItems="center" spacing={3} useFlexGap>
-            <NavLink to="/fetch-data" className="nav-menu-link">
-              Fetch data
-            </NavLink>
             <NavLink to="/sign-in" className="nav-menu-link">
               Войти
             </NavLink>

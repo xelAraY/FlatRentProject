@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Npgsql;
 
 namespace FlatRent.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class WeatherForecastController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
+    private readonly IConfiguration _configuration;
     private static readonly string[] Summaries = new[]
     {
         "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
@@ -14,23 +16,18 @@ public class WeatherForecastController : ControllerBase
 
     private readonly ILogger<WeatherForecastController> _logger;
 
-    public WeatherForecastController(ILogger<WeatherForecastController> logger, ApplicationDbContext context)
+    public WeatherForecastController(ILogger<WeatherForecastController> logger, ApplicationDbContext context, IConfiguration configuration)
     {
         _logger = logger;
+                _configuration = configuration;
         _context = context;
     }
 
-    [HttpGet]
+    [HttpGet("photos")]
     public Task<IActionResult> Get()
     {
-        var users = _context.Users.ToList();
-        // return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-        // {
-        //     Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-        //     TemperatureC = Random.Shared.Next(-20, 55),
-        //     Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-        // })
-        // .ToArray();
-        return Task.FromResult<IActionResult>(Ok(users));
+        var photos = _context.Photos.ToList();
+
+        return Task.FromResult<IActionResult>(Ok(photos));
     }
 }

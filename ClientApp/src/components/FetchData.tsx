@@ -11,13 +11,29 @@ const FetchData = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [forecasts, setForecasts] = useState<Forecast[]>([]);
 
-  // Takes the place of componentDidMount()
   useEffect(() => {
-    const populateWeatherData = async () => {
-      const response = await fetch("weatherforecast");
-      const data = await response.json();
-      setForecasts(data);
-      setLoading(false);
+    const populateWeatherData = async () => { 
+      const registrationData = {
+        username: "dsadada",
+        fullname: "John Doe",
+        email: "dasdasd@example.com",
+        phonenumber: "666",
+        password: "examplePassword"
+      };
+
+      console.log("start fetch");
+      const response = await fetch("api/registration", {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(registrationData)
+      });
+
+      // const response = await fetch("api/weatherforecast/photos");
+      // const data = await response.json();
+      // setForecasts(data);
+      // setLoading(false);
     };
 
     populateWeatherData();
