@@ -18,7 +18,7 @@ export const SignUpPage = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
   const [isError, setIsError] = useState(false);
-  const [errors, setErrors] = useState<Errors | null>(null);
+  const [errors, setErrors] = useState<Errors | null>(null); // добавить проверку для каждого поля
   const [responceMsg, setResponceMsg] = useState('');
   const navigate = useNavigate();
 
@@ -45,11 +45,11 @@ export const SignUpPage = () => {
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    // if(!username || !email || !phoneNumber || !password) {
-    //   setIsError(true);
-    //   setResponceMsg("Заполните все обязательные поля");
-    //   return;
-    // }
+    if(!username || !email || !phoneNumber || !password) {
+      setIsError(true);
+      setResponceMsg("Заполните все обязательные поля");
+      return;
+    }
 
     const userData = {
       username,

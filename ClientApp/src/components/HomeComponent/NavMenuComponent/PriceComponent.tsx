@@ -19,6 +19,8 @@ export const PriceComponent = () => {
   const [anchorEl, setAnchorEl] = React.useState<
     HTMLDivElement | HTMLButtonElement | null
   >(null);
+  const [minPrice, setMinPrice] = useState<number>(0);
+  const [maxPrice, setMaxPrice] = useState<number>(100);
 
   const handleClick = (
     event: React.MouseEvent<HTMLDivElement | HTMLButtonElement>
@@ -62,7 +64,7 @@ export const PriceComponent = () => {
           horizontal: "left",
         }}
       >
-        <PopoverComponent />
+        <PopoverComponent price={{ min: minPrice, max: maxPrice }} setMinPrice={setMinPrice} setMaxPrice={setMaxPrice} />
       </Popover>
     </div>
   );

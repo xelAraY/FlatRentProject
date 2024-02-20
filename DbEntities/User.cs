@@ -1,8 +1,11 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 [Table("users")]
-public class User {
+public class User
+{
   [Column("usr_id")]
+  [Key]
   public int Id { get; set; }
 
   [Column("usr_name")]

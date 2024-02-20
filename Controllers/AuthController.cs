@@ -32,7 +32,7 @@ public class AuthController : ControllerBase
             {
                 var token = GenerateJwtToken(user);
 
-                return Ok(new { Token = token, Message = "Аутентификация успешна." });
+                return Ok(new { Token = token });
             }
 
             return Unauthorized(new { Message = "Неверные учетные данные." });
