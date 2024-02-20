@@ -1,9 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Grid, Stack, Typography } from "@mui/material";
 import { NavMenu } from "./NavMenuComponent/NavMenu";
-import { FlatPreviewCard } from "../Card";
+import { FlatPreviewCard } from "../FlatPreviewCard";
+import { RentObjectInformation } from "src/interfaces/RentObj";
 
 export const Home = () => {
+  const [rentObjects, setRentObjects] = useState<RentObjectInformation[]>();
+
   useEffect(() => {
     const fetchRecentListings = async () => {
       try {
@@ -12,6 +15,7 @@ export const Home = () => {
 
         if (responce.ok) {
           console.log('Данные с сервера', data);
+          setRentObjects(data);
         } else {
           console.error('Ошибка при получении данных', data.message);
         }
@@ -31,18 +35,20 @@ export const Home = () => {
             <NavMenu />
           </div>
         </Grid>
-        <Grid item xs={12}>
-          <Stack flexDirection="column" alignItems="flex-start" justifyContent="flex-start" margin="0 100px 0 100px">
+        <Grid item xs={12} display={"flex"} justifyContent={"center"}>
+          <Stack flexDirection="column" alignItems="flex-start" justifyContent="flex-start" width={"1300px"}>
             <Stack flexDirection="column" alignItems="flex-start" justifyContent="flex-start" marginBottom={2}>
               <Typography variant="h5" fontWeight={700}>Самые свежие обновления</Typography>
               <Typography fontWeight={400} fontSize={16} paddingTop={0.5}>Посмотрите самые актуальные объявления</Typography>
             </Stack>
 
-            <Stack flexDirection="row" justifyContent="space-around" width="1300px" padding="8px 0 8px 0">
-              <FlatPreviewCard styles={{ marginRight: "15px" }} />
-              <FlatPreviewCard styles={{ marginRight: "15px" }} />
-              <FlatPreviewCard styles={{ marginRight: "15px" }} />
-              <FlatPreviewCard styles={{}} />
+            <Stack flexDirection="row" justifyContent="space-between" width="100%" padding="8px 0 8px 0">
+              {rentObjects?.map((rentObject, index) => (
+                <FlatPreviewCard
+                  key={index}
+                  rentInformation={rentObject}
+                />
+              ))}
             </Stack>
           </Stack>
         </Grid>

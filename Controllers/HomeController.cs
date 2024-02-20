@@ -41,9 +41,36 @@ public class HomeController : ControllerBase
             currency => currency.CurrId,
             (result, currency) => new { result.RentObject, result.Owner, Currency = currency }
         )
+        .Select(result => new
+        {
+          result.RentObject,
+          Currency = result.Currency.CurrCode,
+          Owner = new
+          {
+            result.Owner.Name,
+            result.Owner.FullName,
+            result.Owner.PhoneNumber,
+            result.Owner.RegistrationDate,
+            result.Owner.LastLogin
+          }
+
+        })
         .ToListAsync();
 
-      return Ok(recentRentObjects);
+      var rentObjectIds = recentRentObjects.Select(ro => ro.RentObject.RentObjId);
+      var photos = await _context.Photos
+          .Where(photo => rentObjectIds.Contains(photo.RentObjId))
+          .ToListAsync();
+
+      var result = recentRentObjects.Select(result => new
+      {
+        result.RentObject,
+        result.Currency,
+        result.Owner,
+        Photos = photos.Where(photo => photo.RentObjId == result.RentObject.RentObjId).Select(photo => photo.Url)
+      }).ToList();
+
+      return Ok(result);
     }
     catch (Exception ex)
     {

@@ -1,5 +1,12 @@
 
-export interface RentObject {
+export interface RentObjectInformation {
+  rentObject: RentObject;
+  currency: string;
+  owner: Owner;
+  photos: string[];
+}
+
+interface RentObject {
   rentObjId: number;
   title: string;
   description: string;
@@ -16,10 +23,19 @@ export interface RentObject {
   plate: string;
   address: string;
   rentPrice: number;
+  currId: number;//
   prepayment: string;
   rent: string;
   preferences: string;
   ownerId: number;//
   createdAt: Date;
   updatedAt: Date;
+}
+
+interface Owner {
+  name: string;
+  fullName: string;
+  phoneNumber: string;
+  registrationDate: Date;
+  lastLogin: Date;
 }

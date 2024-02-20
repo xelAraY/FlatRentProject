@@ -18,20 +18,22 @@ export const NavMenu = () => {
   }
 
   useEffect(() => {
-    setIsLogged(isLoggedIn);  
+    setIsLogged(isLoggedIn);
   }, []);
+
+  const addNewPage = isLogged ? "/new" : "/sign-in";
 
   return (
     <header>
       <div className="nav-menu">
         <Stack flexDirection="row" justifyContent="space-between">
           <Stack alignItems="flex-start">
-          <NavLink to="/" style={{textDecoration: "none", color: "black"}}>
-            <Stack direction="row" alignItems='flex-end' mt={-0.8}>
-              <img src="./../../../../FIcon.png" style={{ width: '50px', height: '50px' }}/>
-              <Typography variant='h4' style={{ marginLeft: '-10px'}} lineHeight={1}>latRent</Typography>
-            </Stack>
-          </NavLink>
+            <NavLink to="/" style={{ textDecoration: "none", color: "black" }}>
+              <Stack direction="row" alignItems='flex-end' mt={-0.8}>
+                <img src="./../../../../FIcon.png" style={{ width: '50px', height: '50px' }} />
+                <Typography variant='h4' style={{ marginLeft: '-10px' }} lineHeight={1}>latRent</Typography>
+              </Stack>
+            </NavLink>
           </Stack>
           <Stack flexDirection="row" alignItems="center" spacing={3} useFlexGap>
             {isLogged ? (
@@ -41,7 +43,7 @@ export const NavMenu = () => {
                 </Avatar>
                 <NavLink to="/" className="nav-menu-link" onClick={handleLogout}>
                   Выйти
-                </NavLink> 
+                </NavLink>
               </Stack>
             ) : (
               <Stack flexDirection="row" spacing={2} useFlexGap>
@@ -53,13 +55,13 @@ export const NavMenu = () => {
                 </NavLink>
               </Stack>
             )}
-            
+
             <Button variant="contained" style={{ backgroundColor: "#efcd6c" }}>
               <AddIcon
                 style={{ color: "#0a0f1c", marginRight: "5px" }}
                 sx={{ fontSize: 30 }}
               />
-              <NavLink to="/new" className="nav-menu-add-link">
+              <NavLink to={addNewPage} className="nav-menu-add-link">
                 Добавить объявление
               </NavLink>
             </Button>
