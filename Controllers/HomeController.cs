@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace FlatRent.Controllers;
 
@@ -26,50 +27,8 @@ public class HomeController : ControllerBase
   {
     try
     {
-      var recentRentObjects = await _context.RentObjects
-        .OrderByDescending(ro => ro.CreatedAt)
-        .Take(4)
-        .Join(
-            _context.Users,
-            ro => ro.OwnerId,
-            user => user.Id,
-            (ro, user) => new { RentObject = ro, Owner = user }
-        )
-        .Join(
-            _context.Currencies,
-            result => result.RentObject.CurrencyId,
-            currency => currency.CurrId,
-            (result, currency) => new { result.RentObject, result.Owner, Currency = currency }
-        )
-        .Select(result => new
-        {
-          result.RentObject,
-          Currency = result.Currency.CurrCode,
-          Owner = new
-          {
-            result.Owner.Name,
-            result.Owner.FullName,
-            result.Owner.PhoneNumber,
-            result.Owner.RegistrationDate,
-            result.Owner.LastLogin
-          }
-
-        })
-        .ToListAsync();
-
-      var rentObjectIds = recentRentObjects.Select(ro => ro.RentObject.RentObjId);
-      var photos = await _context.Photos
-          .Where(photo => rentObjectIds.Contains(photo.RentObjId))
-          .ToListAsync();
-
-      var result = recentRentObjects.Select(result => new
-      {
-        result.RentObject,
-        result.Currency,
-        result.Owner,
-        Photos = photos.Where(photo => photo.RentObjId == result.RentObject.RentObjId).Select(photo => photo.Url)
-      }).ToList();
-
+      var rentObjectsQuery = _context.RentObjects.AsQueryable();
+      var result = await Filter.GetRecentRentObjectsCommonQuery(rentObjectsQuery, _context);
       return Ok(result);
     }
     catch (Exception ex)
@@ -77,5 +36,42 @@ public class HomeController : ControllerBase
       return BadRequest(new { Message = $"Ошибка при получении последних объявлений: {ex.Message}" });
     }
   }
+
+  [HttpGet("get-by-preferences")]
+  public async Task<IActionResult> GetRecentRentObjectsByPreferences([FromQuery] List<string> preferences)
+  {
+    try
+    {
+      var rentObjectsQuery = _context.RentObjects.AsQueryable();
+
+      // string decodedString = WebUtility.UrlDecode(preferences);
+      // var rentObjectsQueryWithPets = _context.RentObjects
+      //     .Where(ro => ro.Preferences == decodedString);
+      rentObjectsQuery = Filter.ApplyPreferenceFilter(rentObjectsQuery, _context, preferences);
+      var result = await Filter.GetRecentRentObjectsCommonQuery(rentObjectsQuery, _context);
+      return Ok(result);
+    }
+    catch (Exception ex)
+    {
+      return BadRequest(new { Message = $"Ошибка при получении последних объявлений: {ex.Message}" });
+    }
+  }
+
+  [HttpGet("get-by-total-area")]
+  public async Task<IActionResult> GetRecentRentObjectsByLivingArea([FromQuery] string filed, int minArea, int maxArea)
+  {
+    try
+    {
+      var rentObjectsQuery = _context.RentObjects.AsQueryable();
+      rentObjectsQuery = Filter.ApplyRangeFilter(rentObjectsQuery, filed, minArea, maxArea);
+      var result = await Filter.GetRecentRentObjectsCommonQuery(rentObjectsQuery, _context);
+      return Ok(result);
+    }
+    catch (Exception ex)
+    {
+      return BadRequest(new { Message = $"Ошибка при получении последних объявлений: {ex.Message}" });
+    }
+  }
+
 
 }

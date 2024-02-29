@@ -62,9 +62,6 @@ public class RentObject
   [Column("rent")]
   public string Rent { get; set; }
 
-  [Column("preferences")]
-  public string Preferences { get; set; }
-
   [Column("owner_id")]
   public int? OwnerId { get; set; } //потом убрать знак вопроса
 
