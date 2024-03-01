@@ -1,8 +1,6 @@
 import React from "react";
 import { Box, Stack } from "@mui/material";
-import { NavMenu } from "./NavMenuComponent/NavMenu";
 import { ListingOverview } from "./ListingComponent/ListingOverview";
-import { Footer } from "../Footer";
 import { NavMenuImage } from "./NavMenuComponent/NavMenuImage";
 
 interface IRentalObjectsGroupData {

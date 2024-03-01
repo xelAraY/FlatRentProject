@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import "./NavMenu.css";
 import { Avatar, Stack, Typography } from "@mui/material";
-import { NavMenuImage } from "./NavMenuImage";
 import AddIcon from "@mui/icons-material/Add";
 import { Button } from "src/shared";
 import { isLoggedIn } from "src/helpFunctions/tokenCheck";

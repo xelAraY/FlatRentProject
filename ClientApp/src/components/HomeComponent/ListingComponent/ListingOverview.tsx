@@ -2,6 +2,7 @@ import { Grid, Stack, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { FlatPreviewCard } from "src/components/FlatPreviewCard";
 import { RentObjectInformation } from "src/interfaces/RentObj";
+import { SkeletonPreview } from "./SkeletonPreview";
 
 interface ListingOverviewProps {
   requestPath: string;
@@ -10,15 +11,20 @@ interface ListingOverviewProps {
 }
 
 export const ListingOverview = (props: ListingOverviewProps) => {
-  const [rentObjects, setRentObjects] = useState<RentObjectInformation[]>();
+  const [rentObjects, setRentObjects] = useState<RentObjectInformation[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchRecentListings = async () => {
       try {
-        const responce = await fetch(props.requestPath);
-        const data = await responce.json();
+        setLoading(true);
 
-        if (responce.ok) {
+        //await new Promise(resolve => setTimeout(resolve, 10000));
+
+        const response = await fetch(props.requestPath);
+        const data = await response.json();
+
+        if (response.ok) {
           console.log('Данные с сервера', data);
           setRentObjects(data);
         } else {
@@ -26,11 +32,15 @@ export const ListingOverview = (props: ListingOverviewProps) => {
         }
       } catch (error) {
         console.error('Произошла ошибка:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchRecentListings();
   }, []);
+
+  const numberOfRentObjects = 4;
 
   return (
     <Stack flexDirection="column" alignItems="flex-start" justifyContent="flex-start" marginTop={3}>
@@ -40,17 +50,29 @@ export const ListingOverview = (props: ListingOverviewProps) => {
       </Stack>
 
       {/* <Stack flexDirection="row" justifyContent="space-between" padding="8px 0 8px 0"> */}
-      <div>
-        <Grid container spacing={2.5}>
-          {rentObjects?.map((rentObject, index) => (
-            <Grid item md={4} lg={3} xl={3} flexGrow={1}>
-              <FlatPreviewCard
-                key={index}
-                rentInformation={rentObject}
-              />
-            </Grid>
-          ))}
-        </Grid>
+      <div><Grid container spacing={2.5}>
+        {loading ? (
+          <>
+            {Array.from({ length: numberOfRentObjects }).map((_, index) => (
+              <Grid item md={4} lg={3} xl={3} flexGrow={1}>
+                <SkeletonPreview key={index} />
+              </Grid>))}
+          </>) : (
+          <>
+            {rentObjects?.map((rentObject, index) => (
+              <Grid item md={4} lg={3} xl={3} flexGrow={1}>
+                <FlatPreviewCard
+                  num={index}
+                  rentInformation={rentObject}
+                />
+
+              </Grid>
+            ))}
+          </>
+        )}
+
+      </Grid>
+
       </div>
       {/* </Stack> */}
     </Stack>);

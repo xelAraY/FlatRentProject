@@ -6,6 +6,7 @@ import ImageGallery from "react-image-gallery";
 
 interface CardProps {
   rentInformation: RentObjectInformation;
+  num: number;
 }
 
 interface ForPhotos {
@@ -14,19 +15,11 @@ interface ForPhotos {
   originalHeight?: number;
 }
 
-export const FlatPreviewCard = ({ rentInformation }: CardProps) => {
+export const FlatPreviewCard = ({ rentInformation, num }: CardProps) => {
 
-  const sty = {
+  const commonTextStyles = {
     overflow: "hidden",
     display: "-webkit-box",
-    WebkitLineClamp: 3,
-    WebkitBoxOrient: "vertical",
-  };
-
-  const sty1 = {
-    overflow: "hidden",
-    display: "-webkit-box",
-    WebkitLineClamp: 2,
     WebkitBoxOrient: "vertical",
   };
 
@@ -44,7 +37,7 @@ export const FlatPreviewCard = ({ rentInformation }: CardProps) => {
   }, [rentInformation]);
 
   return (
-    <Card sx={{ maxWidth: 300 }}>
+    <Card sx={{ maxWidth: 300 }} key={num}>
       <CardActionArea>
         <div style={{ width: "100%" }}>
           {rentInformation.photos.length > 0 ?
@@ -59,17 +52,17 @@ export const FlatPreviewCard = ({ rentInformation }: CardProps) => {
             )}
         </div>
         <CardContent>
-          <Typography gutterBottom variant="h5" component="div" sx={sty1}>
+          <Typography gutterBottom variant="h5" component="div" sx={{ ...commonTextStyles, WebkitLineClamp: 2 }}>
             {rentInformation.rentObject.title}
           </Typography>
           <Typography variant="h6">
             {rentInformation.rentObject.rentPrice + ' ' + rentInformation.currency}
           </Typography>
           <Divider />
-          <Typography variant="body2" color="text.secondary" sx={sty}>
+          <Typography variant="body2" color="text.secondary" sx={{ ...commonTextStyles, WebkitLineClamp: 2 }}>
             {rentInformation.rentObject.description}
           </Typography>
         </CardContent>
       </CardActionArea>
-    </Card>);
+    </Card >);
 }
