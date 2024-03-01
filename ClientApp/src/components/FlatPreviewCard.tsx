@@ -1,4 +1,4 @@
-import { Card, CardActionArea, CardContent, CardMedia, Divider, Stack, Typography } from "@mui/material";
+import { Card, CardActionArea, CardContent, CardMedia, Divider, Typography } from "@mui/material";
 import React from "react";
 import { RentObjectInformation } from "src/interfaces/RentObj";
 import 'react-image-gallery/styles/css/image-gallery.css';

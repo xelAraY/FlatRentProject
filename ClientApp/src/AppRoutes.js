@@ -1,16 +1,11 @@
-import { SignInPage } from "./components/AuthenticationComponent/SignInPage";
-import { FetchData } from "./components/FetchData";
+import { SignInPage } from "./components/SignInComponent/SignInPage";
 import { Home } from "./components/HomeComponent/Home";
-import { SignUpPage } from "./components/RegistrationComponent/SignUpPage";
+import { SignUpPage } from "./components/SignUpComponent/SignUpPage";
 
 const AppRoutes = [
   {
     index: true,
     element: <Home />,
-  },
-  {
-    path: "/fetch-data",
-    element: <FetchData />,
   },
   {
     path: "/sign-up",

@@ -26,7 +26,6 @@ interface RentObject {
   currId: number;//
   prepayment: string;
   rent: string;
-  preferences: string;
   ownerId: number;//
   createdAt: Date;
   updatedAt: Date;

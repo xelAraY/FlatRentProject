@@ -65,7 +65,7 @@ export const SignInPage = () => {
       <Paper elevation={12} sx={{ padding: '1.5rem', height: 'auto', borderRadius: '0.375rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }} >
         <NavLink to="/" style={{ textDecoration: "none", color: "black" }}>
           <Stack direction="row" alignItems='flex-end' mt={-0.8}>
-            <img src="./../../../FIcon.png" style={{ width: '50px', height: '50px' }} />
+            <img src="./../../../FIcon.png" style={{ width: '50px', height: '50px' }} alt="Icon of website" />
             <Typography variant='h4' style={{ marginLeft: '-10px' }} lineHeight={1}>latRent</Typography>
           </Stack>
         </NavLink>

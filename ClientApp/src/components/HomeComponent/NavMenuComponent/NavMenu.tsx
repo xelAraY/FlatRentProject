@@ -30,7 +30,7 @@ export const NavMenu = () => {
           <Stack alignItems="flex-start">
             <NavLink to="/" style={{ textDecoration: "none", color: "black" }}>
               <Stack direction="row" alignItems='flex-end' mt={-0.8}>
-                <img src="./../../../../FIcon.png" style={{ width: '50px', height: '50px' }} />
+                <img src="./../../../../FIcon.png" style={{ width: '50px', height: '50px' }} alt="Icon of website" />
                 <Typography variant='h4' style={{ marginLeft: '-10px' }} lineHeight={1}>latRent</Typography>
               </Stack>
             </NavLink>
@@ -68,7 +68,6 @@ export const NavMenu = () => {
           </Stack>
         </Stack>
       </div>
-      <NavMenuImage />
     </header>
   );
 };

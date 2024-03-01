@@ -2,6 +2,8 @@ import React from "react";
 import { Box, Stack } from "@mui/material";
 import { NavMenu } from "./NavMenuComponent/NavMenu";
 import { ListingOverview } from "./ListingComponent/ListingOverview";
+import { Footer } from "../Footer";
+import { NavMenuImage } from "./NavMenuComponent/NavMenuImage";
 
 interface IRentalObjectsGroupData {
   path: string;
@@ -21,14 +23,11 @@ export const Home = () => {
   return (
     <Box>
       <div>
-        <NavMenu />
+        <NavMenuImage />
       </div>
       <Stack alignItems={'center'} >
         {rentalObjectsGroupData.map((rntObjGroup, index) => <ListingOverview key={index} requestPath={rntObjGroup.path} title={rntObjGroup.title} subTitle={rntObjGroup.subTitle} />)}
       </Stack>
-      <div style={{ border: "2px solid black" }}>
-        <h2>Footer</h2>
-      </div>
     </Box >
   );
 };
