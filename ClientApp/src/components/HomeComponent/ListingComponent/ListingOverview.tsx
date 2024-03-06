@@ -1,6 +1,6 @@
 import { Grid, Stack, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { FlatPreviewCard } from "src/components/FlatPreviewCard";
+import { FlatPreviewCard } from "src/components/HomeComponent/ListingComponent/FlatPreviewCard";
 import { RentObjectInformation } from "src/interfaces/RentObj";
 import { SkeletonPreview } from "./SkeletonPreview";
 

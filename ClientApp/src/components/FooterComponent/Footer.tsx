@@ -37,7 +37,7 @@ export const Footer = () => {
       </Stack>
 
       <Stack direction={"column"} sx={{ padding: "16px 16px 16px 0" }}>
-        <Typography fontWeight={800} fontSize={16} paddingBottom={2}>Ссылка на телеграмм бота</Typography>
+        <Typography fontWeight={800} fontSize={16} paddingBottom={2}>Ссылка на телеграм бота</Typography>
         <img src="./../../qr-code.png" width={100} height={100} alt="Qr code for telegram bot" />
       </Stack>
     </Stack>

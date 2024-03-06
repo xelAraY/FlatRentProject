@@ -63,6 +63,7 @@ export const PriceComponent = () => {
           vertical: "bottom",
           horizontal: "left",
         }}
+        style={{ marginTop: 5 }}
       >
         <PopoverComponent price={{ min: minPrice, max: maxPrice }} setMinPrice={setMinPrice} setMaxPrice={setMaxPrice} />
       </Popover>

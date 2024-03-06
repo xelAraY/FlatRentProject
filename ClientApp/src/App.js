@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Outlet, Route, Routes } from "react-router-dom";
 import AppRoutes from "./AppRoutes";
 import "./custom.css";
-import { Footer } from "./components/Footer";
+import { Footer } from "./components/FooterComponent/Footer";
 import { NavMenu } from "./components/HomeComponent/NavMenuComponent/NavMenu";
 
 export default class App extends Component {
