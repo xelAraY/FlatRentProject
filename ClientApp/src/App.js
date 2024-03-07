@@ -4,6 +4,7 @@ import AppRoutes from "./AppRoutes";
 import "./custom.css";
 import { Footer } from "./components/FooterComponent/Footer";
 import { NavMenu } from "./components/HomeComponent/NavMenuComponent/NavMenu";
+import { ThemeProvider, createTheme } from "@mui/material";
 
 export default class App extends Component {
   static displayName = App.name;
@@ -11,14 +12,16 @@ export default class App extends Component {
   render() {
     return (
       <div>
-        <Routes>
-          <Route element={<><NavMenu /> <Outlet /><Footer /></>}>
-            {AppRoutes.map((route, index) => {
-              const { element, ...rest } = route;
-              return <Route key={index} {...rest} element={element} />;
-            })}
-          </Route>
-        </Routes>
+        <ThemeProvider theme={createTheme()}>
+          <Routes>
+            <Route element={<><NavMenu /> <Outlet /><Footer /></>}>
+              {AppRoutes.map((route, index) => {
+                const { element, ...rest } = route;
+                return <Route key={index} {...rest} element={element} />;
+              })}
+            </Route>
+          </Routes>
+        </ThemeProvider>
       </div>
     );
   }

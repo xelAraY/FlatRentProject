@@ -4,11 +4,20 @@ using Microsoft.EntityFrameworkCore;
 
 public static class Filter
 {
-  public static async Task<List<object>> GetRecentRentObjectsCommonQuery(IQueryable<RentObject> rentObjectsQuery, ApplicationDbContext _context)
+  public static async Task<List<object>> GetRecentRentObjectsCommonQuery(IQueryable<RentObject> rentObjectsQuery, ApplicationDbContext _context, int? takeCount = null)
   {
-    var recentRentObjects = await rentObjectsQuery
-        .OrderByDescending(ro => ro.CreatedAt)
-        .Take(4)
+    var query = rentObjectsQuery;
+
+    if (takeCount.HasValue && takeCount.Value > 0)
+    {
+      query = query.OrderByDescending(ro => ro.CreatedAt).Take(takeCount.Value);
+    }
+    else
+    {
+      query = query.OrderByDescending(ro => ro.CreatedAt);
+    }
+
+    var recentRentObjects = await query
         .Join(
             _context.Users,
             ro => ro.OwnerId,
@@ -21,6 +30,12 @@ public static class Filter
             currency => currency.CurrId,
             (result, currency) => new { result.RentObject, result.Owner, Currency = currency }
         )
+        .Join(
+            _context.Addresses,
+            result => result.RentObject.AddressId,
+            address => address.AddrId,
+            (result, address) => new { result.RentObject, result.Owner, result.Currency, Address = address }
+        )
         .Select(result => new
         {
           result.RentObject,
@@ -32,7 +47,8 @@ public static class Filter
             result.Owner.PhoneNumber,
             result.Owner.RegistrationDate,
             result.Owner.LastLogin
-          }
+          },
+          result.Address
         })
         .ToListAsync();
 
@@ -46,6 +62,7 @@ public static class Filter
       result.RentObject,
       result.Currency,
       result.Owner,
+      result.Address,
       Photos = photos.Where(photo => photo.RentObjId == result.RentObject.RentObjId).Select(photo => photo.Url)
     }).Cast<object>().ToList();
 

@@ -28,7 +28,7 @@ public class HomeController : ControllerBase
     try
     {
       var rentObjectsQuery = _context.RentObjects.AsQueryable();
-      var result = await Filter.GetRecentRentObjectsCommonQuery(rentObjectsQuery, _context);
+      var result = await Filter.GetRecentRentObjectsCommonQuery(rentObjectsQuery, _context, takeCount: 4);
       return Ok(result);
     }
     catch (Exception ex)
@@ -48,7 +48,7 @@ public class HomeController : ControllerBase
       // var rentObjectsQueryWithPets = _context.RentObjects
       //     .Where(ro => ro.Preferences == decodedString);
       rentObjectsQuery = Filter.ApplyPreferenceFilter(rentObjectsQuery, _context, preferences);
-      var result = await Filter.GetRecentRentObjectsCommonQuery(rentObjectsQuery, _context);
+      var result = await Filter.GetRecentRentObjectsCommonQuery(rentObjectsQuery, _context, takeCount: 4);
       return Ok(result);
     }
     catch (Exception ex)
@@ -64,7 +64,7 @@ public class HomeController : ControllerBase
     {
       var rentObjectsQuery = _context.RentObjects.AsQueryable();
       rentObjectsQuery = Filter.ApplyRangeFilter(rentObjectsQuery, filed, minArea, maxArea);
-      var result = await Filter.GetRecentRentObjectsCommonQuery(rentObjectsQuery, _context);
+      var result = await Filter.GetRecentRentObjectsCommonQuery(rentObjectsQuery, _context, takeCount: 4);
       return Ok(result);
     }
     catch (Exception ex)

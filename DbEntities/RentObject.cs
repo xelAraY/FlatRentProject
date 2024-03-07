@@ -47,8 +47,8 @@ public class RentObject
   [Column("plate")]
   public string Plate { get; set; }
 
-  [Column("address")]
-  public string Address { get; set; }
+  [Column("address_id")]
+  public int AddressId { get; set; }
 
   [Column("rent_price")]
   public double RentPrice { get; set; }

@@ -51,12 +51,12 @@ export const SearchParams = () => {
           }}
         >
           <>
-            <MenuItem value="1"
-            >1к квартира</MenuItem>
-            <MenuItem value="2">2к квартира</MenuItem>
-            <MenuItem value="3">3к квартира</MenuItem>
-            <MenuItem value="4">4к квартира</MenuItem>
-            <MenuItem value="5">5к квартира</MenuItem>
+            <MenuItem value="1">1</MenuItem>
+            <MenuItem value="2">2</MenuItem>
+            <MenuItem value="3">3</MenuItem>
+            <MenuItem value="4">4</MenuItem>
+            <MenuItem value="5">5</MenuItem>
+            <MenuItem value="5">6+</MenuItem>
           </>
         </Select>
       </FormControl>

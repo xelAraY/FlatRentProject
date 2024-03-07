@@ -3,6 +3,7 @@ export interface RentObjectInformation {
   rentObject: RentObject;
   currency: string;
   owner: Owner;
+  address: Address;
   photos: string[];
 }
 
@@ -21,7 +22,7 @@ interface RentObject {
   constructionYear: number;
   furniture: string;
   plate: string;
-  address: string;
+  addressId: number;
   rentPrice: number;
   currId: number;//
   prepayment: string;
@@ -37,4 +38,13 @@ interface Owner {
   phoneNumber: string;
   registrationDate: Date;
   lastLogin: Date;
+}
+
+interface Address {
+  region: string;
+  city: string;
+  street: string;
+  houseNumber: string;
+  district: string;
+  microdistrict: string;
 }
