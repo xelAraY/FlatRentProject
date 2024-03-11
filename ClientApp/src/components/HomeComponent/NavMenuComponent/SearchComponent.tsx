@@ -7,8 +7,14 @@ import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import "./NavMenu.css";
 import { NavLink } from "react-router-dom";
 import { SearchParams } from "src/components/SearchParams";
+import { useState } from "react";
 
 export const SearchComponent = () => {
+  const [rooms, setRooms] = useState<string[]>([]);
+  const [minPrice, setMinPrice] = useState<number>(0);
+  const [maxPrice, setMaxPrice] = useState<number>(0);
+  const [currentCurrency, setCurrentCurrency] = useState("BYN");
+
   return (
     <div
       style={{
@@ -17,7 +23,19 @@ export const SearchComponent = () => {
       }}
     >
       <Stack flexDirection="column" spacing={1}>
-        <SearchParams />
+        <SearchParams
+          priceProps={{
+            price: { min: minPrice, max: maxPrice },
+            setMinPrice,
+            setMaxPrice,
+            currentCurrency,
+            setCurrentCurrency
+          }}
+          roomsProps={{
+            rooms,
+            setRooms
+          }}
+        />
         <Stack flexDirection="row" justifyContent="space-between">
           <NavLink to={"/rental-search"}>
             <Button variant="outlined" style={{ marginLeft: "6px", width: "max-content", color: "#0a0f1c", borderColor: "#afafae" }}>

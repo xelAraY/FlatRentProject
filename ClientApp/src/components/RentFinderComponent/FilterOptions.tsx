@@ -5,7 +5,7 @@ import { SearchParams } from "../SearchParams";
 export const FilterOptions = () => {
   return (
     <Stack direction={"row"}>
-      <SearchParams />
+      {/* <SearchParams /> */}
     </Stack>
   );
 }

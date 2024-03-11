@@ -1,31 +1,23 @@
 import {
-  Button,
-  FilledInput,
-  FormControl,
-  IconButton,
-  InputAdornment,
-  InputLabel,
-  Select,
-  Stack,
+  FormControl
 } from "@mui/material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
-import { useState } from "react";
 import Popover from "@mui/material/Popover";
 import React from "react";
 import { PopoverComponent } from "./PopoverComponent";
+import { Button } from "src/shared";
+import { PriceProps } from "src/interfaces/SearchInterfaces";
 
-export const PriceComponent = () => {
+export const PriceComponent = ({ price, setMinPrice, setMaxPrice, currentCurrency, setCurrentCurrency }: PriceProps) => {
   const [anchorEl, setAnchorEl] = React.useState<
     HTMLDivElement | HTMLButtonElement | null
   >(null);
-  const [minPrice, setMinPrice] = useState<number>(0);
-  const [maxPrice, setMaxPrice] = useState<number>(100);
 
   const handleClick = (
     event: React.MouseEvent<HTMLDivElement | HTMLButtonElement>
   ) => {
-    setAnchorEl(event.currentTarget);
+    anchorEl ? setAnchorEl(null) : setAnchorEl(event.currentTarget);
   };
 
   const handleClose = () => {
@@ -42,8 +34,9 @@ export const PriceComponent = () => {
         variant="filled"
         aria-describedby={id}
       >
-        <InputLabel htmlFor="filled-adornment-password">Цена</InputLabel>
-        <FilledInput
+        {/* <InputLabel htmlFor="filled-adornment-password">Цена</InputLabel> */}
+        {/* <OutlinedInput
+          disabled
           onClick={handleClick}
           endAdornment={
             <InputAdornment position="end">
@@ -52,8 +45,9 @@ export const PriceComponent = () => {
               </IconButton>
             </InputAdornment>
           }
-        />
-      </FormControl>
+        /> */}
+        <Button variant="outlined" size="large" color='info' onClick={handleClick} style={{ color: 'rgba(0, 0, 0, 0.87)', border: '1px solid rgba(0, 0, 0, 0.23)', justifyContent: "space-between", height: "56px" }} endIcon={open ? <ArrowDropUpIcon style={{ color: "#747473" }} /> : <ArrowDropDownIcon style={{ color: "#747473" }} />}>Цена</Button>
+      </FormControl >
       <Popover
         id={id}
         open={open}
@@ -65,8 +59,13 @@ export const PriceComponent = () => {
         }}
         style={{ marginTop: 5 }}
       >
-        <PopoverComponent price={{ min: minPrice, max: maxPrice }} setMinPrice={setMinPrice} setMaxPrice={setMaxPrice} />
+        <PopoverComponent
+          price={price}
+          setMinPrice={setMinPrice}
+          setMaxPrice={setMaxPrice}
+          currentCurrency={currentCurrency}
+          setCurrentCurrency={setCurrentCurrency} />
       </Popover>
-    </div>
+    </div >
   );
 };

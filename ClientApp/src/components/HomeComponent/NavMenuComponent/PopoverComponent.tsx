@@ -2,25 +2,14 @@ import { Input, Slider, Stack } from "@mui/material";
 import "./NavMenu.css";
 import { Button } from "src/shared";
 import { useState } from "react";
+import { PriceProps } from "src/interfaces/SearchInterfaces";
 
-interface IPrice {
-  min: number;
-  max: number;
-}
-
-interface IPopoverProps {
-  price: IPrice;
-  setMinPrice: React.Dispatch<React.SetStateAction<number>>;
-  setMaxPrice: React.Dispatch<React.SetStateAction<number>>;
-}
-
-export const PopoverComponent = ({ price, setMinPrice, setMaxPrice }: IPopoverProps) => {
-  const [currentCurrency, setCurrentCurrency] = useState("BYN");
+export const PopoverComponent = ({ price, setMinPrice, setMaxPrice, currentCurrency, setCurrentCurrency }: PriceProps) => {
   const [value, setValue] = useState<number[]>([price.min, price.max]);
 
   const currencies = [
     {
-      value: "BY",
+      value: "BYN",
       label: "BYN",
     },
     { value: "USD", label: "$" },
@@ -41,12 +30,34 @@ export const PopoverComponent = ({ price, setMinPrice, setMaxPrice }: IPopoverPr
   };
 
   const handleMinPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setMinPrice(Number(event.target.value));
+    const minPrice = Number(event.target.value);
+    if (!isNaN(minPrice)) {
+      setMinPrice(minPrice);
+      setValue((prevValue) => {
+        const newValue = [...prevValue];
+        newValue[0] = minPrice;
+        return newValue;
+      })
+    } else {
+      setMinPrice((prevValue) => prevValue);
+    }
   };
 
   const handleMaxPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setMaxPrice(Number(event.target.value));
+    const maxPrice = Number(event.target.value)
+    if (!isNaN(maxPrice)) {
+      setMaxPrice(maxPrice);
+      setValue((prevValue) => {
+        const newValue = [...prevValue];
+        newValue[1] = maxPrice;
+        return newValue;
+      })
+    } else {
+      setMaxPrice((prevValue) => prevValue);
+    }
   };
+
+
 
   const valueText = (value: number) => `${value} ${currentCurrency}`;
 
@@ -85,7 +96,7 @@ export const PopoverComponent = ({ price, setMinPrice, setMaxPrice }: IPopoverPr
           onChange={handleChange}
           valueLabelDisplay="auto"
           min={0}
-          max={1000000}
+          max={5000}
           valueLabelFormat={valueText}
         />
       </Stack>

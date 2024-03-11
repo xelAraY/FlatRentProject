@@ -49,7 +49,7 @@ export const FlatPreviewCard = ({
   }, [rentInformation.photos, heigth]);
 
   return (
-    <Card key={keyNumber} style={{ width: '100%' }}>
+    <Card key={keyNumber} style={{ width: '100%', minWidth: "300px" }}>
       <CardActionArea onClick={() => console.log('show details')} disableTouchRipple>
         <Stack>
           <StyledImageGalery justifyContent='center' alignItems='center' sx={{ bgcolor: 'black' }}>
