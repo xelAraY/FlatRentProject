@@ -17,7 +17,7 @@ const AppRoutes = [
     element: <SignInPage />,
   },
   {
-    path: "/rental-search",
+    path: "/rental-search/:flats",
     element: <RentFindingPage />,
   }
 ];

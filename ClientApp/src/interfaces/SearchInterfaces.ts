@@ -11,12 +11,18 @@ export interface PriceProps {
   setCurrentCurrency: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export interface SearchProps {
-  priceProps: PriceProps;
-  roomsProps: RoomsProps;
-}
-
 export interface RoomsProps {
   rooms: string[];
   setRooms: React.Dispatch<React.SetStateAction<string[]>>;
+}
+
+export interface LocationProps {
+  locations: string[];
+  setLocations: React.Dispatch<React.SetStateAction<string[]>>;
+}
+
+export interface SearchProps {
+  priceProps: PriceProps;
+  roomsProps: RoomsProps;
+  locationsProps: LocationProps
 }

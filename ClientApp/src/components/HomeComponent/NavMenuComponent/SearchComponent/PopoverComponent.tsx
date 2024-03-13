@@ -1,5 +1,4 @@
 import { Input, Slider, Stack } from "@mui/material";
-import "./NavMenu.css";
 import { Button } from "src/shared";
 import { useState } from "react";
 import { PriceProps } from "src/interfaces/SearchInterfaces";
@@ -9,7 +8,7 @@ export const PopoverComponent = ({ price, setMinPrice, setMaxPrice, currentCurre
 
   const currencies = [
     {
-      value: "BYN",
+      value: "BY",
       label: "BYN",
     },
     { value: "USD", label: "$" },

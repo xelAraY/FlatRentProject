@@ -1,5 +1,5 @@
 import { Stack } from "@mui/material";
-import { SearchComponent } from "./SearchComponent";
+import { SearchComponent } from "./SearchComponent/SearchComponent";
 
 export const NavMenuImage = () => {
   return (

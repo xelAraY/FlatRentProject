@@ -132,4 +132,35 @@ public static class Filter
     return rentObjectsQuery;
   }
 
+  public static IQueryable<RentObject> ApplyNumberOfRoomsFilter(IQueryable<RentObject> query, string numberOfRooms)
+  {
+    if (string.IsNullOrWhiteSpace(numberOfRooms))
+    {
+      return query;
+    }
+
+    var roomsArray = numberOfRooms.Split(',').Select(int.Parse).ToArray();
+
+    return query.Where(ro => roomsArray.Contains(ro.RoomsCount));
+  }
+
+  public static IQueryable<RentObject> ApplyLocationsFilter(IQueryable<RentObject> query, ApplicationDbContext context, string locations)
+  {
+    if (string.IsNullOrWhiteSpace(locations))
+    {
+      return query;
+    }
+
+    var locationsArray = locations.Split(',');
+
+    return query
+        .Join(
+            context.Addresses,
+            ro => ro.AddressId,
+            address => address.AddrId,
+            (ro, address) => new { RentObject = ro, Address = address }
+        )
+        .Where(joined => locationsArray.Contains(joined.Address.City))
+        .Select(joined => joined.RentObject);
+  }
 }

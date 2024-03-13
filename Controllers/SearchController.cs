@@ -13,11 +13,11 @@ namespace FlatRent.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class HomeController : ControllerBase
+public class SearchController : ControllerBase
 {
   private readonly ApplicationDbContext _context;
 
-  public HomeController(ApplicationDbContext context)
+  public SearchController(ApplicationDbContext context)
   {
     _context = context;
   }
@@ -28,6 +28,39 @@ public class HomeController : ControllerBase
     try
     {
       var rentObjectsQuery = _context.RentObjects.AsQueryable();
+      var result = await Filter.GetRecentRentObjectsCommonQuery(rentObjectsQuery, _context);
+      return Ok(result);
+    }
+    catch (Exception ex)
+    {
+      return BadRequest(new { Message = $"Ошибка при получении последних объявлений: {ex.Message}" });
+    }
+  }
+
+  [HttpGet("filter")]
+  public async Task<IActionResult> GetFilteredRentObjects([FromQuery] RentObjectFilter filters)
+  {
+    try
+    {
+      var rentObjectsQuery = _context.RentObjects.AsQueryable();
+      rentObjectsQuery = Filter.ApplyNumberOfRoomsFilter(rentObjectsQuery, filters.NumberOfRooms);
+      rentObjectsQuery = Filter.ApplyLocationsFilter(rentObjectsQuery, _context, filters.Locations);
+      var result = await Filter.GetRecentRentObjectsCommonQuery(rentObjectsQuery, _context);
+      return Ok(result);
+    }
+    catch (Exception ex)
+    {
+      return BadRequest(new { Message = $"Ошибка при получении последних объявлений: {ex.Message}" });
+    }
+  }
+
+  [HttpGet("get-by-total-area")]
+  public async Task<IActionResult> GetRecentRentObjectsByLivingArea([FromQuery] string field, int minArea, int maxArea)
+  {
+    try
+    {
+      var rentObjectsQuery = _context.RentObjects.AsQueryable();
+      rentObjectsQuery = Filter.ApplyRangeFilter(rentObjectsQuery, field, minArea, maxArea);
       var result = await Filter.GetRecentRentObjectsCommonQuery(rentObjectsQuery, _context, takeCount: 4);
       return Ok(result);
     }
@@ -48,23 +81,7 @@ public class HomeController : ControllerBase
       // var rentObjectsQueryWithPets = _context.RentObjects
       //     .Where(ro => ro.Preferences == decodedString);
       rentObjectsQuery = Filter.ApplyPreferenceFilter(rentObjectsQuery, _context, preferences);
-      var result = await Filter.GetRecentRentObjectsCommonQuery(rentObjectsQuery, _context, takeCount: 4);
-      return Ok(result);
-    }
-    catch (Exception ex)
-    {
-      return BadRequest(new { Message = $"Ошибка при получении последних объявлений: {ex.Message}" });
-    }
-  }
-
-  [HttpGet("get-by-total-area")]
-  public async Task<IActionResult> GetRecentRentObjectsByLivingArea([FromQuery] string field, int minArea, int maxArea)
-  {
-    try
-    {
-      var rentObjectsQuery = _context.RentObjects.AsQueryable();
-      rentObjectsQuery = Filter.ApplyRangeFilter(rentObjectsQuery, field, minArea, maxArea);
-      var result = await Filter.GetRecentRentObjectsCommonQuery(rentObjectsQuery, _context, takeCount: 4);
+      var result = await Filter.GetRecentRentObjectsCommonQuery(rentObjectsQuery, _context);
       return Ok(result);
     }
     catch (Exception ex)
