@@ -3,7 +3,7 @@ import { Button } from "src/shared";
 import { useState } from "react";
 import { FilterState, PriceProps } from "src/interfaces/SearchInterfaces";
 
-export const PopoverComponent = ({ price, currentCurrency, onFiltersChange }: PriceProps) => {
+export const PopoverComponent = ({ price, currentCurrency, onFiltersChange, isHome }: PriceProps) => {
   const [value, setValue] = useState<number[]>([price.min, price.max]);
 
   const currencies = [
@@ -100,16 +100,18 @@ export const PopoverComponent = ({ price, currentCurrency, onFiltersChange }: Pr
           key={"max"}
         />
       </Stack>
-      <Stack flexDirection={"row"}>
-        <Slider
-          value={value}
-          onChange={handleChange}
-          valueLabelDisplay="auto"
-          min={0}
-          max={5000}
-          valueLabelFormat={valueText}
-        />
-      </Stack>
+      {isHome &&
+        <Stack flexDirection={"row"}>
+          <Slider
+            value={value}
+            onChange={handleChange}
+            valueLabelDisplay="auto"
+            min={0}
+            max={5000}
+            valueLabelFormat={valueText}
+          />
+        </Stack>
+      }
     </Stack>
   );
 };

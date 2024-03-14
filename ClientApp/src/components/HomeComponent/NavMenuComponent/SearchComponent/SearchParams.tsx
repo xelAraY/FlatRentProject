@@ -19,7 +19,8 @@ export const SearchParams = ({ priceProps, roomsProps, locationsProps }: SearchP
       <PriceComponent
         price={priceProps.price}
         currentCurrency={priceProps.currentCurrency}
-        onFiltersChange={priceProps.onFiltersChange} />
+        onFiltersChange={priceProps.onFiltersChange}
+        isHome={priceProps.isHome} />
     </Stack>
   );
 }

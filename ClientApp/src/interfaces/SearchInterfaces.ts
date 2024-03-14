@@ -15,6 +15,7 @@ export interface PriceProps {
   price: IPrice;
   currentCurrency: string;
   onFiltersChange: (newFilters: Partial<FilterState>) => void;
+  isHome: boolean;
 }
 
 export interface RoomsProps {

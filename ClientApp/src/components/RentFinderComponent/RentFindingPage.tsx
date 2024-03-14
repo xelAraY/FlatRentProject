@@ -1,16 +1,17 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { FilterOptions } from "./FilterOptions";
 import { Stack, Typography } from "@mui/material";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { RentObjectInformation } from "src/interfaces/RentObj";
 import { FlatsList } from "./FlatsList";
 import { FilterState } from "src/interfaces/SearchInterfaces";
+import { NoFoundObject } from "./NoFoundObject";
 
 export const RentFindingPage = () => {
+  const navigate = useNavigate()
   const location = useLocation();
   const [rentObjects, setRentObjects] = useState<RentObjectInformation[]>([]);
   const [loading, setLoading] = useState(false);
-
   const [filters, setFilters] = useState<FilterState>({
     rooms: [],
     locations: [],
@@ -19,7 +20,7 @@ export const RentFindingPage = () => {
     currentCurrency: "BYN",
   });
 
-  const updateFiltersAndFetchData = useCallback(async () => {
+  const updateFiltersAndFetchData = useCallback(async () => { //исправить мерцание
     try {
       setLoading(true);
       const paramsArray = [];
@@ -31,7 +32,9 @@ export const RentFindingPage = () => {
         paramsArray.push(`currencyType=${filters.currentCurrency}`);
       }
       const queryParams = paramsArray.join('&');
-      console.log("filters: ", filters);
+      const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+      delay(5000);
+      navigate(`/rental-search/flats?${queryParams}`);
       const response = await fetch(`api/search/filter${queryParams ? '?' + queryParams : ''}`);
       const data = await response.json();
 
@@ -46,7 +49,7 @@ export const RentFindingPage = () => {
     } finally {
       setLoading(false);
     }
-  }, [filters]);
+  }, [filters, navigate]);
 
   useEffect(() => {
     updateFiltersAndFetchData();
@@ -97,7 +100,7 @@ export const RentFindingPage = () => {
           <Typography variant="h4">Аренда квартир на длительный срок в Беларуси</Typography>
           <Typography variant="body1"><b>{rentObjects.length}</b> объявлени{ending}</Typography>
         </Stack>
-
+        {count === 0 && !loading && <NoFoundObject />}
         <FlatsList rentObjects={rentObjects} isLoading={loading} />
       </Stack>
     </Stack>

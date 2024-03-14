@@ -32,6 +32,7 @@ export const FilterOptions = ({ filters, onFiltersChange }: FilterOptionsProps) 
           price={{ min: filters.minPrice, max: filters.maxPrice }}
           currentCurrency={filters.currentCurrency}
           onFiltersChange={onFiltersChange}
+          isHome={false}
         />
       </Stack>
     </Paper>

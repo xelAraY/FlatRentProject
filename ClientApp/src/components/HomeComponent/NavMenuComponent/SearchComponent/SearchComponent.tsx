@@ -44,7 +44,8 @@ export const SearchComponent = () => {
           priceProps={{
             price: { min: filters.minPrice, max: filters.maxPrice },
             currentCurrency: filters.currentCurrency,
-            onFiltersChange: handleFiltersChange
+            onFiltersChange: handleFiltersChange,
+            isHome: true
           }}
           roomsProps={{
             rooms: filters.rooms,
