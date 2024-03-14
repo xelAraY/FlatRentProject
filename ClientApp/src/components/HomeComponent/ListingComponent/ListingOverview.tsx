@@ -43,7 +43,7 @@ export const ListingOverview = (props: ListingOverviewProps) => {
   const numberOfRentObjects = 4;
 
   return (
-    <Stack flexDirection="column" alignItems="flex-start" justifyContent="flex-start" marginTop={3} style={{ padding: "0 120px 60px 120px" }} width='100%'>
+    <Stack flexDirection="column" alignItems="flex-start" justifyContent="flex-start" style={{ padding: "24px 120px 60px 120px" }} width='100%'>
       <Stack flexDirection="column" alignItems="flex-start" justifyContent="flex-start" marginBottom={2}>
         <Typography variant="h5" fontWeight={700}>{props.title}</Typography>
         <Typography fontWeight={400} fontSize={16} paddingTop={0.5}>{props.subTitle}</Typography>

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { FilterOptions } from "./FilterOptions";
-import { Stack } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import { RentObjectInformation } from "src/interfaces/RentObj";
 import { FlatsList } from "./FlatsList";
@@ -86,11 +86,20 @@ export const RentFindingPage = () => {
     setFilters(prevFilters => ({ ...prevFilters, ...newFilters }));
   }, [location.search]);
 
+  const count = rentObjects.length;
+  const ending = count === 1 ? 'е' : count > 1 && count < 5 ? 'я' : 'й';
 
   return (
-    <Stack flexDirection={"column"} overflow='auto'>
+    <Stack flexDirection={"column"} overflow='auto' style={{ backgroundColor: "#f3f5f7" }}>
       <FilterOptions filters={filters} onFiltersChange={handleFiltersChange} />
-      <FlatsList rentObjects={rentObjects} isLoading={loading} />
+      <Stack flexDirection={"column"} padding={7}>
+        <Stack flexDirection={"column"} spacing={2} marginBottom={3}>
+          <Typography variant="h4">Аренда квартир на длительный срок в Беларуси</Typography>
+          <Typography variant="body1"><b>{rentObjects.length}</b> объявлени{ending}</Typography>
+        </Stack>
+
+        <FlatsList rentObjects={rentObjects} isLoading={loading} />
+      </Stack>
     </Stack>
   );
 }
