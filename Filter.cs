@@ -163,4 +163,57 @@ public static class Filter
         .Where(joined => locationsArray.Contains(joined.Address.City))
         .Select(joined => joined.RentObject);
   }
+
+  public static IQueryable<RentObject> ApplyPriceFilter(IQueryable<RentObject> query, ApplicationDbContext context, decimal? minPrice, decimal? maxPrice, string? currencyType)
+  {
+    if (string.IsNullOrWhiteSpace(currencyType))
+    {
+      return query;
+    }
+
+    decimal convertedMinPrice = ConvertToBYN(minPrice, currencyType);
+    decimal convertedMaxPrice = ConvertToBYN(maxPrice, currencyType);
+
+    return query
+        .Join(
+            context.Currencies,
+            ro => ro.CurrencyId,
+            currency => currency.CurrId,
+            (ro, currency) => new { RentObject = ro, Currency = currency.CurrCode }
+        )
+        .Where(joined =>
+            context.ConvertToBYN(joined.RentObject.RentPrice, joined.Currency) >= convertedMinPrice &&
+            context.ConvertToBYN(joined.RentObject.RentPrice, joined.Currency) <= convertedMaxPrice
+        )
+        .Select(joined => joined.RentObject);
+  }
+
+
+
+  private static decimal ConvertToBYN(decimal? price, string currencyType)
+  {
+    if (!price.HasValue)
+    {
+      return 0;
+    }
+
+    decimal usdToByn = 3.2063m;
+    decimal eurToByn = 3.5045m;
+
+    decimal convertedPrice;
+    switch (currencyType)
+    {
+      case "USD":
+        convertedPrice = price.Value * usdToByn;
+        break;
+      case "EUR":
+        convertedPrice = price.Value * eurToByn;
+        break;
+      default:
+        convertedPrice = price.Value;
+        break;
+    }
+
+    return convertedPrice;
+  }
 }

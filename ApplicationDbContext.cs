@@ -10,6 +10,12 @@ public class ApplicationDbContext : DbContext
   public DbSet<Address> Addresses { get; set; }
 
   public DbSet<RentObjectPreference> RentObjectPreferences { get; set; }
+
+  [DbFunction("converttobyn", "public")]
+  public decimal ConvertToBYN(decimal? price, string currencyType)
+  {
+    throw new NotImplementedException("This method is mapped to a database function and should not be invoked in C# code.");
+  }
   public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
   {
   }

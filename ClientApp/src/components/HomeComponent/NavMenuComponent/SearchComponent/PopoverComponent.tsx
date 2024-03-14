@@ -8,7 +8,7 @@ export const PopoverComponent = ({ price, setMinPrice, setMaxPrice, currentCurre
 
   const currencies = [
     {
-      value: "BY",
+      value: "BYN",
       label: "BYN",
     },
     { value: "USD", label: "$" },

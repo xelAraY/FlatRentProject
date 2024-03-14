@@ -16,8 +16,13 @@ export const SearchComponent = () => {
   const [currentCurrency, setCurrentCurrency] = useState("BYN");
 
   const paramsArray = [];
-  rooms.length > 0 && paramsArray.push(`NumberofRooms=${rooms.join(',')}`);
-  locations.length > 0 && paramsArray.push(`Locations=${locations.join(',')}`);
+  rooms.length > 0 && paramsArray.push(`numberOfRooms=${rooms.join(',')}`);
+  locations.length > 0 && paramsArray.push(`locations=${locations.join(',')}`);
+  if (minPrice !== maxPrice) {
+    paramsArray.push(`minPrice=${Math.min(minPrice, maxPrice)}`);
+    paramsArray.push(`maxPrice=${Math.max(minPrice, maxPrice)}`);
+    paramsArray.push(`currencyType=${currentCurrency}`);
+  }
   const queryParams = paramsArray.join('&');
 
   return (

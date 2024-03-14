@@ -51,7 +51,7 @@ public class RentObject
   public int AddressId { get; set; }
 
   [Column("rent_price")]
-  public double RentPrice { get; set; }
+  public decimal RentPrice { get; set; }
 
   [Column("currency_id")]
   public int CurrencyId { get; set; } //!!
