@@ -2,14 +2,12 @@ import {
   Box,
   Button,
   Card, CardActionArea, CardContent,
-  // CardMedia,
   Stack, Typography, useMediaQuery
 } from "@mui/material";
 import React from "react";
 import { RentObjectInformation } from "src/interfaces/RentObj";
 import 'react-image-gallery/styles/css/image-gallery.css';
 import ImageGallery from "react-image-gallery";
-import styled from "@emotion/styled";
 import { StyledImageGalery } from "./styled";
 
 interface CardProps {
@@ -45,7 +43,6 @@ export const FlatPreviewCard = ({
       ))
     }
     setImages(imagess);
-    console.log("Inf ", rentInformation);
   }, [rentInformation.photos, heigth]);
 
   return (

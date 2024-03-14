@@ -7,23 +7,30 @@ import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import { NavLink } from "react-router-dom";
 import { SearchParams } from "src/components/HomeComponent/NavMenuComponent/SearchComponent/SearchParams";
 import { useState } from "react";
+import { FilterState } from "src/interfaces/SearchInterfaces";
 
 export const SearchComponent = () => {
-  const [rooms, setRooms] = useState<string[]>([]);
-  const [locations, setLocations] = useState<string[]>([]);
-  const [minPrice, setMinPrice] = useState<number>(0);
-  const [maxPrice, setMaxPrice] = useState<number>(0);
-  const [currentCurrency, setCurrentCurrency] = useState("BYN");
+  const [filters, setFilters] = useState<FilterState>({
+    rooms: [],
+    locations: [],
+    minPrice: 0,
+    maxPrice: 0,
+    currentCurrency: "BYN",
+  });
 
   const paramsArray = [];
-  rooms.length > 0 && paramsArray.push(`numberOfRooms=${rooms.join(',')}`);
-  locations.length > 0 && paramsArray.push(`locations=${locations.join(',')}`);
-  if (minPrice !== maxPrice) {
-    paramsArray.push(`minPrice=${Math.min(minPrice, maxPrice)}`);
-    paramsArray.push(`maxPrice=${Math.max(minPrice, maxPrice)}`);
-    paramsArray.push(`currencyType=${currentCurrency}`);
+  filters.rooms.length > 0 && paramsArray.push(`numberOfRooms=${filters.rooms.join(',')}`);
+  filters.locations.length > 0 && paramsArray.push(`locations=${filters.locations.join(',')}`);
+  if (filters.minPrice !== filters.maxPrice) {
+    paramsArray.push(`minPrice=${Math.min(filters.minPrice, filters.maxPrice)}`);
+    paramsArray.push(`maxPrice=${Math.max(filters.minPrice, filters.maxPrice)}`);
+    paramsArray.push(`currencyType=${filters.currentCurrency}`);
   }
   const queryParams = paramsArray.join('&');
+
+  const handleFiltersChange = (newFilters: Partial<FilterState>) => {
+    setFilters(prevFilters => ({ ...prevFilters, ...newFilters }));
+  };
 
   return (
     <div
@@ -35,19 +42,17 @@ export const SearchComponent = () => {
       <Stack flexDirection="column" spacing={1}>
         <SearchParams
           priceProps={{
-            price: { min: minPrice, max: maxPrice },
-            setMinPrice,
-            setMaxPrice,
-            currentCurrency,
-            setCurrentCurrency
+            price: { min: filters.minPrice, max: filters.maxPrice },
+            currentCurrency: filters.currentCurrency,
+            onFiltersChange: handleFiltersChange
           }}
           roomsProps={{
-            rooms,
-            setRooms
+            rooms: filters.rooms,
+            onFiltersChange: handleFiltersChange
           }}
           locationsProps={{
-            locations,
-            setLocations
+            locations: filters.locations,
+            onFiltersChange: handleFiltersChange
           }}
         />
         <Stack flexDirection="row" justifyContent="space-between">

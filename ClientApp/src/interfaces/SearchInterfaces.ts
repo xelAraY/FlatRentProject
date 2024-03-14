@@ -3,22 +3,28 @@ interface IPrice {
   max: number;
 }
 
+export interface FilterState {
+  rooms: string[];
+  locations: string[];
+  minPrice: number;
+  maxPrice: number;
+  currentCurrency: string;
+}
+
 export interface PriceProps {
   price: IPrice;
-  setMinPrice: React.Dispatch<React.SetStateAction<number>>;
-  setMaxPrice: React.Dispatch<React.SetStateAction<number>>;
   currentCurrency: string;
-  setCurrentCurrency: React.Dispatch<React.SetStateAction<string>>;
+  onFiltersChange: (newFilters: Partial<FilterState>) => void;
 }
 
 export interface RoomsProps {
   rooms: string[];
-  setRooms: React.Dispatch<React.SetStateAction<string[]>>;
+  onFiltersChange: (newFilters: Partial<FilterState>) => void;
 }
 
 export interface LocationProps {
   locations: string[];
-  setLocations: React.Dispatch<React.SetStateAction<string[]>>;
+  onFiltersChange: (newFilters: Partial<FilterState>) => void;
 }
 
 export interface SearchProps {

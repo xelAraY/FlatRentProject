@@ -9,7 +9,7 @@ import { PopoverComponent } from "./PopoverComponent";
 import { Button } from "src/shared";
 import { PriceProps } from "src/interfaces/SearchInterfaces";
 
-export const PriceComponent = ({ price, setMinPrice, setMaxPrice, currentCurrency, setCurrentCurrency }: PriceProps) => {
+export const PriceComponent = ({ price, currentCurrency, onFiltersChange }: PriceProps) => {
   const [anchorEl, setAnchorEl] = React.useState<
     HTMLDivElement | HTMLButtonElement | null
   >(null);
@@ -61,10 +61,9 @@ export const PriceComponent = ({ price, setMinPrice, setMaxPrice, currentCurrenc
       >
         <PopoverComponent
           price={price}
-          setMinPrice={setMinPrice}
-          setMaxPrice={setMaxPrice}
           currentCurrency={currentCurrency}
-          setCurrentCurrency={setCurrentCurrency} />
+          onFiltersChange={onFiltersChange}
+        />
       </Popover>
     </div >
   );

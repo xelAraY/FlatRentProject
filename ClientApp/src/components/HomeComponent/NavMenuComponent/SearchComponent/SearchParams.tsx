@@ -10,18 +10,16 @@ export const SearchParams = ({ priceProps, roomsProps, locationsProps }: SearchP
     <Stack flexDirection="row">
       <RoomsSelect
         rooms={roomsProps.rooms}
-        setRooms={roomsProps.setRooms}
+        onFiltersChange={roomsProps.onFiltersChange}
       />
       <LocationsSelect
         locations={locationsProps.locations}
-        setLocations={locationsProps.setLocations}
+        onFiltersChange={locationsProps.onFiltersChange}
       />
       <PriceComponent
         price={priceProps.price}
-        setMinPrice={priceProps.setMinPrice}
-        setMaxPrice={priceProps.setMaxPrice}
         currentCurrency={priceProps.currentCurrency}
-        setCurrentCurrency={priceProps.setCurrentCurrency} />
+        onFiltersChange={priceProps.onFiltersChange} />
     </Stack>
   );
 }

@@ -1,15 +1,19 @@
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material";
-import { LocationProps } from "src/interfaces/SearchInterfaces";
+import { FilterState, LocationProps } from "src/interfaces/SearchInterfaces";
 
-export const LocationsSelect = ({ locations, setLocations }: LocationProps) => {
+export const LocationsSelect = ({ locations, onFiltersChange }: LocationProps) => {
 
   const handleLocationsChange = (event: SelectChangeEvent<typeof locations>) => {
     const {
       target: { value },
     } = event;
-    setLocations(
-      typeof value === 'string' ? value.split(',') : value,
-    );
+    const newLocations = Array.isArray(value) ? value : [value];
+
+    const newFilters: Partial<FilterState> = {
+      locations: newLocations,
+    };
+
+    onFiltersChange(newFilters);
   };
 
   const roomsAmount = ["Могилев", "Минск", "Брест", "Витебск", "Гродно", "Гомель", "Бобруйск"];

@@ -1,16 +1,21 @@
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material";
-import { RoomsProps } from "src/interfaces/SearchInterfaces";
+import { FilterState, RoomsProps } from "src/interfaces/SearchInterfaces";
 
-export const RoomsSelect = ({ rooms, setRooms }: RoomsProps) => {
+export const RoomsSelect = ({ rooms, onFiltersChange }: RoomsProps) => {
 
 
   const handleRoomsCountChange = (event: SelectChangeEvent<typeof rooms>) => {
     const {
       target: { value },
     } = event;
-    setRooms(
-      typeof value === 'string' ? value.split(',') : value,
-    );
+
+    const newRooms = Array.isArray(value) ? value : [value];
+
+    const newFilters: Partial<FilterState> = {
+      rooms: newRooms,
+    };
+
+    onFiltersChange(newFilters);
   };
 
   const roomsAmount = ["1", "2", "3", "4", "5", "6+"];

@@ -1,9 +1,9 @@
 import { Input, Slider, Stack } from "@mui/material";
 import { Button } from "src/shared";
 import { useState } from "react";
-import { PriceProps } from "src/interfaces/SearchInterfaces";
+import { FilterState, PriceProps } from "src/interfaces/SearchInterfaces";
 
-export const PopoverComponent = ({ price, setMinPrice, setMaxPrice, currentCurrency, setCurrentCurrency }: PriceProps) => {
+export const PopoverComponent = ({ price, currentCurrency, onFiltersChange }: PriceProps) => {
   const [value, setValue] = useState<number[]>([price.min, price.max]);
 
   const currencies = [
@@ -16,47 +16,58 @@ export const PopoverComponent = ({ price, setMinPrice, setMaxPrice, currentCurre
   ];
 
   const handleClickCurrBtn = (event: any) => {
-    setCurrentCurrency(event.target.value);
+    const { value } = event.currentTarget;
+
+    const newFilters: Partial<FilterState> = {
+      currentCurrency: value,
+    };
+
+    onFiltersChange(newFilters);
   };
 
   const selectedBtn = { backgroundColor: "#bebebe" };
 
   const handleChange = (event: Event, newValue: number | number[]) => {
     const numbers: number[] = newValue as number[];
-    setMinPrice(numbers[0]);
-    setMaxPrice(numbers[1]);
+    const newFilters: Partial<FilterState> = {
+      minPrice: numbers[0],
+      maxPrice: numbers[1],
+    };
     setValue(numbers);
+    onFiltersChange(newFilters);
   };
 
   const handleMinPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const minPrice = Number(event.target.value);
     if (!isNaN(minPrice)) {
-      setMinPrice(minPrice);
+      const newFilters: Partial<FilterState> = {
+        minPrice: minPrice,
+      };
+
+      onFiltersChange(newFilters);
       setValue((prevValue) => {
         const newValue = [...prevValue];
         newValue[0] = minPrice;
         return newValue;
       })
-    } else {
-      setMinPrice((prevValue) => prevValue);
     }
   };
 
   const handleMaxPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const maxPrice = Number(event.target.value)
     if (!isNaN(maxPrice)) {
-      setMaxPrice(maxPrice);
+      const newFilters: Partial<FilterState> = {
+        maxPrice: maxPrice,
+      };
+
+      onFiltersChange(newFilters);
       setValue((prevValue) => {
         const newValue = [...prevValue];
         newValue[1] = maxPrice;
         return newValue;
       })
-    } else {
-      setMaxPrice((prevValue) => prevValue);
     }
   };
-
-
 
   const valueText = (value: number) => `${value} ${currentCurrency}`;
 
