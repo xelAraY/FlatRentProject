@@ -3,23 +3,13 @@ import React from "react";
 import { RoomsSelect } from "../HomeComponent/NavMenuComponent/SearchComponent/RoomsSelect";
 import { LocationsSelect } from "../HomeComponent/NavMenuComponent/SearchComponent/LocationSelect";
 import { PriceComponent } from "../HomeComponent/NavMenuComponent/SearchComponent/PriceComponent";
-import { FilterState } from "src/interfaces/SearchInterfaces";
-
-interface FilterOptionsProps {
-  filters: {
-    rooms: string[];
-    locations: string[];
-    minPrice: number;
-    maxPrice: number;
-    currentCurrency: string;
-  };
-  onFiltersChange: (newFilters: Partial<FilterState>) => void;
-}
+import { FilterOptionsProps } from "src/interfaces/SearchInterfaces";
+import { AdditionalFilters } from "./AdditionalFilters";
 
 export const FilterOptions = ({ filters, onFiltersChange }: FilterOptionsProps) => {
   return (
     <Paper elevation={3}>
-      <Stack direction={"row"} style={{ backgroundColor: "white", borderTop: "1px solid #f0f1f2", padding: "1rem" }}>
+      <Stack direction={"row"} style={{ backgroundColor: "white", borderTop: "1px solid #f0f1f2", padding: "1rem" }} alignItems={"center"} justifyContent={"center"}>
         <RoomsSelect
           rooms={filters.rooms}
           onFiltersChange={onFiltersChange}
@@ -34,6 +24,7 @@ export const FilterOptions = ({ filters, onFiltersChange }: FilterOptionsProps) 
           onFiltersChange={onFiltersChange}
           isHome={false}
         />
+        <AdditionalFilters />
       </Stack>
     </Paper>
   );

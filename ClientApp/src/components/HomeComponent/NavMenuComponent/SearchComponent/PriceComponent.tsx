@@ -46,7 +46,7 @@ export const PriceComponent = ({ price, currentCurrency, onFiltersChange, isHome
             </InputAdornment>
           }
         /> */}
-        <Button variant="outlined" size="large" color='info' onClick={handleClick} style={{ color: 'rgba(0, 0, 0, 0.87)', border: '1px solid rgba(0, 0, 0, 0.23)', justifyContent: "space-between", height: "56px" }} endIcon={open ? <ArrowDropUpIcon style={{ color: "#747473" }} /> : <ArrowDropDownIcon style={{ color: "#747473" }} />}>Цена</Button>
+        <Button variant="outlined" size="large" color='info' onClick={handleClick} style={{ fontWeight: "600", color: "black", border: '1px solid rgba(0, 0, 0, 0.23)', justifyContent: "space-between", height: "56px" }} endIcon={open ? <ArrowDropUpIcon style={{ color: "#747473" }} /> : <ArrowDropDownIcon style={{ color: "#747473" }} />}>Цена</Button>
       </FormControl >
       <Popover
         id={id}

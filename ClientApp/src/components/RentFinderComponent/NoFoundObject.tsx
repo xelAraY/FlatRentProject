@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, Paper, Stack, Typography, useMediaQuery } from "@mui/material";
+import { Button } from "src/shared";
 
 export const NoFoundObject = () => {
   const isMedium = useMediaQuery((theme: any) => theme.breakpoints.between(0, '1000'));
@@ -21,6 +22,9 @@ export const NoFoundObject = () => {
               </li>
             </ul>
           </Stack>
+          <Button variant="contained" style={{ marginRight: "6px", width: "max-content", color: "#0a0f1c", backgroundColor: "#efcd6c" }}>
+            <Typography fontSize="17px">Посмотреть на карте</Typography>
+          </Button>
         </Stack>
       </Stack>
     </Paper>

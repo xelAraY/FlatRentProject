@@ -20,7 +20,7 @@ export const LocationsSelect = ({ locations, onFiltersChange }: LocationProps) =
 
   return (
     <FormControl sx={{ m: 1, width: 300 }} variant="outlined">
-      <InputLabel>Город, район...</InputLabel>
+      <InputLabel style={{ fontWeight: "600", color: "black" }}>Город, район...</InputLabel>
       <Select
         value={locations}
         onChange={handleLocationsChange}

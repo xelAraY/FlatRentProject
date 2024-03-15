@@ -11,6 +11,11 @@ export interface FilterState {
   currentCurrency: string;
 }
 
+export interface FilterOptionsProps {
+  filters: FilterState;
+  onFiltersChange: (newFilters: Partial<FilterState>) => void;
+}
+
 export interface PriceProps {
   price: IPrice;
   currentCurrency: string;
