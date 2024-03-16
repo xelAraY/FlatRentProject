@@ -80,7 +80,7 @@ export const PopoverComponent = ({ price, currentCurrency, onFiltersChange, isHo
               key={option.value}
               value={option.value}
               onClick={handleClickCurrBtn}
-              style={option.value === currentCurrency ? selectedBtn : {}}
+              style={{ ...(option.value === currentCurrency ? selectedBtn : {}), ...{ color: "black" } }}
               className="currency-btn"
             >
               {option.label}

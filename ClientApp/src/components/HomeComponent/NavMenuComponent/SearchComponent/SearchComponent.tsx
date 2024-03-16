@@ -16,6 +16,12 @@ export const SearchComponent = () => {
     minPrice: 0,
     maxPrice: 0,
     currentCurrency: "BYN",
+    bathroom: [],
+    balcony: [],
+    appliances: [],
+    rentalPeriod: "",
+    preferences: [],
+    prepayment: []
   });
 
   const paramsArray = [];

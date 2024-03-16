@@ -18,6 +18,12 @@ export const RentFindingPage = () => {
     minPrice: 0,
     maxPrice: 0,
     currentCurrency: "BYN",
+    bathroom: [],
+    balcony: [],
+    appliances: [],
+    rentalPeriod: "",
+    preferences: [],
+    prepayment: []
   });
 
   const updateFiltersAndFetchData = useCallback(async () => { //исправить мерцание
@@ -32,6 +38,7 @@ export const RentFindingPage = () => {
         paramsArray.push(`currencyType=${filters.currentCurrency}`);
       }
       const queryParams = paramsArray.join('&');
+      console.log(filters);
       const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
       delay(5000);
       navigate(`/rental-search/flats?${queryParams}`);

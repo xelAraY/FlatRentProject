@@ -24,7 +24,17 @@ export const FilterOptions = ({ filters, onFiltersChange }: FilterOptionsProps) 
           onFiltersChange={onFiltersChange}
           isHome={false}
         />
-        <AdditionalFilters />
+        <AdditionalFilters
+          additionalFilters={{
+            bathroom: filters.bathroom,
+            balcony: filters.balcony,
+            appliances: filters.appliances,
+            rentalPeriod: filters.rentalPeriod,
+            preferences: filters.preferences,
+            prepayment: filters.prepayment
+          }}
+          onFiltersChange={onFiltersChange}
+        />
       </Stack>
     </Paper>
   );

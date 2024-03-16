@@ -3,12 +3,35 @@ interface IPrice {
   max: number;
 }
 
+// export interface BaseFilters {
+//   rooms: string[];
+//   locations: string[];
+//   minPrice: number;
+//   maxPrice: number;
+//   currentCurrency: string;
+// }
+
+interface AdditionalFilters {
+  bathroom: string[];
+  balcony: string[];
+  appliances: string[];
+  rentalPeriod: string;
+  preferences: string[];
+  prepayment: string[];
+}
+
 export interface FilterState {
   rooms: string[];
   locations: string[];
   minPrice: number;
   maxPrice: number;
   currentCurrency: string;
+  bathroom: string[];
+  balcony: string[];
+  appliances: string[];
+  rentalPeriod: string;
+  preferences: string[];
+  prepayment: string[];
 }
 
 export interface FilterOptionsProps {
@@ -37,4 +60,17 @@ export interface SearchProps {
   priceProps: PriceProps;
   roomsProps: RoomsProps;
   locationsProps: LocationProps
+}
+
+export interface SelectFilterProps {
+  groupName: string;
+  options: string[];
+  selectedOptions: string[];
+  multiSelect: boolean;
+  onFilterChange: (items: string[]) => void;
+}
+
+export interface AdditionalFiltersProps {
+  additionalFilters: AdditionalFilters;
+  onFiltersChange: (newFilters: Partial<FilterState>) => void;
 }
