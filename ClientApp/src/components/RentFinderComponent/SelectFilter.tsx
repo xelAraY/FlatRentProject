@@ -23,7 +23,6 @@ export const SelectFilter = ({ groupName, options, selectedOptions, multiSelect,
   };
 
   useEffect(() => {
-    console.log("new change");
     onFilterChange(selectedItems);
   }, [selectedItems]);
 

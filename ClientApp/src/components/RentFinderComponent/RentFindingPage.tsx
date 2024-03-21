@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FilterOptions } from "./FilterOptions";
 import { Stack, Typography } from "@mui/material";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { RentObjectInformation } from "src/interfaces/RentObj";
 import { FlatsList } from "./FlatsList";
 import { FilterState } from "src/interfaces/SearchInterfaces";
@@ -23,12 +23,16 @@ export const RentFindingPage = () => {
     appliances: [],
     rentalPeriod: "",
     preferences: [],
-    prepayment: []
+    prepayment: [],
+    furniture: true,
+    withPhotos: true,
+    showData: true
   });
 
-  const updateFiltersAndFetchData = useCallback(async () => { //исправить мерцание
+  const updateFiltersAndFetchData = async () => { //исправить мерцание
     try {
-      setLoading(true);
+      const showData = filters.showData;
+      showData && setLoading(true);
       const paramsArray = [];
       filters.rooms.length > 0 && paramsArray.push(`numberOfRooms=${filters.rooms.join(',')}`);
       filters.locations.length > 0 && paramsArray.push(`locations=${filters.locations.join(',')}`);
@@ -37,30 +41,31 @@ export const RentFindingPage = () => {
         paramsArray.push(`maxPrice=${Math.max(filters.minPrice, filters.maxPrice)}`);
         paramsArray.push(`currencyType=${filters.currentCurrency}`);
       }
+
       const queryParams = paramsArray.join('&');
-      console.log(filters);
       const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
       delay(5000);
       navigate(`/rental-search/flats?${queryParams}`);
-      const response = await fetch(`api/search/filter${queryParams ? '?' + queryParams : ''}`);
+      const response = await fetch(`api/search/filter${queryParams ? '?' + queryParams : ''}${(queryParams ? '&' : '?') + `showData=${showData}`}`);
       const data = await response.json();
 
       if (response.ok) {
         console.log('Данные с сервера', data);
-        setRentObjects(data);
+        showData && setRentObjects(data);
+        // TODO add logic for setResultCount
       } else {
         console.error('Ошибка при получении данных', data.message);
       }
     } catch (error) {
       console.error('Произошла ошибка:', error);
     } finally {
-      setLoading(false);
+      filters.showData && setLoading(false);
     }
-  }, [filters, navigate]);
+  };
 
   useEffect(() => {
     updateFiltersAndFetchData();
-  }, [updateFiltersAndFetchData]);
+  }, [filters]);
 
   const handleFiltersChange = (newFilters: Partial<FilterState>) => {
     setFilters(prevFilters => ({ ...prevFilters, ...newFilters }));
@@ -92,9 +97,8 @@ export const RentFindingPage = () => {
     if (currencyParam) {
       newFilters.currentCurrency = currencyParam;
     }
-
     setFilters(prevFilters => ({ ...prevFilters, ...newFilters }));
-  }, [location.search]);
+  }, []);
 
   const count = rentObjects.length;
   const ending = count === 1 ? 'е' : count > 1 && count < 5 ? 'я' : 'й';

@@ -21,7 +21,10 @@ export const SearchComponent = () => {
     appliances: [],
     rentalPeriod: "",
     preferences: [],
-    prepayment: []
+    prepayment: [],
+    furniture: true,
+    withPhotos: true,
+    showData: true
   });
 
   const paramsArray = [];

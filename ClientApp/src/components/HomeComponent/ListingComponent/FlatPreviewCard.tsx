@@ -49,8 +49,8 @@ export const FlatPreviewCard = ({
     <Card key={keyNumber} style={{ width: '100%', minWidth: "300px" }}>
       <CardActionArea onClick={() => console.log('show details')} disableTouchRipple>
         <Stack>
-          <StyledImageGalery justifyContent='center' alignItems='center' sx={{ bgcolor: rentInformation.photos.length ? 'black' : 'none' }}>
-            {rentInformation.photos.length
+          <StyledImageGalery justifyContent='center' alignItems='center' sx={{ bgcolor: rentInformation?.photos.length ? 'black' : 'none' }}>
+            {rentInformation?.photos.length
               ? <ImageGallery items={images} showNav={false} showThumbnails={false} autoPlay={false} showPlayButton={false} showFullscreenButton={false} showBullets={true} lazyLoad={true} infinite={false} isRTL={false} />
               : <img src={"https://realt.by/_next/static/media/no-photo.850f218e.svg"} alt='photo_preview' height={heigth} width='100%' />}
           </StyledImageGalery>

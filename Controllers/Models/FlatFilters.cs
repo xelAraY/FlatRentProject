@@ -8,4 +8,6 @@ public class RentObjectFilter
   public int? MaxPrice { get; set; }
 
   public string? CurrencyType { get; set; }
+
+  public bool ShowData { get; set; }
 }

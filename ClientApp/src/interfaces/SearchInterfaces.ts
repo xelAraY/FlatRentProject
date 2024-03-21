@@ -18,6 +18,8 @@ interface AdditionalFilters {
   rentalPeriod: string;
   preferences: string[];
   prepayment: string[];
+  furniture: boolean;
+  withPhotos: boolean;
 }
 
 export interface FilterState {
@@ -32,6 +34,9 @@ export interface FilterState {
   rentalPeriod: string;
   preferences: string[];
   prepayment: string[];
+  furniture: boolean;
+  withPhotos: boolean;
+  showData?: boolean;
 }
 
 export interface FilterOptionsProps {
@@ -68,6 +73,12 @@ export interface SelectFilterProps {
   selectedOptions: string[];
   multiSelect: boolean;
   onFilterChange: (items: string[]) => void;
+}
+
+export interface SwitchFilterProps {
+  switchName: string;
+  isChecked: boolean;
+  onFilterChange: (isChecked: boolean) => void;
 }
 
 export interface AdditionalFiltersProps {

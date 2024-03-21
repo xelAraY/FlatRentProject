@@ -7,18 +7,6 @@ import { SelectFilter } from "./SelectFilter";
 import { SwitchFilter } from "./SwitchFilter";
 import { AdditionalFiltersProps, FilterState } from "src/interfaces/SearchInterfaces";
 
-const style = {
-  position: 'absolute' as 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-};
-
 export const AdditionalFilters = ({ additionalFilters, onFiltersChange }: AdditionalFiltersProps) => {
   const [open, setOpen] = React.useState(false);
   const bathroomOptions = ["Раздельный", "Совмещенный", "2 и более"];
@@ -49,6 +37,7 @@ export const AdditionalFilters = ({ additionalFilters, onFiltersChange }: Additi
   const handleBathroomFilterChange = (options: string[]) => {
     const newFilters: Partial<FilterState> = {
       bathroom: options,
+      showData: false,
     };
     onFiltersChange(newFilters);
   }
@@ -56,6 +45,7 @@ export const AdditionalFilters = ({ additionalFilters, onFiltersChange }: Additi
   const handleBalconyFilterChange = (options: string[]) => {
     const newFilters: Partial<FilterState> = {
       balcony: options,
+      showData: false,
     };
     onFiltersChange(newFilters);
   }
@@ -63,6 +53,7 @@ export const AdditionalFilters = ({ additionalFilters, onFiltersChange }: Additi
   const handleAppliancesFilterChange = (options: string[]) => {
     const newFilters: Partial<FilterState> = {
       appliances: options,
+      showData: false,
     };
     onFiltersChange(newFilters);
   }
@@ -70,6 +61,7 @@ export const AdditionalFilters = ({ additionalFilters, onFiltersChange }: Additi
   const handleRentalPeriodFilterChange = (options: string[]) => {
     const newFilters: Partial<FilterState> = {
       rentalPeriod: options.length > 0 ? options[0] : "",
+      showData: false,
     };
     onFiltersChange(newFilters);
   }
@@ -77,6 +69,7 @@ export const AdditionalFilters = ({ additionalFilters, onFiltersChange }: Additi
   const handlePreferencesFilterChange = (options: string[]) => {
     const newFilters: Partial<FilterState> = {
       appliances: options,
+      showData: false,
     };
     onFiltersChange(newFilters);
   }
@@ -84,6 +77,30 @@ export const AdditionalFilters = ({ additionalFilters, onFiltersChange }: Additi
   const handlePrepaymentFilterChange = (options: string[]) => {
     const newFilters: Partial<FilterState> = {
       appliances: options,
+      showData: false,
+    };
+    onFiltersChange(newFilters);
+  }
+
+  const handleFurnitureCheck = (option: boolean) => {
+    const newFilters: Partial<FilterState> = {
+      furniture: option,
+      showData: false,
+    };
+    onFiltersChange(newFilters);
+  }
+
+  const handlePhotosCheck = (option: boolean) => {
+    const newFilters: Partial<FilterState> = {
+      withPhotos: option,
+      showData: false,
+    };
+    onFiltersChange(newFilters);
+  }
+
+  const hanaleShowData = () => {
+    const newFilters: Partial<FilterState> = {
+      showData: true,
     };
     onFiltersChange(newFilters);
   }
@@ -106,8 +123,6 @@ export const AdditionalFilters = ({ additionalFilters, onFiltersChange }: Additi
         open={open}
         onClose={handleClose}
         scroll={'paper'}
-        aria-labelledby="scroll-dialog-title"
-        aria-describedby="scroll-dialog-description"
       >
         <DialogTitle id="scroll-dialog-title">
           <Box>
@@ -127,7 +142,7 @@ export const AdditionalFilters = ({ additionalFilters, onFiltersChange }: Additi
               <Stack>
                 <SelectFilter groupName="Санузел" options={bathroomOptions} selectedOptions={additionalFilters.bathroom} multiSelect onFilterChange={handleBathroomFilterChange} />
                 <SelectFilter groupName="Балкон" options={balconyOptions} selectedOptions={additionalFilters.balcony} multiSelect onFilterChange={handleBalconyFilterChange} />
-                {/* <SwitchFilter switchName="Мебель" /> */}
+                <SwitchFilter switchName="Мебель" isChecked={additionalFilters.furniture} onFilterChange={handleFurnitureCheck} />
                 <SelectFilter groupName="Удобства" options={appliancesOptions} selectedOptions={additionalFilters.appliances} multiSelect onFilterChange={handleAppliancesFilterChange} />
               </Stack>
             </Stack>
@@ -136,14 +151,14 @@ export const AdditionalFilters = ({ additionalFilters, onFiltersChange }: Additi
               <SelectFilter groupName="Срок аренды" options={rentalPeriodOptions} selectedOptions={[additionalFilters.rentalPeriod]} multiSelect={false} onFilterChange={handleRentalPeriodFilterChange} />
               <SelectFilter groupName="Предпочтения" options={preferencesOptions} selectedOptions={additionalFilters.preferences} multiSelect onFilterChange={handlePreferencesFilterChange} />
               <SelectFilter groupName="Предоплата" options={prepaymentOptions} selectedOptions={additionalFilters.prepayment} multiSelect onFilterChange={handlePrepaymentFilterChange} />
-              {/* <SwitchFilter switchName="С фото" /> */}
+              <SwitchFilter switchName="С фото" isChecked={additionalFilters.withPhotos} onFilterChange={handlePhotosCheck} />
             </Stack>
           </Stack>
 
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose}>Subscribe</Button>
+          <Button onClick={hanaleShowData}>Subscribe</Button>
         </DialogActions>
       </Dialog>
     </React.Fragment>

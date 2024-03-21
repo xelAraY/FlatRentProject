@@ -46,7 +46,7 @@ public class SearchController : ControllerBase
       rentObjectsQuery = Filter.ApplyNumberOfRoomsFilter(rentObjectsQuery, filters.NumberOfRooms);
       rentObjectsQuery = Filter.ApplyLocationsFilter(rentObjectsQuery, _context, filters.Locations);
       rentObjectsQuery = Filter.ApplyPriceFilter(rentObjectsQuery, _context, filters.MinPrice, filters.MaxPrice, filters.CurrencyType);
-      var result = await Filter.GetRecentRentObjectsCommonQuery(rentObjectsQuery, _context);
+      var result = await Filter.GetRecentRentObjectsCommonQuery(rentObjectsQuery, _context, filters.ShowData);
       return Ok(result);
     }
     catch (Exception ex)

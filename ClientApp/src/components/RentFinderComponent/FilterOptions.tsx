@@ -31,7 +31,9 @@ export const FilterOptions = ({ filters, onFiltersChange }: FilterOptionsProps) 
             appliances: filters.appliances,
             rentalPeriod: filters.rentalPeriod,
             preferences: filters.preferences,
-            prepayment: filters.prepayment
+            prepayment: filters.prepayment,
+            furniture: filters.furniture,
+            withPhotos: filters.withPhotos
           }}
           onFiltersChange={onFiltersChange}
         />

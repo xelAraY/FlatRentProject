@@ -4,69 +4,80 @@ using Microsoft.EntityFrameworkCore;
 
 public static class Filter
 {
-  public static async Task<List<object>> GetRecentRentObjectsCommonQuery(IQueryable<RentObject> rentObjectsQuery, ApplicationDbContext _context, int? takeCount = null)
+  public static async Task<List<object>> GetRecentRentObjectsCommonQuery(IQueryable<RentObject> rentObjectsQuery, ApplicationDbContext _context, bool showData = true, int? takeCount = null)
   {
-    var query = rentObjectsQuery;
-
-    if (takeCount.HasValue && takeCount.Value > 0)
+    if (!showData)
     {
-      query = query.OrderByDescending(ro => ro.CreatedAt).Take(takeCount.Value);
+      var count = await rentObjectsQuery.CountAsync();
+      var countObject = new { count = count };
+      var result = new List<object> { countObject };
+      return result;
     }
     else
     {
-      query = query.OrderByDescending(ro => ro.CreatedAt);
-    }
 
-    var recentRentObjects = await query
-        .Join(
-            _context.Users,
-            ro => ro.OwnerId,
-            user => user.Id,
-            (ro, user) => new { RentObject = ro, Owner = user }
-        )
-        .Join(
-            _context.Currencies,
-            result => result.RentObject.CurrencyId,
-            currency => currency.CurrId,
-            (result, currency) => new { result.RentObject, result.Owner, Currency = currency }
-        )
-        .Join(
-            _context.Addresses,
-            result => result.RentObject.AddressId,
-            address => address.AddrId,
-            (result, address) => new { result.RentObject, result.Owner, result.Currency, Address = address }
-        )
-        .Select(result => new
-        {
-          result.RentObject,
-          Currency = result.Currency.CurrCode,
-          Owner = new
+      var query = rentObjectsQuery;
+
+      if (takeCount.HasValue && takeCount.Value > 0)
+      {
+        query = query.OrderByDescending(ro => ro.CreatedAt).Take(takeCount.Value);
+      }
+      else
+      {
+        query = query.OrderByDescending(ro => ro.CreatedAt);
+      }
+
+      var recentRentObjects = await query
+          .Join(
+              _context.Users,
+              ro => ro.OwnerId,
+              user => user.Id,
+              (ro, user) => new { RentObject = ro, Owner = user }
+          )
+          .Join(
+              _context.Currencies,
+              result => result.RentObject.CurrencyId,
+              currency => currency.CurrId,
+              (result, currency) => new { result.RentObject, result.Owner, Currency = currency }
+          )
+          .Join(
+              _context.Addresses,
+              result => result.RentObject.AddressId,
+              address => address.AddrId,
+              (result, address) => new { result.RentObject, result.Owner, result.Currency, Address = address }
+          )
+          .Select(result => new
           {
-            result.Owner.Name,
-            result.Owner.FullName,
-            result.Owner.PhoneNumber,
-            result.Owner.RegistrationDate,
-            result.Owner.LastLogin
-          },
-          result.Address
-        })
-        .ToListAsync();
+            result.RentObject,
+            Currency = result.Currency.CurrCode,
+            Owner = new
+            {
+              result.Owner.Name,
+              result.Owner.FullName,
+              result.Owner.PhoneNumber,
+              result.Owner.RegistrationDate,
+              result.Owner.LastLogin
+            },
+            result.Address
+          })
+          .ToListAsync();
 
-    var rentObjectIds = recentRentObjects.Select(ro => ro.RentObject.RentObjId);
-    var photos = await _context.Photos
-        .Where(photo => rentObjectIds.Contains(photo.RentObjId))
-        .ToListAsync();
+      var rentObjectIds = recentRentObjects.Select(ro => ro.RentObject.RentObjId);
+      var photos = await _context.Photos
+          .Where(photo => rentObjectIds.Contains(photo.RentObjId))
+          .ToListAsync();
 
-    var result = recentRentObjects.Select(result => new
-    {
-      result.RentObject,
-      result.Currency,
-      result.Owner,
-      result.Address,
-      Photos = photos.Where(photo => photo.RentObjId == result.RentObject.RentObjId).Select(photo => photo.Url)
-    }).Cast<object>().ToList();
+      var result = recentRentObjects.Select(result => new
+      {
+        result.RentObject,
+        result.Currency,
+        result.Owner,
+        result.Address,
+        Photos = photos.Where(photo => photo.RentObjId == result.RentObject.RentObjId).Select(photo => photo.Url)
+      }).Cast<object>().ToList();
 
-    return result;
+      return result;
+    }
   }
 
   public static IQueryable<RentObject> ApplyRangeFilter(
