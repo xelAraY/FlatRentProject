@@ -11,7 +11,16 @@ interface IPrice {
 //   currentCurrency: string;
 // }
 
+export interface RangeValue {
+  valueFrom: number | null;
+  valueTo: number | null;
+}
+
 interface AdditionalFilters {
+  floor: RangeValue;
+  totalArea: RangeValue;
+  livingArea: RangeValue;
+  kitchenArea: RangeValue;
   bathroom: string[];
   balcony: string[];
   appliances: string[];
@@ -28,6 +37,10 @@ export interface FilterState {
   minPrice: number;
   maxPrice: number;
   currentCurrency: string;
+  floor: RangeValue;
+  totalArea: RangeValue;
+  livingArea: RangeValue;
+  kitchenArea: RangeValue;
   bathroom: string[];
   balcony: string[];
   appliances: string[];
@@ -41,6 +54,7 @@ export interface FilterState {
 
 export interface FilterOptionsProps {
   filters: FilterState;
+  count: number | null;
   onFiltersChange: (newFilters: Partial<FilterState>) => void;
 }
 
@@ -83,5 +97,6 @@ export interface SwitchFilterProps {
 
 export interface AdditionalFiltersProps {
   additionalFilters: AdditionalFilters;
+  count: number | null;
   onFiltersChange: (newFilters: Partial<FilterState>) => void;
 }

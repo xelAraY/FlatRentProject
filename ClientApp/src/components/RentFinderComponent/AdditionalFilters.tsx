@@ -5,9 +5,9 @@ import { Box, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Typograp
 import { RangeFilter } from "./RangeFilter";
 import { SelectFilter } from "./SelectFilter";
 import { SwitchFilter } from "./SwitchFilter";
-import { AdditionalFiltersProps, FilterState } from "src/interfaces/SearchInterfaces";
+import { AdditionalFiltersProps, FilterState, RangeValue } from "src/interfaces/SearchInterfaces";
 
-export const AdditionalFilters = ({ additionalFilters, onFiltersChange }: AdditionalFiltersProps) => {
+export const AdditionalFilters = ({ additionalFilters, count, onFiltersChange }: AdditionalFiltersProps) => {
   const [open, setOpen] = React.useState(false);
   const bathroomOptions = ["Раздельный", "Совмещенный", "2 и более"];
   const balconyOptions = ["Есть", "Нет", "Лоджия"];
@@ -105,6 +105,38 @@ export const AdditionalFilters = ({ additionalFilters, onFiltersChange }: Additi
     onFiltersChange(newFilters);
   }
 
+  const handleTotalAreaFilterChange = (option: RangeValue) => {
+    const newFilters: Partial<FilterState> = {
+      totalArea: option,
+      showData: false,
+    };
+    onFiltersChange(newFilters);
+  }
+
+  const handleLivingAreaFilterChange = (option: RangeValue) => {
+    const newFilters: Partial<FilterState> = {
+      livingArea: option,
+      showData: false,
+    };
+    onFiltersChange(newFilters);
+  }
+
+  const handleKitchenAreaFilterChange = (option: RangeValue) => {
+    const newFilters: Partial<FilterState> = {
+      kitchenArea: option,
+      showData: false,
+    };
+    onFiltersChange(newFilters);
+  }
+
+  const handleFloorFilterChange = (option: RangeValue) => {
+    const newFilters: Partial<FilterState> = {
+      floor: option,
+      showData: false,
+    };
+    onFiltersChange(newFilters);
+  }
+
   return (
     <React.Fragment>
       <Button
@@ -133,11 +165,11 @@ export const AdditionalFilters = ({ additionalFilters, onFiltersChange }: Additi
           <Stack>
             <Stack marginBottom={3}>
               <Typography variant="h6" fontWeight={600}>Квартира</Typography>
-              <RangeFilter fieldsName="Этаж" />
+              <RangeFilter fieldsName="Этаж" initValue={additionalFilters.floor} onFilterChange={handleFloorFilterChange} />
               <Stack flexDirection={"row"} flexWrap={"wrap"} justifyContent={"space-between"}>
-                <RangeFilter fieldsName="Площадь общая, м²" />
-                <RangeFilter fieldsName="Площадь жилая, м²" />
-                <RangeFilter fieldsName="Площадь кухни, м²" />
+                <RangeFilter fieldsName="Площадь общая, м²" initValue={additionalFilters.totalArea} onFilterChange={handleTotalAreaFilterChange} />
+                <RangeFilter fieldsName="Площадь жилая, м²" initValue={additionalFilters.livingArea} onFilterChange={handleLivingAreaFilterChange} />
+                <RangeFilter fieldsName="Площадь кухни, м²" initValue={additionalFilters.kitchenArea} onFilterChange={handleKitchenAreaFilterChange} />
               </Stack>
               <Stack>
                 <SelectFilter groupName="Санузел" options={bathroomOptions} selectedOptions={additionalFilters.bathroom} multiSelect onFilterChange={handleBathroomFilterChange} />
@@ -156,9 +188,14 @@ export const AdditionalFilters = ({ additionalFilters, onFiltersChange }: Additi
           </Stack>
 
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={hanaleShowData}>Subscribe</Button>
+        <DialogActions style={{ padding: "16px 24px" }}>
+          <Stack flexDirection="row" width="100%" justifyContent="space-between">
+            <Button>Сбросить</Button>
+            <Button onClick={hanaleShowData} variant="contained" style={{ marginRight: "6px", width: "max-content", color: "#0a0f1c", backgroundColor: "#efcd6c" }}>
+              <Typography fontSize="17px" marginLeft="3px">Показать <b>{count}</b></Typography>
+            </Button>
+          </Stack>
+
         </DialogActions>
       </Dialog>
     </React.Fragment>

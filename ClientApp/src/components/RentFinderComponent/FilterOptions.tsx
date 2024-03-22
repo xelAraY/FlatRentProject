@@ -6,7 +6,7 @@ import { PriceComponent } from "../HomeComponent/NavMenuComponent/SearchComponen
 import { FilterOptionsProps } from "src/interfaces/SearchInterfaces";
 import { AdditionalFilters } from "./AdditionalFilters";
 
-export const FilterOptions = ({ filters, onFiltersChange }: FilterOptionsProps) => {
+export const FilterOptions = ({ filters, count, onFiltersChange }: FilterOptionsProps) => {
   return (
     <Paper elevation={3}>
       <Stack direction={"row"} style={{ backgroundColor: "white", borderTop: "1px solid #f0f1f2", padding: "1rem" }} alignItems={"center"} justifyContent={"center"}>
@@ -26,6 +26,10 @@ export const FilterOptions = ({ filters, onFiltersChange }: FilterOptionsProps) 
         />
         <AdditionalFilters
           additionalFilters={{
+            floor: filters.floor,
+            totalArea: filters.totalArea,
+            livingArea: filters.livingArea,
+            kitchenArea: filters.kitchenArea,
             bathroom: filters.bathroom,
             balcony: filters.balcony,
             appliances: filters.appliances,
@@ -35,6 +39,7 @@ export const FilterOptions = ({ filters, onFiltersChange }: FilterOptionsProps) 
             furniture: filters.furniture,
             withPhotos: filters.withPhotos
           }}
+          count={count}
           onFiltersChange={onFiltersChange}
         />
       </Stack>

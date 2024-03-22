@@ -1,9 +1,9 @@
 import { FormControlLabel, Stack, Switch } from "@mui/material";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { SwitchFilterProps } from "src/interfaces/SearchInterfaces";
 
 export const SwitchFilter = ({ switchName, isChecked, onFilterChange }: SwitchFilterProps) => {
-  const [checked, setChecked] = React.useState(isChecked);
+  const [checked, setChecked] = useState(isChecked);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     console.log(event.target.checked);
