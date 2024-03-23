@@ -46,8 +46,8 @@ export const RentFindingPage = () => {
         paramsArray.push(`maxPrice=${Math.max(filters.minPrice, filters.maxPrice)}`);
         paramsArray.push(`currencyType=${filters.currentCurrency}`);
       }
-      filters.bathroom.length > 0 && paramsArray.push(`bathroom=${filters.bathroom.join(',')}`);
-      filters.balcony.length > 0 && paramsArray.push(`balcony=${filters.balcony.join(',')}`);
+      filters.bathroom.length > 0 && paramsArray.push(`bathroomType=${filters.bathroom.join(',')}`);
+      filters.balcony.length > 0 && paramsArray.push(`balconyType=${filters.balcony.join(',')}`);
       filters.appliances.length > 0 && paramsArray.push(`appliances=${filters.appliances.join(',')}`);
       filters.preferences.length > 0 && paramsArray.push(`preferences=${filters.preferences.join(',')}`);
       filters.prepayment.length > 0 && paramsArray.push(`prepayment=${filters.prepayment.join(',')}`);
