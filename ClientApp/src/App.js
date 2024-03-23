@@ -12,9 +12,29 @@ export default class App extends Component {
   render() {
     return (
       <div>
-        <ThemeProvider theme={createTheme()}>
+        <ThemeProvider
+          theme={createTheme({
+            palette: {
+              secondary: {
+                main: "#b835fc",
+                contrastText: "#FFFFFF",
+              },
+              info: {
+                main: "#c465f5",
+                contrastText: "#FFFFFF",
+              },
+            },
+          })}
+        >
           <Routes>
-            <Route element={<><NavMenu /> <Outlet /><Footer /></>}>
+            <Route
+              element={
+                <>
+                  <NavMenu /> <Outlet />
+                  <Footer />
+                </>
+              }
+            >
               {AppRoutes.map((route, index) => {
                 const { element, ...rest } = route;
                 return <Route key={index} {...rest} element={element} />;
