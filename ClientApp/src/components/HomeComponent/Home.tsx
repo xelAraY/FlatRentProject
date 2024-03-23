@@ -23,7 +23,7 @@ export const Home = () => {
       <div>
         <NavMenuImage />
       </div>
-      <Stack alignItems={'center'} >
+      <Stack alignItems={'center'} marginBottom={3}>
         {rentalObjectsGroupData.map((rntObjGroup, index) => <ListingOverview key={index} requestPath={rntObjGroup.path} title={rntObjGroup.title} subTitle={rntObjGroup.subTitle} />)}
       </Stack>
     </Box >

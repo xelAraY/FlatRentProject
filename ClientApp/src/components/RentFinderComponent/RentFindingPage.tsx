@@ -132,7 +132,7 @@ export const RentFindingPage = () => {
   return (
     <Stack flexDirection={"column"} overflow='auto' style={{ backgroundColor: "#f3f5f7" }}>
       <FilterOptions filters={filters} count={count} onFiltersChange={handleFiltersChange} />
-      <Stack flexDirection={"column"} padding={7}>
+      <Stack flexDirection={"column"} style={{ padding: "56px 56px 80px 56px" }}>
         <Stack flexDirection={"column"} spacing={2} marginBottom={3}>
           <Typography variant="h4">Аренда квартир на длительный срок в Беларуси</Typography>
           <Typography variant="body1"><b>{rentObjects.length}</b> объявлени{ending}</Typography>

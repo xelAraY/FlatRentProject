@@ -7,7 +7,7 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn';
 
 export const Footer = () => {
   return (
-    <Stack direction={"row"} marginTop={3} style={{ backgroundColor: "#2b2b2b", color: "white" }} alignItems={"center"} justifyContent={"space-between"}>
+    <Stack direction={"row"} style={{ backgroundColor: "#2b2b2b", color: "white" }} alignItems={"center"} justifyContent={"space-between"}>
       <Stack direction={"column"} style={{ padding: "16px 0 16px 16px" }}>
         <Typography fontWeight={800} fontSize={16}>Created by</Typography>
         <Typography fontWeight={800} fontSize={16} marginBottom={2}>Alexey Yarohovich</Typography>
