@@ -22,8 +22,6 @@ interface ForPhotos {
   originalWidth?: number;
 }
 
-
-
 export const FlatPreviewCard = ({
   rentInformation,
   keyNumber }: CardProps) => {
@@ -45,6 +43,10 @@ export const FlatPreviewCard = ({
     setImages(imagess);
   }, [rentInformation.photos, heigth]);
 
+  const currency = rentInformation.currency;
+  const price = rentInformation.rentObject.rentPrice;
+  const bynPrice = currency === "USD" ? Math.round(price * 3.2063) : currency === "EUR" ? Math.round(price * 3.5045) : price;
+
   return (
     <Card key={keyNumber} style={{ width: '100%', minWidth: "300px" }}>
       <CardActionArea onClick={() => console.log('show details')} disableTouchRipple>
@@ -56,9 +58,14 @@ export const FlatPreviewCard = ({
           </StyledImageGalery>
         </Stack>
         <CardContent>
-          <Typography gutterBottom variant='h6' fontWeight='600'>
-            {rentInformation.rentObject.rentPrice} {rentInformation.currency}
-          </Typography>
+          <Stack flexDirection="row" alignItems="center">
+            <Typography gutterBottom variant='h6' fontWeight='600'>
+              {bynPrice} р./мес.&nbsp;
+            </Typography>
+            <Typography gutterBottom variant='body2' fontWeight='400'>
+              ≈{rentInformation.rentObject.rentPrice} {rentInformation.currency}/мес.
+            </Typography>
+          </Stack>
           <Stack flexDirection='row' flexWrap='wrap' gap='0.5rem'>
             <Typography variant="subtitle2" >
               <b>{rentInformation.rentObject.roomsCount}</b>&nbsp;комн.
