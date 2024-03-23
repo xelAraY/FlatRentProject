@@ -6,10 +6,14 @@ public class ApplicationDbContext : DbContext
   public DbSet<Photo> Photos { get; set; }
   public DbSet<RentObject> RentObjects { get; set; }
   public DbSet<Currency> Currencies { get; set; }
-  public DbSet<Preference> Preferences { get; set; }
   public DbSet<Address> Addresses { get; set; }
+  public DbSet<Preference> Preferences { get; set; }
+  public DbSet<Appliance> Appliances { get; set; }
+  public DbSet<AddtitionalInf> AddtitionalInfs { get; set; }
 
   public DbSet<RentObjectPreference> RentObjectPreferences { get; set; }
+  public DbSet<RentObjectAppliance> RentObjectAppliances { get; set; }
+  public DbSet<RentObjectAddInf> RentObjectAddInfs { get; set; }
 
   [DbFunction("converttobyn", "public")]
   public decimal ConvertToBYN(decimal? price, string currencyType)

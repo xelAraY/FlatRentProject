@@ -55,6 +55,15 @@ export const FlatPreviewCard = ({ rentInformation, keyNumber }: CardProps) => {
     setImages(imagess);
   }, [rentInformation.photos, heigth]);
 
+  const currency = rentInformation.currency;
+  const price = rentInformation.rentObject.rentPrice;
+  const bynPrice =
+    currency === "USD"
+      ? Math.round(price * 3.2063)
+      : currency === "EUR"
+      ? Math.round(price * 3.5045)
+      : price;
+
   return (
     <Card key={keyNumber} style={{ width: "100%", minWidth: "300px" }}>
       <CardActionArea
