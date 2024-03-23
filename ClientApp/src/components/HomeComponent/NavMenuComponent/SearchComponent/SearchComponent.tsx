@@ -1,9 +1,6 @@
-import {
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import { Button } from "src/shared";
-import ZoomInIcon from '@mui/icons-material/ZoomIn';
+import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import { NavLink } from "react-router-dom";
 import { SearchParams } from "src/components/HomeComponent/NavMenuComponent/SearchComponent/SearchParams";
 import { useState } from "react";
@@ -28,21 +25,27 @@ export const SearchComponent = () => {
     prepayment: [],
     furniture: true,
     withPhotos: true,
-    showData: true
+    showData: true,
   });
 
   const paramsArray = [];
-  filters.rooms.length > 0 && paramsArray.push(`numberOfRooms=${filters.rooms.join(',')}`);
-  filters.locations.length > 0 && paramsArray.push(`locations=${filters.locations.join(',')}`);
+  filters.rooms.length > 0 &&
+    paramsArray.push(`numberOfRooms=${filters.rooms.join(",")}`);
+  filters.locations.length > 0 &&
+    paramsArray.push(`locations=${filters.locations.join(",")}`);
   if (filters.minPrice !== filters.maxPrice) {
-    paramsArray.push(`minPrice=${Math.min(filters.minPrice, filters.maxPrice)}`);
-    paramsArray.push(`maxPrice=${Math.max(filters.minPrice, filters.maxPrice)}`);
+    paramsArray.push(
+      `minPrice=${Math.min(filters.minPrice, filters.maxPrice)}`
+    );
+    paramsArray.push(
+      `maxPrice=${Math.max(filters.minPrice, filters.maxPrice)}`
+    );
     paramsArray.push(`currencyType=${filters.currentCurrency}`);
   }
-  const queryParams = paramsArray.join('&');
+  const queryParams = paramsArray.join("&");
 
   const handleFiltersChange = (newFilters: Partial<FilterState>) => {
-    setFilters(prevFilters => ({ ...prevFilters, ...newFilters }));
+    setFilters((prevFilters) => ({ ...prevFilters, ...newFilters }));
   };
 
   return (
@@ -58,31 +61,44 @@ export const SearchComponent = () => {
             price: { min: filters.minPrice, max: filters.maxPrice },
             currentCurrency: filters.currentCurrency,
             onFiltersChange: handleFiltersChange,
-            isHome: true
+            isHome: true,
           }}
           roomsProps={{
             rooms: filters.rooms,
-            onFiltersChange: handleFiltersChange
+            onFiltersChange: handleFiltersChange,
           }}
           locationsProps={{
             locations: filters.locations,
-            onFiltersChange: handleFiltersChange
+            onFiltersChange: handleFiltersChange,
           }}
         />
         <Stack flexDirection="row" justifyContent="space-between">
           <NavLink to={"/rental-search/flats"}>
-            <Button variant="outlined" style={{ marginLeft: "6px", width: "max-content", color: "#0a0f1c", borderColor: "#afafae" }}>
+            <Button
+              variant="outlined"
+              style={{
+                marginLeft: "6px",
+                width: "max-content",
+                color: "#0a0f1c",
+                borderColor: "#afafae",
+              }}
+            >
               <ZoomInIcon />
-              <Typography fontSize="17px" marginLeft="3px">Расширенный поиск</Typography>
+              <Typography fontSize="17px" marginLeft="3px">
+                Расширенный поиск
+              </Typography>
             </Button>
           </NavLink>
           <NavLink to={`/rental-search/flats?${queryParams}`}>
-            <Button variant="contained" style={{ marginRight: "6px", width: "max-content", color: "#0a0f1c", backgroundColor: "#efcd6c" }}>
-              <Typography fontSize="17px" marginLeft="3px">Найти</Typography>
+            <Button
+              variant="contained"
+              color="secondary"
+              style={{ marginRight: "6px", fontSize: "17px" }}
+            >
+              Найти
             </Button>
           </NavLink>
         </Stack>
-
       </Stack>
     </div>
   );
