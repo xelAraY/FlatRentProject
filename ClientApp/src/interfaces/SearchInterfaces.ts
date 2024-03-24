@@ -53,9 +53,11 @@ export interface FilterState {
 }
 
 export interface FilterOptionsProps {
-  filters: FilterState;
   count: number | null;
-  onFiltersChange: (newFilters: Partial<FilterState>) => void;
+  onFiltersChange: (
+    newFilters: Partial<FilterState>,
+    navigate?: boolean
+  ) => void;
 }
 
 export interface PriceProps {
@@ -78,7 +80,7 @@ export interface LocationProps {
 export interface SearchProps {
   priceProps: PriceProps;
   roomsProps: RoomsProps;
-  locationsProps: LocationProps
+  locationsProps: LocationProps;
 }
 
 export interface SelectFilterProps {
@@ -98,5 +100,8 @@ export interface SwitchFilterProps {
 export interface AdditionalFiltersProps {
   additionalFilters: AdditionalFilters;
   count: number | null;
-  onFiltersChange: (newFilters: Partial<FilterState>) => void;
+  onFiltersChange: (
+    newFilters: Partial<FilterState>,
+    navigate?: boolean
+  ) => void;
 }
