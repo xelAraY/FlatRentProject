@@ -38,7 +38,7 @@ public class HomeController : ControllerBase
   }
 
   [HttpGet("get-by-preferences")]
-  public async Task<IActionResult> GetRecentRentObjectsByPreferences([FromQuery] List<string> preferences)
+  public async Task<IActionResult> GetRecentRentObjectsByPreferences([FromQuery] string preferences)
   {
     try
     {

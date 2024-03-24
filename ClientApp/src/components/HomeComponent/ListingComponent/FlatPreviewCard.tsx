@@ -102,9 +102,15 @@ export const FlatPreviewCard = ({ rentInformation, keyNumber }: CardProps) => {
           </StyledImageGalery>
         </Stack>
         <CardContent>
-          <Typography gutterBottom variant="h6" fontWeight="600">
-            {rentInformation.rentObject.rentPrice} {rentInformation.currency}
-          </Typography>
+          <Stack flexDirection="row" alignItems="center">
+            <Typography gutterBottom variant="h6" fontWeight="600">
+              {bynPrice} р./мес.&nbsp;
+            </Typography>
+            <Typography gutterBottom variant="body2" fontWeight="400">
+              ≈{rentInformation.rentObject.rentPrice} {rentInformation.currency}
+              /мес.
+            </Typography>
+          </Stack>
           <Stack flexDirection="row" flexWrap="wrap" gap="0.5rem">
             <Typography variant="subtitle2">
               <b>{rentInformation.rentObject.roomsCount}</b>&nbsp;комн.

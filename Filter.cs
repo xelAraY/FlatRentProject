@@ -83,26 +83,51 @@ public static class Filter
   public static IQueryable<RentObject> ApplyRangeFilter(
     IQueryable<RentObject> rentObjectsQuery,
     string propertyName,
-    int minValue,
-    int maxValue)
+    int? valueFrom,
+    int? valueTo)
   {
-    return rentObjectsQuery
-      .Where(ro => EF.Property<int>(ro, propertyName) >= minValue && EF.Property<int>(ro, propertyName) <= maxValue);
+    if (valueFrom.HasValue)
+    {
+      rentObjectsQuery = rentObjectsQuery.Where(ro => EF.Property<int>(ro, propertyName) >= valueFrom);
+    }
+    
+    if (valueTo.HasValue)
+    {
+      rentObjectsQuery = rentObjectsQuery.Where(ro => EF.Property<int>(ro, propertyName) <= valueTo);
+    }
+
+    return rentObjectsQuery;
   }
 
   public static IQueryable<RentObject> ApplyStringFilter(
     IQueryable<RentObject> rentObjectsQuery,
     string propertyName,
-    string comparisonValue)
+    string? characteristicTypes)
   {
+    if (string.IsNullOrWhiteSpace(characteristicTypes))
+    {
+      return rentObjectsQuery;
+    }
+
+    var characteristicTypesArray = characteristicTypes.Split(',');
+
     return rentObjectsQuery
-      .Where(ro => EF.Property<string>(ro, propertyName) == comparisonValue);
+      .Where(ro => characteristicTypesArray.Contains(EF.Property<string>(ro, propertyName)));
   }
 
   public static IQueryable<RentObject> ApplyPreferenceFilter(
     IQueryable<RentObject> rentObjectsQuery, ApplicationDbContext _context,
-    List<string> preferences)
+    string? preferencesStr)
   {
+    if (string.IsNullOrWhiteSpace(preferencesStr))
+    {
+      return rentObjectsQuery;
+    }
+
+    List<string> preferences = preferencesStr.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                .Select(value => value.Trim())
+                                .ToList();
+
     if (preferences != null && preferences.Any())
     {
       List<string?> decodedPreferences = preferences.Select(WebUtility.UrlDecode).ToList();
@@ -143,7 +168,60 @@ public static class Filter
     return rentObjectsQuery;
   }
 
-  public static IQueryable<RentObject> ApplyNumberOfRoomsFilter(IQueryable<RentObject> query, string numberOfRooms)
+  public static IQueryable<RentObject> ApplyApplianceFilter(
+    IQueryable<RentObject> rentObjectsQuery, ApplicationDbContext _context,
+    string? applianceStr)
+  {
+    if (string.IsNullOrWhiteSpace(applianceStr))
+    {
+      return rentObjectsQuery;
+    }
+
+    List<string> appliances = applianceStr.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                .Select(value => value.Trim())
+                                .ToList();
+
+    if (appliances != null && appliances.Any())
+    {
+      List<string?> decodedAppliances = appliances.Select(WebUtility.UrlDecode).ToList();
+
+      var filteredRentObjectsQuery = rentObjectsQuery
+          .Join(
+              _context.RentObjectAppliances,
+              ro => ro.RentObjId,
+              roa => roa.RentObjId,
+              (ro, roa) => new { RentObject = ro, RentObjectAppliances = roa }
+          )
+          .Join(
+              _context.Appliances,
+              joined => joined.RentObjectAppliances.ApplianceId,
+              appliance => appliance.Id,
+              (joined, appliance) => new { RentObject = joined.RentObject, ApplianceName = appliance.Name }
+          )
+          .Where(joined => decodedAppliances.Contains(joined.ApplianceName));
+
+      // Группируем объявления по их идентификаторам и подсчитываем количество совпадающих предпочтений
+      var groupedRentObjects = filteredRentObjectsQuery
+          .GroupBy(joined => joined.RentObject.RentObjId)
+          .Select(group => new
+          {
+            RentObjId = group.Key,
+            MatchingAppliancesCount = group.Count()
+          });
+
+      // Фильтруем объявления, где количество совпадающих предпочтений равно общему количеству предпочтений в запросе
+      var requiredMatchingCount = appliances.Count;
+      var matchingRentObjectsIds = groupedRentObjects
+          .Where(group => group.MatchingAppliancesCount == requiredMatchingCount)
+          .Select(group => group.RentObjId);
+
+      // Используем идентификаторы для фильтрации исходных объявлений
+      rentObjectsQuery = rentObjectsQuery.Where(ro => matchingRentObjectsIds.Contains(ro.RentObjId));
+    }
+    return rentObjectsQuery;
+  }
+
+  public static IQueryable<RentObject> ApplyNumberOfRoomsFilter(IQueryable<RentObject> query, string? numberOfRooms)//
   {
     if (string.IsNullOrWhiteSpace(numberOfRooms))
     {
@@ -155,7 +233,7 @@ public static class Filter
     return query.Where(ro => roomsArray.Contains(ro.RoomsCount));
   }
 
-  public static IQueryable<RentObject> ApplyLocationsFilter(IQueryable<RentObject> query, ApplicationDbContext context, string locations)
+  public static IQueryable<RentObject> ApplyLocationsFilter(IQueryable<RentObject> query, ApplicationDbContext context, string? locations)//
   {
     if (string.IsNullOrWhiteSpace(locations))
     {
@@ -199,7 +277,17 @@ public static class Filter
         .Select(joined => joined.RentObject);
   }
 
+  public static IQueryable<RentObject> ApplyFurnitureFilter(IQueryable<RentObject> query, bool? furniture)
+  {
+    if (!furniture.HasValue)
+    {
+      return query;
+    }
 
+    string comparisonValue = furniture.GetValueOrDefault() ? "Есть" : "Нету";
+
+    return query.Where(ro => ro.Furniture == comparisonValue);
+  }
 
   private static decimal ConvertToBYN(decimal? price, string currencyType)
   {

@@ -1,13 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.EntityFrameworkCore;
-using System.Net;
 
 namespace FlatRent.Controllers;
 
@@ -46,43 +37,18 @@ public class SearchController : ControllerBase
       rentObjectsQuery = Filter.ApplyNumberOfRoomsFilter(rentObjectsQuery, filters.NumberOfRooms);
       rentObjectsQuery = Filter.ApplyLocationsFilter(rentObjectsQuery, _context, filters.Locations);
       rentObjectsQuery = Filter.ApplyPriceFilter(rentObjectsQuery, _context, filters.MinPrice, filters.MaxPrice, filters.CurrencyType);
+      rentObjectsQuery = Filter.ApplyRangeFilter(rentObjectsQuery, "FloorNumber", filters.FloorFrom, filters.FloorTo);
+      rentObjectsQuery = Filter.ApplyRangeFilter(rentObjectsQuery, "TotalArea", filters.TotalAreaFrom, filters.TotalAreaTo);
+      rentObjectsQuery = Filter.ApplyRangeFilter(rentObjectsQuery, "LivingArea", filters.LivingAreaFrom, filters.LivingAreaTo);
+      rentObjectsQuery = Filter.ApplyRangeFilter(rentObjectsQuery, "KitchenArea", filters.KitchenAreaFrom, filters.KitchenAreaTo);
+      rentObjectsQuery = Filter.ApplyStringFilter(rentObjectsQuery, "Bathroom", filters.BathroomType);
+      rentObjectsQuery = Filter.ApplyStringFilter(rentObjectsQuery, "Balcony", filters.BalconyType);
+      rentObjectsQuery = Filter.ApplyStringFilter(rentObjectsQuery, "RentalPeriod", filters.RentalPeriod);
+      rentObjectsQuery = Filter.ApplyStringFilter(rentObjectsQuery, "Prepayment", filters.Prepayment);
+      rentObjectsQuery = Filter.ApplyPreferenceFilter(rentObjectsQuery, _context, filters.Preferences);
+      rentObjectsQuery = Filter.ApplyApplianceFilter(rentObjectsQuery, _context, filters.Appliances);
+      rentObjectsQuery = Filter.ApplyFurnitureFilter(rentObjectsQuery, filters.Furniture);
       var result = await Filter.GetRecentRentObjectsCommonQuery(rentObjectsQuery, _context, filters.ShowData);
-      return Ok(result);
-    }
-    catch (Exception ex)
-    {
-      return BadRequest(new { Message = $"Ошибка при получении последних объявлений: {ex.Message}" });
-    }
-  }
-
-  [HttpGet("get-by-total-area")]
-  public async Task<IActionResult> GetRecentRentObjectsByLivingArea([FromQuery] string field, int minArea, int maxArea)
-  {
-    try
-    {
-      var rentObjectsQuery = _context.RentObjects.AsQueryable();
-      rentObjectsQuery = Filter.ApplyRangeFilter(rentObjectsQuery, field, minArea, maxArea);
-      var result = await Filter.GetRecentRentObjectsCommonQuery(rentObjectsQuery, _context, takeCount: 4);
-      return Ok(result);
-    }
-    catch (Exception ex)
-    {
-      return BadRequest(new { Message = $"Ошибка при получении последних объявлений: {ex.Message}" });
-    }
-  }
-
-  [HttpGet("get-by-preferences")]
-  public async Task<IActionResult> GetRecentRentObjectsByPreferences([FromQuery] List<string> preferences)
-  {
-    try
-    {
-      var rentObjectsQuery = _context.RentObjects.AsQueryable();
-
-      // string decodedString = WebUtility.UrlDecode(preferences);
-      // var rentObjectsQueryWithPets = _context.RentObjects
-      //     .Where(ro => ro.Preferences == decodedString);
-      rentObjectsQuery = Filter.ApplyPreferenceFilter(rentObjectsQuery, _context, preferences);
-      var result = await Filter.GetRecentRentObjectsCommonQuery(rentObjectsQuery, _context);
       return Ok(result);
     }
     catch (Exception ex)

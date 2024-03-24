@@ -70,4 +70,7 @@ public class RentObject
 
   [Column("updated_at")]
   public DateTime UpdatedAt { get; set; }
+
+  [Column("rental_period")]
+  public string RentalPeriod { get; set; }
 }
