@@ -10,6 +10,7 @@
     "bootstrap": "^5.2.0",
     "http-proxy-middleware": "^2.0.6",
     "jquery": "^3.6.0",
+    "lodash": "^4.17.21",
     "merge": "^2.1.1",
     "oidc-client": "^1.11.5",
     "react": "^18.2.0",
@@ -35,6 +36,7 @@
     "workbox-streams": "^6.5.4"
   },
   "devDependencies": {
+    "@types/lodash": "^4.17.0",
     "@types/react": "^18.2.37",
     "@types/react-image-gallery": "^1.2.4",
     "ajv": "^8.11.0",

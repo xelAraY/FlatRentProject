@@ -1,20 +1,68 @@
 import { Button } from "src/shared";
 import React from "react";
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
-import { Box, Dialog, DialogActions, DialogContent, DialogTitle, Stack, Typography } from "@mui/material";
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import {
+  Box,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { RangeFilter } from "./RangeFilter";
 import { SelectFilter } from "./SelectFilter";
 import { SwitchFilter } from "./SwitchFilter";
-import { AdditionalFiltersProps, FilterState, RangeValue } from "src/interfaces/SearchInterfaces";
+import {
+  AdditionalFiltersProps,
+  FilterState,
+  RangeValue,
+} from "src/interfaces/SearchInterfaces";
 
-export const AdditionalFilters = ({ additionalFilters, count, onFiltersChange }: AdditionalFiltersProps) => {
+export const AdditionalFilters = ({
+  additionalFilters,
+  count,
+  onFiltersChange: onFiltersChangeProps,
+}: AdditionalFiltersProps) => {
   const [open, setOpen] = React.useState(false);
   const bathroomOptions = ["Раздельный", "Совмещенный", "2 и более"];
   const balconyOptions = ["Есть", "Нет", "Лоджия"];
-  const appliancesOptions = ["Телевизор", "Холодильник", "Стиральная машина", "Посудомоечная машина", "Кондиционер", "Свч-печь", "Душевая кабина", "Интернет", "Мелкая бытовая техника"];
-  const rentalPeriodOptions = ["Месяц", "2 Месяца", "3 Месяца", "Пол года", "Год", "Длительный"];
-  const preferencesOptions = ["Можно с животными", "Студентам", "Семье", "Не курящим"];
-  const prepaymentOptions = ["Без предоплаты", "Месяц", "2 Месяца", "3 Месяца", "Пол года"];
+  const appliancesOptions = [
+    "Телевизор",
+    "Холодильник",
+    "Стиральная машина",
+    "Посудомоечная машина",
+    "Кондиционер",
+    "Свч-печь",
+    "Душевая кабина",
+    "Интернет",
+    "Мелкая бытовая техника",
+  ];
+  const rentalPeriodOptions = [
+    "Месяц",
+    "2 Месяца",
+    "3 Месяца",
+    "Пол года",
+    "Год",
+    "Длительный",
+  ];
+  const preferencesOptions = [
+    "Можно с животными",
+    "Студентам",
+    "Семье",
+    "Не курящим",
+  ];
+  const prepaymentOptions = [
+    "Без предоплаты",
+    "Месяц",
+    "2 Месяца",
+    "3 Месяца",
+    "Пол года",
+  ];
+
+  const onFiltersChange = (filters: Partial<FilterState>) => {
+    onFiltersChangeProps(filters, false);
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -40,7 +88,7 @@ export const AdditionalFilters = ({ additionalFilters, count, onFiltersChange }:
       showData: false,
     };
     onFiltersChange(newFilters);
-  }
+  };
 
   const handleBalconyFilterChange = (options: string[]) => {
     const newFilters: Partial<FilterState> = {
@@ -48,7 +96,7 @@ export const AdditionalFilters = ({ additionalFilters, count, onFiltersChange }:
       showData: false,
     };
     onFiltersChange(newFilters);
-  }
+  };
 
   const handleAppliancesFilterChange = (options: string[]) => {
     const newFilters: Partial<FilterState> = {
@@ -56,7 +104,7 @@ export const AdditionalFilters = ({ additionalFilters, count, onFiltersChange }:
       showData: false,
     };
     onFiltersChange(newFilters);
-  }
+  };
 
   const handleRentalPeriodFilterChange = (options: string[]) => {
     const newFilters: Partial<FilterState> = {
@@ -64,23 +112,23 @@ export const AdditionalFilters = ({ additionalFilters, count, onFiltersChange }:
       showData: false,
     };
     onFiltersChange(newFilters);
-  }
+  };
 
   const handlePreferencesFilterChange = (options: string[]) => {
     const newFilters: Partial<FilterState> = {
-      appliances: options,
+      preferences: options,
       showData: false,
     };
     onFiltersChange(newFilters);
-  }
+  };
 
   const handlePrepaymentFilterChange = (options: string[]) => {
     const newFilters: Partial<FilterState> = {
-      appliances: options,
+      prepayment: options,
       showData: false,
     };
     onFiltersChange(newFilters);
-  }
+  };
 
   const handleFurnitureCheck = (option: boolean) => {
     const newFilters: Partial<FilterState> = {
@@ -88,7 +136,7 @@ export const AdditionalFilters = ({ additionalFilters, count, onFiltersChange }:
       showData: false,
     };
     onFiltersChange(newFilters);
-  }
+  };
 
   const handlePhotosCheck = (option: boolean) => {
     const newFilters: Partial<FilterState> = {
@@ -96,14 +144,15 @@ export const AdditionalFilters = ({ additionalFilters, count, onFiltersChange }:
       showData: false,
     };
     onFiltersChange(newFilters);
-  }
+  };
 
-  const hanaleShowData = () => {
+  const handleShowData = () => {
     const newFilters: Partial<FilterState> = {
       showData: true,
     };
-    onFiltersChange(newFilters);
-  }
+    onFiltersChangeProps(newFilters, true);
+    handleClose();
+  };
 
   const handleTotalAreaFilterChange = (option: RangeValue) => {
     const newFilters: Partial<FilterState> = {
@@ -111,7 +160,7 @@ export const AdditionalFilters = ({ additionalFilters, count, onFiltersChange }:
       showData: false,
     };
     onFiltersChange(newFilters);
-  }
+  };
 
   const handleLivingAreaFilterChange = (option: RangeValue) => {
     const newFilters: Partial<FilterState> = {
@@ -119,7 +168,7 @@ export const AdditionalFilters = ({ additionalFilters, count, onFiltersChange }:
       showData: false,
     };
     onFiltersChange(newFilters);
-  }
+  };
 
   const handleKitchenAreaFilterChange = (option: RangeValue) => {
     const newFilters: Partial<FilterState> = {
@@ -127,7 +176,7 @@ export const AdditionalFilters = ({ additionalFilters, count, onFiltersChange }:
       showData: false,
     };
     onFiltersChange(newFilters);
-  }
+  };
 
   const handleFloorFilterChange = (option: RangeValue) => {
     const newFilters: Partial<FilterState> = {
@@ -135,69 +184,158 @@ export const AdditionalFilters = ({ additionalFilters, count, onFiltersChange }:
       showData: false,
     };
     onFiltersChange(newFilters);
-  }
+  };
 
   return (
     <React.Fragment>
       <Button
         variant="outlined"
         size="large"
-        color='info'
+        color="info"
         onClick={handleClickOpen}
-        style={{ border: '1px solid rgba(0, 0, 0, 0.23)', justifyContent: "space-between", height: "56px" }}
+        style={{
+          border: "1px solid rgba(0, 0, 0, 0.23)",
+          justifyContent: "space-between",
+          height: "56px",
+        }}
       >
         <FilterAltIcon style={{ color: "#616467" }} />
-        <Typography fontWeight={600} color={"black"}>Дополнительные фильтры</Typography>
+        <Typography fontWeight={600} color={"black"}>
+          Дополнительные фильтры
+        </Typography>
       </Button>
       <Dialog
         maxWidth={"lg"}
         fullWidth
         open={open}
         onClose={handleClose}
-        scroll={'paper'}
+        scroll={"paper"}
       >
         <DialogTitle id="scroll-dialog-title">
           <Box>
-            <Typography variant="h5"><b>Дополнительные фильтры</b></Typography>
+            <Typography variant="h5">
+              <b>Дополнительные фильтры</b>
+            </Typography>
           </Box>
         </DialogTitle>
         <DialogContent dividers>
           <Stack>
             <Stack marginBottom={3}>
-              <Typography variant="h6" fontWeight={600}>Квартира</Typography>
-              <RangeFilter fieldsName="Этаж" initValue={additionalFilters.floor} onFilterChange={handleFloorFilterChange} />
-              <Stack flexDirection={"row"} flexWrap={"wrap"} justifyContent={"space-between"}>
-                <RangeFilter fieldsName="Площадь общая, м²" initValue={additionalFilters.totalArea} onFilterChange={handleTotalAreaFilterChange} />
-                <RangeFilter fieldsName="Площадь жилая, м²" initValue={additionalFilters.livingArea} onFilterChange={handleLivingAreaFilterChange} />
-                <RangeFilter fieldsName="Площадь кухни, м²" initValue={additionalFilters.kitchenArea} onFilterChange={handleKitchenAreaFilterChange} />
+              <Typography variant="h6" fontWeight={600}>
+                Квартира
+              </Typography>
+              <RangeFilter
+                fieldsName="Этаж"
+                initValue={additionalFilters.floor}
+                onFilterChange={handleFloorFilterChange}
+              />
+              <Stack
+                flexDirection={"row"}
+                flexWrap={"wrap"}
+                justifyContent={"space-between"}
+              >
+                <RangeFilter
+                  fieldsName="Площадь общая, м²"
+                  initValue={additionalFilters.totalArea}
+                  onFilterChange={handleTotalAreaFilterChange}
+                />
+                <RangeFilter
+                  fieldsName="Площадь жилая, м²"
+                  initValue={additionalFilters.livingArea}
+                  onFilterChange={handleLivingAreaFilterChange}
+                />
+                <RangeFilter
+                  fieldsName="Площадь кухни, м²"
+                  initValue={additionalFilters.kitchenArea}
+                  onFilterChange={handleKitchenAreaFilterChange}
+                />
               </Stack>
               <Stack>
-                <SelectFilter groupName="Санузел" options={bathroomOptions} selectedOptions={additionalFilters.bathroom} multiSelect onFilterChange={handleBathroomFilterChange} />
-                <SelectFilter groupName="Балкон" options={balconyOptions} selectedOptions={additionalFilters.balcony} multiSelect onFilterChange={handleBalconyFilterChange} />
-                <SwitchFilter switchName="Мебель" isChecked={additionalFilters.furniture} onFilterChange={handleFurnitureCheck} />
-                <SelectFilter groupName="Удобства" options={appliancesOptions} selectedOptions={additionalFilters.appliances} multiSelect onFilterChange={handleAppliancesFilterChange} />
+                <SelectFilter
+                  groupName="Санузел"
+                  options={bathroomOptions}
+                  selectedOptions={additionalFilters.bathroom}
+                  multiSelect
+                  onFilterChange={handleBathroomFilterChange}
+                />
+                <SelectFilter
+                  groupName="Балкон"
+                  options={balconyOptions}
+                  selectedOptions={additionalFilters.balcony}
+                  multiSelect
+                  onFilterChange={handleBalconyFilterChange}
+                />
+                <SwitchFilter
+                  switchName="Мебель"
+                  isChecked={additionalFilters.furniture}
+                  onFilterChange={handleFurnitureCheck}
+                />
+                <SelectFilter
+                  groupName="Удобства"
+                  options={appliancesOptions}
+                  selectedOptions={additionalFilters.appliances}
+                  multiSelect
+                  onFilterChange={handleAppliancesFilterChange}
+                />
               </Stack>
             </Stack>
             <Stack>
-              <Typography variant="h6" fontWeight={600}>Дополнительно</Typography>
-              <SelectFilter groupName="Срок аренды" options={rentalPeriodOptions} selectedOptions={[additionalFilters.rentalPeriod]} multiSelect={false} onFilterChange={handleRentalPeriodFilterChange} />
-              <SelectFilter groupName="Предпочтения" options={preferencesOptions} selectedOptions={additionalFilters.preferences} multiSelect onFilterChange={handlePreferencesFilterChange} />
-              <SelectFilter groupName="Предоплата" options={prepaymentOptions} selectedOptions={additionalFilters.prepayment} multiSelect onFilterChange={handlePrepaymentFilterChange} />
-              <SwitchFilter switchName="С фото" isChecked={additionalFilters.withPhotos} onFilterChange={handlePhotosCheck} />
+              <Typography variant="h6" fontWeight={600}>
+                Дополнительно
+              </Typography>
+              <SelectFilter
+                groupName="Срок аренды"
+                options={rentalPeriodOptions}
+                selectedOptions={[additionalFilters.rentalPeriod]}
+                multiSelect={false}
+                onFilterChange={handleRentalPeriodFilterChange}
+              />
+              <SelectFilter
+                groupName="Предпочтения"
+                options={preferencesOptions}
+                selectedOptions={additionalFilters.preferences}
+                multiSelect
+                onFilterChange={handlePreferencesFilterChange}
+              />
+              <SelectFilter
+                groupName="Предоплата"
+                options={prepaymentOptions}
+                selectedOptions={additionalFilters.prepayment}
+                multiSelect
+                onFilterChange={handlePrepaymentFilterChange}
+              />
+              <SwitchFilter
+                switchName="С фото"
+                isChecked={additionalFilters.withPhotos}
+                onFilterChange={handlePhotosCheck}
+              />
             </Stack>
           </Stack>
-
         </DialogContent>
         <DialogActions style={{ padding: "16px 24px" }}>
-          <Stack flexDirection="row" width="100%" justifyContent="space-between">
+          <Stack
+            flexDirection="row"
+            width="100%"
+            justifyContent="space-between"
+          >
             <Button>Сбросить</Button>
-            <Button onClick={hanaleShowData} variant="contained" style={{ marginRight: "6px", width: "max-content", color: "#0a0f1c", backgroundColor: "#efcd6c" }}>
-              <Typography fontSize="17px" marginLeft="3px">Показать <b>{count}</b></Typography>
+            <Button
+              onClick={handleShowData}
+              variant="contained"
+              style={{
+                marginRight: "6px",
+                width: "max-content",
+                color: "#0a0f1c",
+                backgroundColor: "#efcd6c",
+              }}
+            >
+              <Typography fontSize="17px" marginLeft="3px">
+                Показать <b>{count}</b>
+              </Typography>
             </Button>
           </Stack>
-
         </DialogActions>
       </Dialog>
     </React.Fragment>
   );
-}
+};
