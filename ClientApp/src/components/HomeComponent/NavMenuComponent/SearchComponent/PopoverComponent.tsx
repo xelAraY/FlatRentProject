@@ -3,7 +3,12 @@ import { Button } from "src/shared";
 import { useState } from "react";
 import { FilterState, PriceProps } from "src/interfaces/SearchInterfaces";
 
-export const PopoverComponent = ({ price, currentCurrency, onFiltersChange, isHome }: PriceProps) => {
+export const PopoverComponent = ({
+  price,
+  currentCurrency,
+  onFiltersChange,
+  isHome,
+}: PriceProps) => {
   const [value, setValue] = useState<number[]>([price.min, price.max]);
 
   const currencies = [
@@ -49,12 +54,12 @@ export const PopoverComponent = ({ price, currentCurrency, onFiltersChange, isHo
         const newValue = [...prevValue];
         newValue[0] = minPrice;
         return newValue;
-      })
+      });
     }
   };
 
   const handleMaxPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const maxPrice = Number(event.target.value)
+    const maxPrice = Number(event.target.value);
     if (!isNaN(maxPrice)) {
       const newFilters: Partial<FilterState> = {
         maxPrice: maxPrice,
@@ -65,7 +70,7 @@ export const PopoverComponent = ({ price, currentCurrency, onFiltersChange, isHo
         const newValue = [...prevValue];
         newValue[1] = maxPrice;
         return newValue;
-      })
+      });
     }
   };
 
@@ -80,7 +85,10 @@ export const PopoverComponent = ({ price, currentCurrency, onFiltersChange, isHo
               key={option.value}
               value={option.value}
               onClick={handleClickCurrBtn}
-              style={{ ...(option.value === currentCurrency ? selectedBtn : {}), ...{ color: "black" } }}
+              style={{
+                ...(option.value === currentCurrency ? selectedBtn : {}),
+                ...{ color: "black" },
+              }}
               className="currency-btn"
             >
               {option.label}
@@ -89,18 +97,10 @@ export const PopoverComponent = ({ price, currentCurrency, onFiltersChange, isHo
         })}
       </Stack>
       <Stack flexDirection="row" spacing={2} useFlexGap>
-        <Input
-          value={price.min}
-          onChange={handleMinPriceChange}
-          key={"min"}
-        />
-        <Input
-          value={price.max}
-          onChange={handleMaxPriceChange}
-          key={"max"}
-        />
+        <Input value={price.min} onChange={handleMinPriceChange} key={"min"} />
+        <Input value={price.max} onChange={handleMaxPriceChange} key={"max"} />
       </Stack>
-      {isHome &&
+      {isHome && (
         <Stack flexDirection={"row"}>
           <Slider
             value={value}
@@ -111,7 +111,7 @@ export const PopoverComponent = ({ price, currentCurrency, onFiltersChange, isHo
             valueLabelFormat={valueText}
           />
         </Stack>
-      }
+      )}
     </Stack>
   );
 };
