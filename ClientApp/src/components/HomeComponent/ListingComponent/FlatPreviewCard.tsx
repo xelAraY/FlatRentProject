@@ -17,6 +17,7 @@ import { StyledImageGalery } from "./styled";
 interface CardProps {
   rentInformation: RentObjectInformation;
   keyNumber: number;
+  onCardClick: (flatId: number) => void;
 }
 
 interface ForPhotos {
@@ -26,7 +27,11 @@ interface ForPhotos {
   originalWidth?: number;
 }
 
-export const FlatPreviewCard = ({ rentInformation, keyNumber }: CardProps) => {
+export const FlatPreviewCard = ({
+  rentInformation,
+  keyNumber,
+  onCardClick,
+}: CardProps) => {
   const isMedium = useMediaQuery((theme: any) =>
     theme.breakpoints.between("xl", "2000")
   );
@@ -67,7 +72,7 @@ export const FlatPreviewCard = ({ rentInformation, keyNumber }: CardProps) => {
   return (
     <Card key={keyNumber} style={{ width: "100%", minWidth: "300px" }}>
       <CardActionArea
-        onClick={() => console.log("show details")}
+        onClick={() => onCardClick(rentInformation.rentObject.rentObjId)}
         disableTouchRipple
       >
         <Stack>

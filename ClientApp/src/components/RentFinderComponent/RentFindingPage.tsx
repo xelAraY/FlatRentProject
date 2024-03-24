@@ -95,7 +95,7 @@ export const RentFindingPage = () => {
       const queryParams = paramsArray.join("&");
       // const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
       // delay(5000);
-      withNavigate && navigate(`/rental-search/flats?${queryParams}`);
+      withNavigate && navigate(`/flats?${queryParams}`);
       const response = await fetch(
         `api/search/filter${queryParams ? "?" + queryParams : ""}${
           (queryParams ? "&" : "?") + `showData=${showData}`
