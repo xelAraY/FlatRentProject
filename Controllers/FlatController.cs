@@ -22,11 +22,53 @@ public class FlatController : ControllerBase
     _context = context;
   }
 
-  [HttpGet("/{rentObjectId}/details")]
+  [HttpGet("{rentObjectId}")]
   public async Task<IActionResult> GetRentObjectDetails(int rentObjectId)
   {
     try
     {
+      // Выборка общей информации об объявлении
+      var query = _context.RentObjects.Where(ro => ro.RentObjId == rentObjectId);
+      var rentObject = await query
+          .Join(
+              _context.Users,
+              ro => ro.OwnerId,
+              user => user.Id,
+              (ro, user) => new { RentObject = ro, Owner = user }
+          )
+          .Join(
+              _context.Currencies,
+              result => result.RentObject.CurrencyId,
+              currency => currency.CurrId,
+              (result, currency) => new { result.RentObject, result.Owner, Currency = currency }
+          )
+          .Join(
+              _context.Addresses,
+              result => result.RentObject.AddressId,
+              address => address.AddrId,
+              (result, address) => new { result.RentObject, result.Owner, result.Currency, Address = address }
+          )
+          .Select(result => new
+          {
+            result.RentObject,
+            Currency = result.Currency.CurrCode,
+            Owner = new
+            {
+              result.Owner.Name,
+              result.Owner.FullName,
+              result.Owner.PhoneNumber,
+              result.Owner.RegistrationDate,
+              result.Owner.LastLogin
+            },
+            result.Address
+          })
+          .ToListAsync();
+
+      var rentObjectIds = rentObject.Select(ro => ro.RentObject.RentObjId);
+      var photos = await _context.Photos
+          .Where(photo => rentObjectIds.Contains(photo.RentObjId))
+          .ToListAsync();
+
       // Выборка удобств
       var rentObjectAppliances = await _context.RentObjectAppliances
             .Where(roa => roa.RentObjId == rentObjectId)
@@ -62,12 +104,19 @@ public class FlatController : ControllerBase
           .Where(ai => addInfIds.Contains(ai.Id))
           .Select(ai => ai.Name)
           .ToListAsync();
-      var result = new
+
+      var result = rentObject.Select(result => new
       {
+        result.RentObject,
+        result.Currency,
+        result.Owner,
+        result.Address,
+        Photos = photos.Where(photo => photo.RentObjId == result.RentObject.RentObjId).Select(photo => photo.Url),
         Appliances = appliances,
         Preferences = preferences,
         AdditionalInformations = additionalInformations
-      };
+      });
+
       return Ok(result);
     }
     catch (Exception ex)
