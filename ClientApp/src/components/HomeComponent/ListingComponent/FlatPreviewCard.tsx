@@ -11,8 +11,7 @@ import {
 import React from "react";
 import { RentObjectInformation } from "src/interfaces/RentObj";
 import "react-image-gallery/styles/css/image-gallery.css";
-import ImageGallery from "react-image-gallery";
-import { StyledImageGalery } from "./styled";
+import { ImageGalleryStyled } from "src/shared";
 
 interface CardProps {
   rentInformation: RentObjectInformation;
@@ -76,35 +75,27 @@ export const FlatPreviewCard = ({
         disableTouchRipple
       >
         <Stack>
-          <StyledImageGalery
-            justifyContent="center"
-            alignItems="center"
-            sx={{ bgcolor: rentInformation?.photos.length ? "black" : "none" }}
-          >
-            {rentInformation?.photos.length ? (
-              <ImageGallery
-                items={images}
-                showNav={false}
-                showThumbnails={false}
-                autoPlay={false}
-                showPlayButton={false}
-                showFullscreenButton={false}
-                showBullets={true}
-                lazyLoad={true}
-                infinite={false}
-                isRTL={false}
-              />
-            ) : (
-              <img
-                src={
-                  "https://realt.by/_next/static/media/no-photo.850f218e.svg"
-                }
-                alt="photo_preview"
-                height={heigth}
-                width="100%"
-              />
-            )}
-          </StyledImageGalery>
+          {rentInformation?.photos.length ? (
+            <ImageGalleryStyled
+              items={images}
+              showNav={false}
+              showThumbnails={false}
+              autoPlay={false}
+              showPlayButton={false}
+              showFullscreenButton={false}
+              showBullets={true}
+              lazyLoad={true}
+              infinite={false}
+              isRTL={false}
+            />
+          ) : (
+            <img
+              src={"https://realt.by/_next/static/media/no-photo.850f218e.svg"}
+              alt="photo_preview"
+              height={heigth}
+              width="100%"
+            />
+          )}
         </Stack>
         <CardContent>
           <Typography gutterBottom variant="h6" fontWeight="600">

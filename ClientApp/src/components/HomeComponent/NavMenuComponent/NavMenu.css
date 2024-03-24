@@ -20,6 +20,8 @@ html {
 .nav-menu {
   background-color: white;
   padding: 20px;
+  box-shadow: 0 -6px 10px 5px rgba(0, 0, 0, 0.2);
+  position: relative;
 }
 
 .nav-menu-name {

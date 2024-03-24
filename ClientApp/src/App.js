@@ -31,7 +31,7 @@ export default class App extends Component {
             element={
               <>
                 <NavMenu />
-                <div style={{ flexGrow: 1 }}>
+                <div style={{ flexGrow: 1, background: "#f3f5f7" }}>
                   <Outlet />
                 </div>
                 <Footer />

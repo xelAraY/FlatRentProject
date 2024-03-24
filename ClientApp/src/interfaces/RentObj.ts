@@ -1,10 +1,12 @@
-
 export interface RentObjectInformation {
   rentObject: RentObject;
   currency: string;
   owner: Owner;
   address: Address;
   photos: string[];
+  appliances?: string[];
+  preferences?: string[];
+  additionalInformations?: string[];
 }
 
 interface RentObject {
@@ -24,10 +26,10 @@ interface RentObject {
   plate: string;
   addressId: number;
   rentPrice: number;
-  currId: number;//
+  currId: number; //
   prepayment: string;
   rent: string;
-  ownerId: number;//
+  ownerId: number; //
   createdAt: Date;
   updatedAt: Date;
 }
