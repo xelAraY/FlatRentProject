@@ -22,7 +22,7 @@ public class FlatController : ControllerBase
     _context = context;
   }
 
-  [HttpGet("/{rentObjectId}/details")]
+  [HttpGet("{rentObjectId}/details")]
   public async Task<IActionResult> GetRentObjectDetails(int rentObjectId)
   {
     try

@@ -20,7 +20,7 @@ export default class App extends Component {
                 contrastText: "#FFFFFF",
               },
               info: {
-                main: "#c465f5",
+                main: "#d922f4",
                 contrastText: "#FFFFFF",
               },
             },
