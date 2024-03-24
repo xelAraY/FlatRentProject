@@ -34,6 +34,8 @@ export const RentFindingPage = () => {
     showData: true,
   });
 
+  const [withNavigate, setWithNavigate] = React.useState(false);
+
   const updateFiltersAndFetchData = async () => {
     //исправить мерцание
     try {
@@ -93,7 +95,7 @@ export const RentFindingPage = () => {
       const queryParams = paramsArray.join("&");
       // const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
       // delay(5000);
-      navigate(`/rental-search/flats?${queryParams}`);
+      withNavigate && navigate(`/rental-search/flats?${queryParams}`);
       const response = await fetch(
         `api/search/filter${queryParams ? "?" + queryParams : ""}${
           (queryParams ? "&" : "?") + `showData=${showData}`
@@ -125,10 +127,14 @@ export const RentFindingPage = () => {
 
   useEffect(() => {
     updateFiltersAndFetchData();
-  }, [filters]);
+  }, [filters, withNavigate]);
 
-  const handleFiltersChange = (newFilters: Partial<FilterState>) => {
+  const handleFiltersChange = (
+    newFilters: Partial<FilterState>,
+    navigate?: boolean
+  ) => {
     setFilters((prevFilters) => ({ ...prevFilters, ...newFilters }));
+    setWithNavigate(navigate ?? true);
   };
 
   useEffect(() => {
@@ -170,11 +176,7 @@ export const RentFindingPage = () => {
       overflow="auto"
       style={{ backgroundColor: "#f3f5f7" }}
     >
-      <FilterOptions
-        filters={filters}
-        count={count}
-        onFiltersChange={handleFiltersChange}
-      />
+      <FilterOptions count={count} onFiltersChange={handleFiltersChange} />
       <Stack
         flexDirection={"column"}
         style={{ padding: "56px 56px 80px 56px" }}

@@ -1,6 +1,7 @@
 import { Stack, TextField, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { RangeValue } from "src/interfaces/SearchInterfaces";
+import { useDebounce } from "src/shared";
 
 interface RangeFilterProps {
   fieldsName: string;
@@ -8,34 +9,57 @@ interface RangeFilterProps {
   onFilterChange: (value: RangeValue) => void;
 }
 
-export const RangeFilter = ({ fieldsName, initValue, onFilterChange }: RangeFilterProps) => {
-  const [valueFrom, setValueFrom] = useState(initValue.valueFrom);
-  const [valueTo, setValueTo] = useState(initValue.valueTo);
+export const RangeFilter = ({
+  fieldsName,
+  initValue,
+  onFilterChange,
+}: RangeFilterProps) => {
+  const {
+    debounceValue: valueFrom,
+    onChange: onChangeValueFrom,
+    value: valFrom,
+  } = useDebounce<number | null>(initValue.valueFrom);
 
-  const handleValueFromChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const {
+    debounceValue: valueTo,
+    onChange: onChangeValueTo,
+    value: valTo,
+  } = useDebounce<number | null>(initValue.valueTo);
+
+  const handleValueFromChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const valueFrom = Number(event.target.value);
+    console.log(valueFrom);
     if (!isNaN(valueFrom)) {
-      setValueFrom(valueFrom);
+      onChangeValueFrom(valueFrom);
     }
-  }
+  };
 
   const handleValueToChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const valueTo = Number(event.target.value);
     if (!isNaN(valueTo)) {
-      setValueTo(valueTo);
+      onChangeValueTo(valueTo);
     }
-  }
+  };
 
   useEffect(() => {
-    onFilterChange({ valueFrom, valueTo });
+    onFilterChange({ valueFrom: Number(valueFrom), valueTo: Number(valueTo) });
   }, [valueFrom, valueTo]);
 
   return (
     <Stack gap={1} marginTop={2}>
-      <Typography variant="body1" fontWeight={600}>{fieldsName}</Typography>
-      <Stack flexDirection={"row"} alignItems={"center"} gap={2} flexWrap="wrap">
+      <Typography variant="body1" fontWeight={600}>
+        {fieldsName}
+      </Typography>
+      <Stack
+        flexDirection={"row"}
+        alignItems={"center"}
+        gap={2}
+        flexWrap="wrap"
+      >
         <TextField
-          value={valueFrom || ''}
+          value={valFrom || null}
           onChange={handleValueFromChange}
           label="От"
           variant="outlined"
@@ -43,7 +67,7 @@ export const RangeFilter = ({ fieldsName, initValue, onFilterChange }: RangeFilt
           style={{ width: "170px" }}
         />
         <TextField
-          value={valueTo || ''}
+          value={valTo || null}
           onChange={handleValueToChange}
           label="До"
           variant="outlined"
@@ -53,4 +77,4 @@ export const RangeFilter = ({ fieldsName, initValue, onFilterChange }: RangeFilt
       </Stack>
     </Stack>
   );
-}
+};
