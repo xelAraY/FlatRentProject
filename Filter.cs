@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 public static class Filter
 {
-  public static async Task<List<object>> GetRecentRentObjectsCommonQuery(IQueryable<RentObject> rentObjectsQuery, ApplicationDbContext _context, bool showData = true, int? takeCount = null)
+  public static async Task<List<object>> GetRecentRentObjectsCommonQuery(IQueryable<RentObject> rentObjectsQuery, ApplicationDbContext _context, bool showData = true, bool? withPhotos = true, int? takeCount = null)
   {
     if (!showData)
     {
@@ -73,7 +73,7 @@ public static class Filter
         result.Currency,
         result.Owner,
         result.Address,
-        Photos = photos.Where(photo => photo.RentObjId == result.RentObject.RentObjId).Select(photo => photo.Url)
+        Photos = withPhotos.GetValueOrDefault() ? photos.Where(photo => photo.RentObjId == result.RentObject.RentObjId).Select(photo => photo.Url) : []
       }).Cast<object>().ToList();
 
       return result;
@@ -260,21 +260,26 @@ public static class Filter
       return query;
     }
 
-    decimal convertedMinPrice = ConvertToBYN(minPrice, currencyType);
-    decimal convertedMaxPrice = ConvertToBYN(maxPrice, currencyType);
-
-    return query
+    var filteredQuery = query
         .Join(
             context.Currencies,
             ro => ro.CurrencyId,
             currency => currency.CurrId,
             (ro, currency) => new { RentObject = ro, Currency = currency.CurrCode }
-        )
-        .Where(joined =>
-            context.ConvertToBYN(joined.RentObject.RentPrice, joined.Currency) >= convertedMinPrice &&
-            context.ConvertToBYN(joined.RentObject.RentPrice, joined.Currency) <= convertedMaxPrice
-        )
-        .Select(joined => joined.RentObject);
+        );
+
+    if (minPrice.HasValue)
+    {
+      decimal convertedMinPrice = ConvertToBYN(minPrice, currencyType);  
+      filteredQuery = filteredQuery.Where(joined => context.ConvertToBYN(joined.RentObject.RentPrice, joined.Currency) >= convertedMinPrice);
+    }
+
+    if (maxPrice.HasValue){
+      decimal convertedMaxPrice = ConvertToBYN(maxPrice, currencyType);  
+      filteredQuery = filteredQuery.Where(joined => context.ConvertToBYN(joined.RentObject.RentPrice, joined.Currency) <= convertedMaxPrice);
+    }
+    
+    return filteredQuery.Select(joined => joined.RentObject);    
   }
 
   public static IQueryable<RentObject> ApplyFurnitureFilter(IQueryable<RentObject> query, bool? furniture)
@@ -284,7 +289,7 @@ public static class Filter
       return query;
     }
 
-    string comparisonValue = furniture.GetValueOrDefault() ? "Есть" : "Нету";
+    string comparisonValue = furniture.GetValueOrDefault() ? "Есть" : "Нет";
 
     return query.Where(ro => ro.Furniture == comparisonValue);
   }

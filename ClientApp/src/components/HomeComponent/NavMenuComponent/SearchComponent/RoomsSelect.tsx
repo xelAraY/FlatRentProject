@@ -1,9 +1,13 @@
-import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material";
+import {
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+} from "@mui/material";
 import { FilterState, RoomsProps } from "src/interfaces/SearchInterfaces";
 
 export const RoomsSelect = ({ rooms, onFiltersChange }: RoomsProps) => {
-
-
   const handleRoomsCountChange = (event: SelectChangeEvent<typeof rooms>) => {
     const {
       target: { value },
@@ -22,7 +26,9 @@ export const RoomsSelect = ({ rooms, onFiltersChange }: RoomsProps) => {
 
   return (
     <FormControl sx={{ m: 1, minWidth: 300 }} variant="outlined">
-      <InputLabel style={{ fontWeight: "600", color: "black" }}>Комнат</InputLabel>
+      <InputLabel style={{ fontWeight: "600", color: "black" }}>
+        Комнат
+      </InputLabel>
       <Select
         value={rooms}
         onChange={handleRoomsCountChange}
@@ -32,22 +38,29 @@ export const RoomsSelect = ({ rooms, onFiltersChange }: RoomsProps) => {
         MenuProps={{
           PaperProps: {
             style: {
-              width: '300px'
-            }
+              width: "300px",
+            },
           },
           MenuListProps: {
             sx: {
-              display: 'flex',
-              flexWrap: 'wrap',
-              justifyContent: 'space-between',
-              padding: '8px'
+              display: "flex",
+              flexWrap: "wrap",
+              justifyContent: "space-between",
+              padding: "8px",
             },
-          }
+          },
         }}
       >
-        {roomsAmount.map((amount, index) =>
-          <MenuItem style={{ borderRadius: "4px" }} value={amount} key={index}>{amount}</MenuItem>
-        )}
+        {roomsAmount.map((amount, index) => (
+          <MenuItem
+            style={{ borderRadius: "4px" }}
+            value={amount[0]}
+            key={index}
+          >
+            {amount}
+          </MenuItem>
+        ))}
       </Select>
-    </FormControl>);
-}
+    </FormControl>
+  );
+};

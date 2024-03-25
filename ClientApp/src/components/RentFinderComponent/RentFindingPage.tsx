@@ -29,12 +29,23 @@ export const RentFindingPage = () => {
     rentalPeriod: "",
     preferences: [],
     prepayment: [],
-    furniture: true,
-    withPhotos: true,
+    furniture: false,
+    withPhotos: false,
     showData: true,
   });
 
   const [withNavigate, setWithNavigate] = React.useState(false);
+
+  const fetchAllData = async () => {
+    const response = await fetch(`api/search/recent`);
+    const data = await response.json();
+
+    if (response.ok) {
+      filters.showData ? setRentObjects(data) : setCount(data[0].count);
+    } else {
+      console.error("Ошибка при получении данных", data.message);
+    }
+  };
 
   const updateFiltersAndFetchData = async () => {
     //исправить мерцание
@@ -46,15 +57,11 @@ export const RentFindingPage = () => {
         paramsArray.push(`numberOfRooms=${filters.rooms.join(",")}`);
       filters.locations.length > 0 &&
         paramsArray.push(`locations=${filters.locations.join(",")}`);
-      if (filters.minPrice !== filters.maxPrice) {
-        paramsArray.push(
-          `minPrice=${Math.min(filters.minPrice, filters.maxPrice)}`
-        );
-        paramsArray.push(
-          `maxPrice=${Math.max(filters.minPrice, filters.maxPrice)}`
-        );
-        paramsArray.push(`currencyType=${filters.currentCurrency}`);
-      }
+      filters.minPrice !== 0 &&
+        paramsArray.push(`minPrice=${filters.minPrice}`);
+      filters.maxPrice !== 0 &&
+        paramsArray.push(`maxPrice=${filters.maxPrice}`);
+      paramsArray.push(`currencyType=${filters.currentCurrency}`);
       filters.bathroom.length > 0 &&
         paramsArray.push(`bathroomType=${filters.bathroom.join(",")}`);
       filters.balcony.length > 0 &&
@@ -109,15 +116,6 @@ export const RentFindingPage = () => {
       } else {
         console.error("Ошибка при получении данных", data.message);
       }
-
-      const response2 = await fetch(`api/flat/1`);
-      const data2 = await response.json();
-
-      if (response2.ok) {
-        console.log("Данные с сервера", data2);
-      } else {
-        console.error("Ошибка при получении данных", data2.message);
-      }
     } catch (error) {
       console.error("Произошла ошибка:", error);
     } finally {
@@ -139,6 +137,11 @@ export const RentFindingPage = () => {
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
+
+    if (queryParams.toString() === "") {
+      fetchAllData();
+      return;
+    }
 
     const roomsParam = queryParams.get("numberOfRooms");
     const locationsParam = queryParams.get("locations");

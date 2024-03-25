@@ -33,13 +33,18 @@ export const SearchComponent = () => {
     paramsArray.push(`numberOfRooms=${filters.rooms.join(",")}`);
   filters.locations.length > 0 &&
     paramsArray.push(`locations=${filters.locations.join(",")}`);
-  if (filters.minPrice !== filters.maxPrice) {
-    paramsArray.push(
-      `minPrice=${Math.min(filters.minPrice, filters.maxPrice)}`
-    );
-    paramsArray.push(
-      `maxPrice=${Math.max(filters.minPrice, filters.maxPrice)}`
-    );
+  if (filters.minPrice > filters.maxPrice) {
+    paramsArray.push(`minPrice=${filters.minPrice}`);
+    filters.maxPrice = 0;
+  } else {
+    if (filters.minPrice === 0) {
+      paramsArray.push(`maxPrice=${filters.maxPrice}`);
+    } else {
+      paramsArray.push(`minPrice=${filters.minPrice}`);
+      paramsArray.push(`maxPrice=${filters.maxPrice}`);
+    }
+  }
+  if (filters.minPrice !== 0 || filters.maxPrice !== 0) {
     paramsArray.push(`currencyType=${filters.currentCurrency}`);
   }
   const queryParams = paramsArray.join("&");

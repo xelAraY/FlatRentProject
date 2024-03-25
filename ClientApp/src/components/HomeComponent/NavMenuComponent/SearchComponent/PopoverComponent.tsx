@@ -1,4 +1,4 @@
-import { Input, Slider, Stack } from "@mui/material";
+import { Input, Slider, Stack, TextField } from "@mui/material";
 import { Button } from "src/shared";
 import { useState } from "react";
 import { FilterState, PriceProps } from "src/interfaces/SearchInterfaces";
@@ -48,8 +48,8 @@ export const PopoverComponent = ({
       const newFilters: Partial<FilterState> = {
         minPrice: minPrice,
       };
-
       onFiltersChange(newFilters);
+
       setValue((prevValue) => {
         const newValue = [...prevValue];
         newValue[0] = minPrice;
@@ -64,8 +64,8 @@ export const PopoverComponent = ({
       const newFilters: Partial<FilterState> = {
         maxPrice: maxPrice,
       };
-
       onFiltersChange(newFilters);
+
       setValue((prevValue) => {
         const newValue = [...prevValue];
         newValue[1] = maxPrice;
@@ -97,8 +97,22 @@ export const PopoverComponent = ({
         })}
       </Stack>
       <Stack flexDirection="row" spacing={2} useFlexGap>
-        <Input value={price.min} onChange={handleMinPriceChange} key={"min"} />
-        <Input value={price.max} onChange={handleMaxPriceChange} key={"max"} />
+        <TextField
+          value={value[0] === 0 ? null : value[0]}
+          onChange={handleMinPriceChange}
+          label="От"
+          variant="standard"
+          size="small"
+          key={"min"}
+        />
+        <TextField
+          value={price.max !== 0 ? price.max : null}
+          onChange={handleMaxPriceChange}
+          label="До"
+          variant="standard"
+          size="small"
+          key={"max"}
+        />
       </Stack>
       {isHome && (
         <Stack flexDirection={"row"}>

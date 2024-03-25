@@ -37,9 +37,9 @@ public class RentObjectFilter
 
   public string? Prepayment { get; set; }
 
-  public bool Furniture { get; set; }
+  public bool? Furniture { get; set; }
 
-  public bool Photos { get; set; }
+  public bool? Photos { get; set; }
 
   public bool ShowData { get; set; }
 }

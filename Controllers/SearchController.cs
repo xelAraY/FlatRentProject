@@ -48,7 +48,7 @@ public class SearchController : ControllerBase
       rentObjectsQuery = Filter.ApplyPreferenceFilter(rentObjectsQuery, _context, filters.Preferences);
       rentObjectsQuery = Filter.ApplyApplianceFilter(rentObjectsQuery, _context, filters.Appliances);
       rentObjectsQuery = Filter.ApplyFurnitureFilter(rentObjectsQuery, filters.Furniture);
-      var result = await Filter.GetRecentRentObjectsCommonQuery(rentObjectsQuery, _context, filters.ShowData);
+      var result = await Filter.GetRecentRentObjectsCommonQuery(rentObjectsQuery, _context, showData: filters.ShowData, withPhotos: filters.Photos);
       return Ok(result);
     }
     catch (Exception ex)
