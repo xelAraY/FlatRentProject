@@ -35,18 +35,25 @@ export const SearchComponent = () => {
     paramsArray.push(`locations=${filters.locations.join(",")}`);
   if (filters.minPrice > filters.maxPrice) {
     paramsArray.push(`minPrice=${filters.minPrice}`);
+    paramsArray.push(`currencyType=${filters.currentCurrency}`);
     filters.maxPrice = 0;
   } else {
-    if (filters.minPrice === 0) {
+    if (filters.minPrice !== 0 && filters.maxPrice !== 0) {
       paramsArray.push(`maxPrice=${filters.maxPrice}`);
-    } else {
       paramsArray.push(`minPrice=${filters.minPrice}`);
-      paramsArray.push(`maxPrice=${filters.maxPrice}`);
+      paramsArray.push(`currencyType=${filters.currentCurrency}`);
+    } else {
+      if (filters.minPrice === 0 && filters.maxPrice !== 0) {
+        paramsArray.push(`maxPrice=${filters.maxPrice}`);
+        paramsArray.push(`currencyType=${filters.currentCurrency}`);
+      }
+      if (filters.maxPrice === 0 && filters.minPrice !== 0) {
+        paramsArray.push(`minPrice=${filters.minPrice}`);
+        paramsArray.push(`currencyType=${filters.currentCurrency}`);
+      }
     }
   }
-  if (filters.minPrice !== 0 || filters.maxPrice !== 0) {
-    paramsArray.push(`currencyType=${filters.currentCurrency}`);
-  }
+
   const queryParams = paramsArray.join("&");
 
   const handleFiltersChange = (newFilters: Partial<FilterState>) => {

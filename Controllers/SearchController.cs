@@ -47,8 +47,9 @@ public class SearchController : ControllerBase
       rentObjectsQuery = Filter.ApplyStringFilter(rentObjectsQuery, "Prepayment", filters.Prepayment);
       rentObjectsQuery = Filter.ApplyPreferenceFilter(rentObjectsQuery, _context, filters.Preferences);
       rentObjectsQuery = Filter.ApplyApplianceFilter(rentObjectsQuery, _context, filters.Appliances);
+      rentObjectsQuery = Filter.ApplyPhotosFilter(rentObjectsQuery, _context, filters.Photos);
       rentObjectsQuery = Filter.ApplyFurnitureFilter(rentObjectsQuery, filters.Furniture);
-      var result = await Filter.GetRecentRentObjectsCommonQuery(rentObjectsQuery, _context, showData: filters.ShowData, withPhotos: filters.Photos);
+      var result = await Filter.GetRecentRentObjectsCommonQuery(rentObjectsQuery, _context, showData: filters.ShowData);
       return Ok(result);
     }
     catch (Exception ex)

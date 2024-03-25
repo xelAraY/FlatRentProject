@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 public static class Filter
 {
-  public static async Task<List<object>> GetRecentRentObjectsCommonQuery(IQueryable<RentObject> rentObjectsQuery, ApplicationDbContext _context, bool showData = true, bool? withPhotos = true, int? takeCount = null)
+  public static async Task<List<object>> GetRecentRentObjectsCommonQuery(IQueryable<RentObject> rentObjectsQuery, ApplicationDbContext _context, bool showData = true, int? takeCount = null)
   {
     if (!showData)
     {
@@ -73,7 +73,7 @@ public static class Filter
         result.Currency,
         result.Owner,
         result.Address,
-        Photos = withPhotos.GetValueOrDefault() ? photos.Where(photo => photo.RentObjId == result.RentObject.RentObjId).Select(photo => photo.Url) : []
+        Photos = photos.Where(photo => photo.RentObjId == result.RentObject.RentObjId).Select(photo => photo.Url)
       }).Cast<object>().ToList();
 
       return result;
@@ -293,6 +293,27 @@ public static class Filter
 
     return query.Where(ro => ro.Furniture == comparisonValue);
   }
+
+  public static IQueryable<RentObject> ApplyPhotosFilter(IQueryable<RentObject> query, ApplicationDbContext context, bool? withPhotos)
+{
+    if (!withPhotos.HasValue)
+    {
+        return query;
+    }
+    else
+    {
+      var rentObjectIdsWithPhotos = context.Photos
+          .Select(p => p.RentObjId)
+          .Distinct();
+
+      if (withPhotos.Value)
+      {
+        query = query.Where(ro => rentObjectIdsWithPhotos.Contains(ro.RentObjId));
+      }
+
+      return query;
+    }
+}
 
   private static decimal ConvertToBYN(decimal? price, string currencyType)
   {
