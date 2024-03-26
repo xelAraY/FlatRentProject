@@ -205,7 +205,7 @@ export const RentFindingPage = () => {
               }}
             />
             <NavLink
-              to={"/rental-search/map"}
+              to={`/rental-search/map${location.search}`}
               style={{ textDecoration: "none" }}
             >
               <Stack flexDirection={"row"} alignItems={"center"}>
@@ -220,7 +220,6 @@ export const RentFindingPage = () => {
         {flatsCount === 0 && !loading && <NoFoundObject />}
         <FlatsList rentObjects={rentObjects} isLoading={loading} />
       </Stack>
-      <SingleObjectMap houseNumber="57" coordinates={[53.924034, 27.427299]} />
     </Stack>
   );
 };

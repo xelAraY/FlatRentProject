@@ -76,7 +76,6 @@ export const NavMenu = () => {
 
             <Button
               variant="contained"
-              color="secondary"
               // style={{ backgroundColor: "#efcd6c" }}
             >
               <AddIcon style={{ marginRight: "5px" }} sx={{ fontSize: 30 }} />

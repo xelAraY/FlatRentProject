@@ -14,16 +14,7 @@ export default class App extends Component {
       <div>
         <ThemeProvider
           theme={createTheme({
-            palette: {
-              secondary: {
-                main: "#b835fc",
-                contrastText: "#FFFFFF",
-              },
-              info: {
-                main: "#d922f4",
-                contrastText: "#FFFFFF",
-              },
-            },
+            palette: {},
           })}
         >
           <Routes>

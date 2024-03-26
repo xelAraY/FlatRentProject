@@ -104,7 +104,6 @@ export const SearchComponent = () => {
           <NavLink to={`/rental-search/flats?${queryParams}`}>
             <Button
               variant="contained"
-              color="secondary"
               style={{ marginRight: "6px", fontSize: "17px" }}
             >
               Найти
