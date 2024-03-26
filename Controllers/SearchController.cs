@@ -57,4 +57,19 @@ public class SearchController : ControllerBase
       return BadRequest(new { Message = $"Ошибка при получении последних объявлений: {ex.Message}" });
     }
   }
+
+  [HttpGet("map")]
+  public async Task<IActionResult> GetRentObjectsInMapView([FromQuery] MapParams mapParams)
+  {
+    try
+    {
+      var rentObjectsQuery = _context.RentObjects.AsQueryable();
+      var result = await Filter.GetMapRentObjects(rentObjectsQuery, _context, mapParams);
+      return Ok(result);
+    }
+    catch (Exception ex)
+    {
+      return BadRequest(new { Message = $"Ошибка при получении последних объявлений: {ex.Message}" });
+    }
+  }
 }

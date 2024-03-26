@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { FilterOptions } from "./FilterOptions";
 import { Stack, Typography } from "@mui/material";
-import { useLocation, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { RentObjectInformation } from "src/interfaces/RentObj";
 import { FlatsList } from "./FlatsList";
 import { FilterState } from "src/interfaces/SearchInterfaces";
 import { NoFoundObject } from "./NoFoundObject";
+import MapIcon from "@mui/icons-material/Map";
+import { Button } from "src/shared";
 
 export const RentFindingPage = () => {
   const navigate = useNavigate();
@@ -40,6 +42,7 @@ export const RentFindingPage = () => {
     const response = await fetch(`api/search/recent`);
     const data = await response.json();
 
+    console.log("Данные с сервера: ", data);
     if (response.ok) {
       filters.showData ? setRentObjects(data) : setCount(data[0].count);
     } else {
@@ -188,9 +191,30 @@ export const RentFindingPage = () => {
           <Typography variant="h4">
             Аренда квартир на длительный срок в Беларуси
           </Typography>
-          <Typography variant="body1">
-            <b>{rentObjects.length}</b> объявлени{ending}
-          </Typography>
+          <Stack flexDirection={"row"} alignItems={"center"}>
+            <Typography variant="body1">
+              <b>{rentObjects.length}</b> объявлени{ending}
+            </Typography>
+            <div
+              style={{
+                height: "1.5rem",
+                width: "1px",
+                backgroundColor: "rgb(210 214 219)",
+                margin: "0 16px",
+              }}
+            />
+            <NavLink
+              to={"/rental-search/map"}
+              style={{ textDecoration: "none" }}
+            >
+              <Stack flexDirection={"row"} alignItems={"center"}>
+                <MapIcon style={{ fontWeight: 100, marginRight: "8px" }} />
+                <Typography fontSize={16} fontWeight={600}>
+                  Посмотреть на карте
+                </Typography>
+              </Stack>
+            </NavLink>
+          </Stack>
         </Stack>
         {flatsCount === 0 && !loading && <NoFoundObject />}
         <FlatsList rentObjects={rentObjects} isLoading={loading} />

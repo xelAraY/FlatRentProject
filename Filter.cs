@@ -295,7 +295,7 @@ public static class Filter
   }
 
   public static IQueryable<RentObject> ApplyPhotosFilter(IQueryable<RentObject> query, ApplicationDbContext context, bool? withPhotos)
-{
+  {
     if (!withPhotos.HasValue)
     {
         return query;
@@ -313,7 +313,68 @@ public static class Filter
 
       return query;
     }
-}
+  }
+
+  public static async Task<List<object>> GetMapRentObjects(IQueryable<RentObject> rentObjectsQuery, ApplicationDbContext _context, MapParams mapParams)
+  {
+    var query = rentObjectsQuery;
+    query = query.OrderByDescending(ro => ro.CreatedAt);
+    var recentRentObjects = await query
+        .Join(
+            _context.Users,
+            ro => ro.OwnerId,
+            user => user.Id,
+            (ro, user) => new { RentObject = ro, Owner = user }
+        )
+        .Join(
+            _context.Currencies,
+            result => result.RentObject.CurrencyId,
+            currency => currency.CurrId,
+            (result, currency) => new { result.RentObject, result.Owner, Currency = currency }
+        )
+        .Join(
+            _context.Addresses,
+            result => result.RentObject.AddressId,
+            address => address.AddrId,
+            (result, address) => new { result.RentObject, result.Owner, result.Currency, Address = address }
+        )
+        .Select(result => new
+        {
+          result.RentObject,
+          Currency = result.Currency.CurrCode,
+          Owner = new
+          {
+            result.Owner.Name,
+            result.Owner.FullName,
+            result.Owner.PhoneNumber,
+            result.Owner.RegistrationDate,
+            result.Owner.LastLogin
+          },
+          result.Address
+        })
+        .Where(result =>
+          result.Address.Latitude >= mapParams.BottomY &&
+          result.Address.Latitude <= mapParams.TopY &&
+          result.Address.Longitude >= mapParams.LeftX &&
+          result.Address.Longitude <= mapParams.RightX)
+        .ToListAsync();
+
+    var rentObjectIds = recentRentObjects.Select(ro => ro.RentObject.RentObjId);
+    var photos = await _context.Photos
+        .Where(photo => rentObjectIds.Contains(photo.RentObjId))
+        .ToListAsync();
+
+    var result = recentRentObjects.Select(result => new
+    {
+      result.RentObject,
+      result.Currency,
+      result.Owner,
+      result.Address,
+      Photos = photos.Where(photo => photo.RentObjId == result.RentObject.RentObjId).Select(photo => photo.Url)
+    }).Cast<object>().ToList();
+
+    return result;
+  }
 
   private static decimal ConvertToBYN(decimal? price, string currencyType)
   {
@@ -342,3 +403,4 @@ public static class Filter
     return convertedPrice;
   }
 }
+

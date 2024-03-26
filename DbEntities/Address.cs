@@ -25,4 +25,8 @@ public class Address
 
   [Column("microdistrict")]
   public string Microdistrict { get; set; }
+  [Column("latitude")]
+  public decimal Latitude { get; set; }
+  [Column("longitude")]
+  public decimal Longitude { get; set; }
 }

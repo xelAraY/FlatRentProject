@@ -1,4 +1,3 @@
-
 export interface RentObjectInformation {
   rentObject: RentObject;
   currency: string;
@@ -24,10 +23,11 @@ interface RentObject {
   plate: string;
   addressId: number;
   rentPrice: number;
-  currId: number;//
+  currId: number; //
   prepayment: string;
   rent: string;
-  ownerId: number;//
+  rentalPeriod: string;
+  ownerId: number; //
   createdAt: Date;
   updatedAt: Date;
 }
@@ -47,4 +47,6 @@ interface Address {
   houseNumber: string;
   district: string;
   microdistrict: string;
+  latitude: number;
+  longitude: number;
 }
