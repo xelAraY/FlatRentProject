@@ -8,6 +8,7 @@ import { FilterState } from "src/interfaces/SearchInterfaces";
 import { NoFoundObject } from "./NoFoundObject";
 import MapIcon from "@mui/icons-material/Map";
 import { Button } from "src/shared";
+import { SingleObjectMap } from "src/shared/SingleObjectMap";
 
 export const RentFindingPage = () => {
   const navigate = useNavigate();
@@ -219,6 +220,7 @@ export const RentFindingPage = () => {
         {flatsCount === 0 && !loading && <NoFoundObject />}
         <FlatsList rentObjects={rentObjects} isLoading={loading} />
       </Stack>
+      <SingleObjectMap houseNumber="57" coordinates={[53.924034, 27.427299]} />
     </Stack>
   );
 };

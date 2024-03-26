@@ -174,7 +174,6 @@ export const MapFindingPage = () => {
             ))}
           </Clusterer>
           <ZoomControl />
-          <GeolocationControl />
         </Map>
       </YMaps>
     </div>
