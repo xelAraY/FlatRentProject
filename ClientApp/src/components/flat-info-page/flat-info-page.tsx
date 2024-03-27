@@ -2,7 +2,7 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import { RentObjectInformation } from "src/interfaces/RentObj";
 import { Grid, Stack } from "@mui/material";
-import { MainPaper } from "./components";
+import { DetailsPaper, MainPaper } from "./components";
 
 const FlatInfoPage: React.FC = () => {
   const { flatId } = useParams();
@@ -25,7 +25,10 @@ const FlatInfoPage: React.FC = () => {
     <Stack p="3rem 5rem">
       <Grid container columnGap="2rem">
         <Grid item xs={8}>
-          <MainPaper flatInfo={flatInfo} onScrollToMap={scrollToMap} />
+          <Stack gap="1rem">
+            <MainPaper flatInfo={flatInfo} onScrollToMap={scrollToMap} />
+            <DetailsPaper flatInfo={flatInfo} />
+          </Stack>
         </Grid>
         <Grid item xs="auto">
           <div style={{ position: "sticky", top: "10%" }}>info</div>
