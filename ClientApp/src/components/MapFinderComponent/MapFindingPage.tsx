@@ -11,7 +11,7 @@ import React from "react";
 import { RentObjectInformation } from "src/interfaces/RentObj";
 import { Stack, Typography } from "@mui/material";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "src/shared";
 import { FilterOptions } from "../RentFinderComponent/FilterOptions";
 import { FilterState } from "src/interfaces/SearchInterfaces";
@@ -36,8 +36,11 @@ export const MapFindingPage = () => {
   const [placemarks, setPlacemarks] = useState<PlacemarkInfo[]>([]);
   const [map, setMap] = React.useState<ymaps.Map>();
   const [showCost, setShowCost] = React.useState(false);
+  const [loading, setLoading] = useState(false);
   const [rentObjects, setRentObjects] = useState<RentObjectInformation[]>([]);
   const [mapBounds, setMapBounds] = useState<MapBounds>();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
 
   const [filters, setFilters] = useState<FilterState>({
     rooms: [],
@@ -85,7 +88,15 @@ export const MapFindingPage = () => {
   });
 
   const fetchAllData = async () => {
-    const response = await fetch(`api/search/recent`);
+    console.log(location.search.toString());
+
+    const response = await fetch(
+      `api/search/filter${
+        location.search.toString() === ""
+          ? "?"
+          : location.search.toString() + "&"
+      }showData=${filters.showData}`
+    );
     const data = await response.json();
 
     console.log("Данные с сервера: ", data);
@@ -97,16 +108,89 @@ export const MapFindingPage = () => {
   };
 
   const fetchMapData = async () => {
-    const response = await fetch(
-      `api/search/map?leftX=${mapBounds?.leftX}&rightX=${mapBounds?.rightX}&bottomY=${mapBounds?.bottomY}&topY=${mapBounds?.topY}`
-    );
-    const data = await response.json();
+    try {
+      const showData = filters.showData;
+      showData && setLoading(true);
+      const paramsArray = [];
+      filters.rooms.length > 0 &&
+        paramsArray.push(`numberOfRooms=${filters.rooms.join(",")}`);
+      filters.locations.length > 0 &&
+        paramsArray.push(`locations=${filters.locations.join(",")}`);
+      filters.minPrice !== 0 &&
+        paramsArray.push(`minPrice=${filters.minPrice}`);
+      filters.maxPrice !== 0 &&
+        paramsArray.push(`maxPrice=${filters.maxPrice}`);
+      paramsArray.push(`currencyType=${filters.currentCurrency}`);
+      filters.bathroom.length > 0 &&
+        paramsArray.push(`bathroomType=${filters.bathroom.join(",")}`);
+      filters.balcony.length > 0 &&
+        paramsArray.push(`balconyType=${filters.balcony.join(",")}`);
+      filters.appliances.length > 0 &&
+        paramsArray.push(`appliances=${filters.appliances.join(",")}`);
+      filters.preferences.length > 0 &&
+        paramsArray.push(`preferences=${filters.preferences.join(",")}`);
+      filters.prepayment.length > 0 &&
+        paramsArray.push(`prepayment=${filters.prepayment.join(",")}`);
 
-    console.log("Данные для карты: ", data);
-    if (response.ok) {
-      setRentObjects(data);
-    } else {
-      console.error("Ошибка при получении данных", data.message);
+      !!filters.rentalPeriod &&
+        paramsArray.push(`rentalPeriod=${filters.rentalPeriod}`);
+
+      filters.floor.valueFrom &&
+        paramsArray.push(`floorFrom=${filters.floor.valueFrom}`);
+      filters.floor.valueTo &&
+        paramsArray.push(`floorTo=${filters.floor.valueTo}`);
+
+      filters.totalArea.valueFrom &&
+        paramsArray.push(`totalAreaFrom=${filters.totalArea.valueFrom}`);
+      filters.totalArea.valueTo &&
+        paramsArray.push(`totalAreaTo=${filters.totalArea.valueTo}`);
+
+      filters.livingArea.valueFrom &&
+        paramsArray.push(`livingAreaFrom=${filters.livingArea.valueFrom}`);
+      filters.livingArea.valueTo &&
+        paramsArray.push(`livingAreaTo=${filters.livingArea.valueTo}`);
+
+      filters.kitchenArea.valueFrom &&
+        paramsArray.push(`kitchenAreaFrom=${filters.kitchenArea.valueFrom}`);
+      filters.kitchenArea.valueTo &&
+        paramsArray.push(`kitchenAreaTo=${filters.kitchenArea.valueTo}`);
+
+      filters.furniture && paramsArray.push(`furniture=${filters.furniture}`);
+      filters.withPhotos && paramsArray.push(`photos=${filters.withPhotos}`);
+
+      const queryParams = paramsArray.join("&");
+      // const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+      // delay(5000);
+      withNavigate &&
+        navigate(
+          `/rental-search/map??leftX=${mapBounds?.leftX}&rightX=${
+            mapBounds?.rightX
+          }&bottomY=${mapBounds?.bottomY}&topY=${mapBounds?.topY}&showData=${
+            filters.showData
+          }${queryParams ? "&" + queryParams : ""}`
+        );
+      const response = await fetch(
+        `api/search/filter?leftX=${mapBounds?.leftX}&rightX=${
+          mapBounds?.rightX
+        }&bottomY=${mapBounds?.bottomY}&topY=${mapBounds?.topY}&showData=${
+          filters.showData
+        }${queryParams ? "&" + queryParams : ""}`
+      );
+      // const response = await fetch(
+      //   `api/search/map?leftX=${mapBounds?.leftX}&rightX=${mapBounds?.rightX}&bottomY=${mapBounds?.bottomY}&topY=${mapBounds?.topY}`
+      // );
+      const data = await response.json();
+
+      console.log("Данные для карты: ", data);
+      if (response.ok) {
+        setRentObjects(data);
+      } else {
+        console.error("Ошибка при получении данных", data.message);
+      }
+    } catch (error) {
+      console.error("Произошла ошибка:", error);
+    } finally {
+      filters.showData && setLoading(false);
     }
   };
 
@@ -115,7 +199,7 @@ export const MapFindingPage = () => {
       console.log("Координаты карты: ", mapBounds);
       fetchMapData();
     }
-  }, [mapBounds]);
+  }, [mapBounds, filters]);
 
   useEffect(() => {
     fetchAllData();

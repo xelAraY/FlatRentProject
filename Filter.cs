@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 public static class Filter
 {
-  public static async Task<List<object>> GetRecentRentObjectsCommonQuery(IQueryable<RentObject> rentObjectsQuery, ApplicationDbContext _context, bool showData = true, int? takeCount = null)
+  public static async Task<List<object>> GetRecentRentObjectsCommonQuery(IQueryable<RentObject> rentObjectsQuery, ApplicationDbContext _context, bool showData = true, int? takeCount = null, MapParams? mapParams = null)
   {
     if (!showData)
     {
@@ -61,6 +61,16 @@ public static class Filter
             result.Address
           })
           .ToListAsync();
+
+      if (mapParams != null && mapParams.LeftX != null && mapParams.RightX != null && mapParams.BottomY != null && mapParams.TopY != null ) {
+        recentRentObjects = recentRentObjects
+          .Where(result =>
+              result.Address.Latitude >= mapParams.BottomY &&
+              result.Address.Latitude <= mapParams.TopY &&
+              result.Address.Longitude >= mapParams.LeftX &&
+              result.Address.Longitude <= mapParams.RightX)
+          .ToList();
+      }
 
       var rentObjectIds = recentRentObjects.Select(ro => ro.RentObject.RentObjId);
       var photos = await _context.Photos
@@ -352,12 +362,15 @@ public static class Filter
           },
           result.Address
         })
-        .Where(result =>
-          result.Address.Latitude >= mapParams.BottomY &&
-          result.Address.Latitude <= mapParams.TopY &&
-          result.Address.Longitude >= mapParams.LeftX &&
-          result.Address.Longitude <= mapParams.RightX)
         .ToListAsync();
+
+    recentRentObjects = recentRentObjects
+          .Where(result =>
+              result.Address.Latitude >= mapParams.BottomY &&
+              result.Address.Latitude <= mapParams.TopY &&
+              result.Address.Longitude >= mapParams.LeftX &&
+              result.Address.Longitude <= mapParams.RightX)
+          .ToList();
 
     var rentObjectIds = recentRentObjects.Select(ro => ro.RentObject.RentObjId);
     var photos = await _context.Photos
