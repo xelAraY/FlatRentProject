@@ -9,7 +9,7 @@ export interface RentObjectInformation {
   additionalInformations?: string[];
 }
 
-interface RentObject {
+export interface RentObject {
   rentObjId: number;
   title: string;
   description: string;

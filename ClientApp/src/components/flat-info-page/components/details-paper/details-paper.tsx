@@ -1,12 +1,17 @@
 import React from "react";
 import { Box, Grid, Paper, Stack, Typography } from "@mui/material";
-import { RentObjectInformation } from "src/interfaces/RentObj";
+import { RentObject } from "src/interfaces/RentObj";
+import { InfoRow } from "../info-row";
 
 interface DetailsPaperProps {
-  flatInfo?: RentObjectInformation;
+  flatInfo?: RentObject;
+  preferences?: string[];
 }
 
-const DetailsPaper: React.FC<DetailsPaperProps> = ({ flatInfo }) => {
+const DetailsPaper: React.FC<DetailsPaperProps> = ({
+  flatInfo,
+  preferences,
+}) => {
   return (
     <Paper
       variant="outlined"
@@ -22,79 +27,43 @@ const DetailsPaper: React.FC<DetailsPaperProps> = ({ flatInfo }) => {
       <Typography variant="h6" fontWeight={600}>
         {"Параметры объекта"}
       </Typography>
+
       <Grid container spacing="0.5rem">
-        <Grid item xs={5}>
-          <Stack flexDirection="row" gap="0.25rem">
-            <Typography variant="subtitle1" lineHeight="1.5rem">
-              {"Количество комнат"}
-            </Typography>
-            <Box borderBottom="1px dashed" flexGrow={1} height="1.25rem" />
-          </Stack>
-        </Grid>
-        <Grid item xs={7}>
-          {flatInfo?.rentObject.roomsCount}
-        </Grid>
-
-        <Grid item xs={5}>
-          <Stack flexDirection="row" gap="0.25rem">
-            <Typography variant="subtitle1" lineHeight="1.5rem">
-              {"Год постройки"}
-            </Typography>
-            <Box borderBottom="1px dashed" flexGrow={1} height="1.25rem" />
-          </Stack>
-        </Grid>
-        <Grid item xs={7}>
-          {flatInfo?.rentObject.constructionYear}
-        </Grid>
-
-        <Grid item xs={5}>
-          <Stack flexDirection="row" gap="0.25rem">
-            <Typography variant="subtitle1" lineHeight="1.5rem">
-              {"Площадь общая"}
-            </Typography>
-            <Box borderBottom="1px dashed" flexGrow={1} height="1.25rem" />
-          </Stack>
-        </Grid>
-        <Grid item xs={7}>
-          {flatInfo?.rentObject.livingArea}&nbsp;м²
-        </Grid>
-
-        <Grid item xs={5}>
-          <Stack flexDirection="row" gap="0.25rem">
-            <Typography variant="subtitle1" lineHeight="1.5rem">
-              {"Площадь общая"}
-            </Typography>
-            <Box borderBottom="1px dashed" flexGrow={1} height="1.25rem" />
-          </Stack>
-        </Grid>
-        <Grid item xs={7}>
-          {flatInfo?.rentObject.totalArea}&nbsp;м²
-        </Grid>
-
-        <Grid item xs={5}>
-          <Stack flexDirection="row" gap="0.25rem">
-            <Typography variant="subtitle1" lineHeight="1.5rem">
-              {"Площадь кухни"}
-            </Typography>
-            <Box borderBottom="1px dashed" flexGrow={1} height="1.25rem" />
-          </Stack>
-        </Grid>
-        <Grid item xs={7}>
-          {flatInfo?.rentObject.kitchenArea}&nbsp;м²
-        </Grid>
-
-        <Grid item xs={5}>
-          <Stack flexDirection="row" gap="0.25rem">
-            <Typography variant="subtitle1" lineHeight="1.5rem">
-              {"Этаж / этажность"}
-            </Typography>
-            <Box borderBottom="1px dashed" flexGrow={1} height="1.25rem" />
-          </Stack>
-        </Grid>
-        <Grid item xs={7}>
-          {flatInfo?.rentObject.floorNumber}&nbsp;/&nbsp;
-          {flatInfo?.rentObject.floorsAmount}
-        </Grid>
+        <InfoRow
+          title={"Количество комнат"}
+          value={`${flatInfo?.roomsCount}`}
+        />
+        <InfoRow
+          title={"Год постройки"}
+          value={`${flatInfo?.constructionYear}`}
+        />
+        <InfoRow title={"Площадь общая"} value={`${flatInfo?.totalArea} м²`} />
+        <InfoRow title={"Площадь жилая"} value={`${flatInfo?.livingArea} м²`} />
+        <InfoRow
+          title={"Площадь кухни"}
+          value={`${flatInfo?.kitchenArea} м²`}
+        />
+        <InfoRow
+          title={"Этаж / этажность"}
+          value={`${flatInfo?.floorNumber} / ${flatInfo?.floorsAmount}`}
+        />
+        <InfoRow
+          title={"Количество комнат"}
+          value={`${flatInfo?.roomsCount}`}
+        />
+        <InfoRow title={"Санузел"} value={`${flatInfo?.bathroom}`} />
+        <InfoRow title={"Балкон"} value={`${flatInfo?.balcony}`} />
+        <InfoRow title={"Мебель"} value={`${flatInfo?.furniture}`} />
+        {preferences && (
+          <InfoRow
+            title={"Условия сдачи"}
+            value={`${preferences.join(", ")}`}
+          />
+        )}
+        <InfoRow title={"Предоплата"} value={`${flatInfo?.prepayment}`} />
+        {flatInfo?.rent && (
+          <InfoRow title={"Квартплата"} value={`${flatInfo.rent}`} />
+        )}
       </Grid>
     </Paper>
   );

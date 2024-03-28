@@ -6,14 +6,16 @@ import {
   Paper,
   Snackbar,
   Stack,
+  SvgIcon,
   Typography,
 } from "@mui/material";
 import { RentObjectInformation } from "src/interfaces/RentObj";
-import { ImageGalleryStyled } from "src/shared";
+import { ImageGalleryStyled, MetroSvg } from "src/shared";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import DirectionsWalkOutlinedIcon from "@mui/icons-material/DirectionsWalkOutlined";
 import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+// import { ReactComponent as Logo } from "./../../../../../";
 
 interface ForPhotos {
   original: string;
@@ -102,12 +104,10 @@ const MainPaper: React.FC<MainPaperProps> = ({ flatInfo, onScrollToMap }) => {
             </Typography>
           </Stack>
 
-          <Stack flexDirection="row">
-            <img
-              src="./../../../metro.svg"
-              alt="metro/"
-              style={{ height: "1.5rem", marginRight: "0.5rem" }}
-            />
+          <Stack flexDirection="row" gap="0.1rem">
+            <SvgIcon color="error" viewBox="0 0 17 16">
+              <MetroSvg />
+            </SvgIcon>
             <Typography variant="body1">{`Каменная Горка`}</Typography>
           </Stack>
 

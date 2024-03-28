@@ -27,7 +27,10 @@ const FlatInfoPage: React.FC = () => {
         <Grid item xs={8}>
           <Stack gap="1rem">
             <MainPaper flatInfo={flatInfo} onScrollToMap={scrollToMap} />
-            <DetailsPaper flatInfo={flatInfo} />
+            <DetailsPaper
+              flatInfo={flatInfo?.rentObject}
+              preferences={flatInfo?.preferences}
+            />
           </Stack>
         </Grid>
         <Grid item xs="auto">
