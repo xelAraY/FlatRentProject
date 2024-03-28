@@ -5,9 +5,9 @@ import { LocationsSelect } from "../HomeComponent/NavMenuComponent/SearchCompone
 import { PriceComponent } from "../HomeComponent/NavMenuComponent/SearchComponent/PriceComponent";
 import { FilterOptionsProps } from "src/interfaces/SearchInterfaces";
 import { AdditionalFilters } from "./AdditionalFilters";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
-export const FilterOptions = ({ count }: FilterOptionsProps) => {
+export const FilterOptions = ({ count, path }: FilterOptionsProps) => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
 
@@ -91,6 +91,7 @@ export const FilterOptions = ({ count }: FilterOptionsProps) => {
             withPhotos: !!photos,
           }}
           count={count}
+          path={path}
         />
       </Stack>
     </Paper>

@@ -54,6 +54,7 @@ export interface FilterState {
 
 export interface FilterOptionsProps {
   count: number | null;
+  path: string;
 }
 
 export interface PriceProps {
@@ -96,4 +97,5 @@ export interface SwitchFilterProps {
 export interface AdditionalFiltersProps {
   additionalFilters: AdditionalFiltersState;
   count: number | null;
+  path: string;
 }

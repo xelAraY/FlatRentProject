@@ -11,10 +11,9 @@ import React from "react";
 import { RentObjectInformation } from "src/interfaces/RentObj";
 import { Stack, Typography } from "@mui/material";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "src/shared";
 import { FilterOptions } from "../RentFinderComponent/FilterOptions";
-import { FilterState } from "src/interfaces/SearchInterfaces";
 
 interface PlacemarkInfo {
   coordinates: [number, number];
@@ -33,6 +32,7 @@ export const MapFindingPage = () => {
     center: [53.900487, 27.555324],
     zoom: 12,
   });
+  const [searchParams, setSearchParams] = useSearchParams();
   const [placemarks, setPlacemarks] = useState<PlacemarkInfo[]>([]);
   const [map, setMap] = React.useState<ymaps.Map>();
   const [showCost, setShowCost] = React.useState(false);
@@ -40,30 +40,6 @@ export const MapFindingPage = () => {
   const [rentObjects, setRentObjects] = useState<RentObjectInformation[]>([]);
   const [mapBounds, setMapBounds] = useState<MapBounds>();
   const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-
-  const [filters, setFilters] = useState<FilterState>({
-    rooms: [],
-    locations: [],
-    minPrice: 0,
-    maxPrice: 0,
-    currentCurrency: "BYN",
-    floor: { valueFrom: null, valueTo: null },
-    totalArea: { valueFrom: null, valueTo: null },
-    livingArea: { valueFrom: null, valueTo: null },
-    kitchenArea: { valueFrom: null, valueTo: null },
-    bathroom: [],
-    balcony: [],
-    appliances: [],
-    rentalPeriod: "",
-    preferences: [],
-    prepayment: [],
-    furniture: false,
-    withPhotos: false,
-    showData: true,
-  });
-
-  const [withNavigate, setWithNavigate] = React.useState(false);
 
   const navigate = useNavigate();
 
@@ -87,123 +63,159 @@ export const MapFindingPage = () => {
     }
   });
 
-  const fetchAllData = async () => {
-    console.log(location.search.toString());
+  const fetchData = async () => {
+    const queryParams = new URLSearchParams(location.search);
+
+    console.log("Все данные");
 
     const response = await fetch(
-      `api/search/filter${
-        location.search.toString() === ""
-          ? "?"
-          : location.search.toString() + "&"
-      }showData=${filters.showData}`
+      `api/search/filter?${
+        queryParams ? queryParams.toString() + "&" : ""
+      }showData=true`
     );
     const data = await response.json();
 
-    console.log("Данные с сервера: ", data);
     if (response.ok) {
+      console.log("Новые Данные с сервера", data);
       setRentObjects(data);
     } else {
       console.error("Ошибка при получении данных", data.message);
     }
   };
 
-  const fetchMapData = async () => {
-    try {
-      const showData = filters.showData;
-      showData && setLoading(true);
-      const paramsArray = [];
-      filters.rooms.length > 0 &&
-        paramsArray.push(`numberOfRooms=${filters.rooms.join(",")}`);
-      filters.locations.length > 0 &&
-        paramsArray.push(`locations=${filters.locations.join(",")}`);
-      filters.minPrice !== 0 &&
-        paramsArray.push(`minPrice=${filters.minPrice}`);
-      filters.maxPrice !== 0 &&
-        paramsArray.push(`maxPrice=${filters.maxPrice}`);
-      paramsArray.push(`currencyType=${filters.currentCurrency}`);
-      filters.bathroom.length > 0 &&
-        paramsArray.push(`bathroomType=${filters.bathroom.join(",")}`);
-      filters.balcony.length > 0 &&
-        paramsArray.push(`balconyType=${filters.balcony.join(",")}`);
-      filters.appliances.length > 0 &&
-        paramsArray.push(`appliances=${filters.appliances.join(",")}`);
-      filters.preferences.length > 0 &&
-        paramsArray.push(`preferences=${filters.preferences.join(",")}`);
-      filters.prepayment.length > 0 &&
-        paramsArray.push(`prepayment=${filters.prepayment.join(",")}`);
+  useEffect(() => {
+    setLoading(true);
+    fetchData();
+    setLoading(false);
+  }, [location.search]);
 
-      !!filters.rentalPeriod &&
-        paramsArray.push(`rentalPeriod=${filters.rentalPeriod}`);
+  // const fetchAllData = async () => {
+  //   console.log(location.search.toString());
 
-      filters.floor.valueFrom &&
-        paramsArray.push(`floorFrom=${filters.floor.valueFrom}`);
-      filters.floor.valueTo &&
-        paramsArray.push(`floorTo=${filters.floor.valueTo}`);
+  //   const response = await fetch(
+  //     `api/search/filter${
+  //       location.search.toString() === ""
+  //         ? "?"
+  //         : location.search.toString() + "&"
+  //     }showData=${filters.showData}`
+  //   );
+  //   const data = await response.json();
 
-      filters.totalArea.valueFrom &&
-        paramsArray.push(`totalAreaFrom=${filters.totalArea.valueFrom}`);
-      filters.totalArea.valueTo &&
-        paramsArray.push(`totalAreaTo=${filters.totalArea.valueTo}`);
+  //   console.log("Данные с сервера: ", data);
+  //   if (response.ok) {
+  //     setRentObjects(data);
+  //   } else {
+  //     console.error("Ошибка при получении данных", data.message);
+  //   }
+  // };
 
-      filters.livingArea.valueFrom &&
-        paramsArray.push(`livingAreaFrom=${filters.livingArea.valueFrom}`);
-      filters.livingArea.valueTo &&
-        paramsArray.push(`livingAreaTo=${filters.livingArea.valueTo}`);
+  // const fetchMapData = async () => {
+  //   try {
+  //     const showData = filters.showData;
+  //     showData && setLoading(true);
+  //     const paramsArray = [];
+  //     filters.rooms.length > 0 &&
+  //       paramsArray.push(`numberOfRooms=${filters.rooms.join(",")}`);
+  //     filters.locations.length > 0 &&
+  //       paramsArray.push(`locations=${filters.locations.join(",")}`);
+  //     filters.minPrice !== 0 &&
+  //       paramsArray.push(`minPrice=${filters.minPrice}`);
+  //     filters.maxPrice !== 0 &&
+  //       paramsArray.push(`maxPrice=${filters.maxPrice}`);
+  //     paramsArray.push(`currencyType=${filters.currentCurrency}`);
+  //     filters.bathroom.length > 0 &&
+  //       paramsArray.push(`bathroomType=${filters.bathroom.join(",")}`);
+  //     filters.balcony.length > 0 &&
+  //       paramsArray.push(`balconyType=${filters.balcony.join(",")}`);
+  //     filters.appliances.length > 0 &&
+  //       paramsArray.push(`appliances=${filters.appliances.join(",")}`);
+  //     filters.preferences.length > 0 &&
+  //       paramsArray.push(`preferences=${filters.preferences.join(",")}`);
+  //     filters.prepayment.length > 0 &&
+  //       paramsArray.push(`prepayment=${filters.prepayment.join(",")}`);
 
-      filters.kitchenArea.valueFrom &&
-        paramsArray.push(`kitchenAreaFrom=${filters.kitchenArea.valueFrom}`);
-      filters.kitchenArea.valueTo &&
-        paramsArray.push(`kitchenAreaTo=${filters.kitchenArea.valueTo}`);
+  //     !!filters.rentalPeriod &&
+  //       paramsArray.push(`rentalPeriod=${filters.rentalPeriod}`);
 
-      filters.furniture && paramsArray.push(`furniture=${filters.furniture}`);
-      filters.withPhotos && paramsArray.push(`photos=${filters.withPhotos}`);
+  //     filters.floor.valueFrom &&
+  //       paramsArray.push(`floorFrom=${filters.floor.valueFrom}`);
+  //     filters.floor.valueTo &&
+  //       paramsArray.push(`floorTo=${filters.floor.valueTo}`);
 
-      const queryParams = paramsArray.join("&");
-      // const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-      // delay(5000);
-      withNavigate &&
-        navigate(
-          `/rental-search/map??leftX=${mapBounds?.leftX}&rightX=${
-            mapBounds?.rightX
-          }&bottomY=${mapBounds?.bottomY}&topY=${mapBounds?.topY}&showData=${
-            filters.showData
-          }${queryParams ? "&" + queryParams : ""}`
-        );
-      const response = await fetch(
-        `api/search/filter?leftX=${mapBounds?.leftX}&rightX=${
-          mapBounds?.rightX
-        }&bottomY=${mapBounds?.bottomY}&topY=${mapBounds?.topY}&showData=${
-          filters.showData
-        }${queryParams ? "&" + queryParams : ""}`
-      );
-      // const response = await fetch(
-      //   `api/search/map?leftX=${mapBounds?.leftX}&rightX=${mapBounds?.rightX}&bottomY=${mapBounds?.bottomY}&topY=${mapBounds?.topY}`
-      // );
-      const data = await response.json();
+  //     filters.totalArea.valueFrom &&
+  //       paramsArray.push(`totalAreaFrom=${filters.totalArea.valueFrom}`);
+  //     filters.totalArea.valueTo &&
+  //       paramsArray.push(`totalAreaTo=${filters.totalArea.valueTo}`);
 
-      console.log("Данные для карты: ", data);
-      if (response.ok) {
-        setRentObjects(data);
-      } else {
-        console.error("Ошибка при получении данных", data.message);
-      }
-    } catch (error) {
-      console.error("Произошла ошибка:", error);
-    } finally {
-      filters.showData && setLoading(false);
-    }
-  };
+  //     filters.livingArea.valueFrom &&
+  //       paramsArray.push(`livingAreaFrom=${filters.livingArea.valueFrom}`);
+  //     filters.livingArea.valueTo &&
+  //       paramsArray.push(`livingAreaTo=${filters.livingArea.valueTo}`);
+
+  //     filters.kitchenArea.valueFrom &&
+  //       paramsArray.push(`kitchenAreaFrom=${filters.kitchenArea.valueFrom}`);
+  //     filters.kitchenArea.valueTo &&
+  //       paramsArray.push(`kitchenAreaTo=${filters.kitchenArea.valueTo}`);
+
+  //     filters.furniture && paramsArray.push(`furniture=${filters.furniture}`);
+  //     filters.withPhotos && paramsArray.push(`photos=${filters.withPhotos}`);
+
+  //     const queryParams = paramsArray.join("&");
+  //     // const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+  //     // delay(5000);
+  //     withNavigate &&
+  //       navigate(
+  //         `/rental-search/map??leftX=${mapBounds?.leftX}&rightX=${
+  //           mapBounds?.rightX
+  //         }&bottomY=${mapBounds?.bottomY}&topY=${mapBounds?.topY}&showData=${
+  //           filters.showData
+  //         }${queryParams ? "&" + queryParams : ""}`
+  //       );
+  //     const response = await fetch(
+  //       `api/search/filter?leftX=${mapBounds?.leftX}&rightX=${
+  //         mapBounds?.rightX
+  //       }&bottomY=${mapBounds?.bottomY}&topY=${mapBounds?.topY}&showData=${
+  //         filters.showData
+  //       }${queryParams ? "&" + queryParams : ""}`
+  //     );
+  //     // const response = await fetch(
+  //     //   `api/search/map?leftX=${mapBounds?.leftX}&rightX=${mapBounds?.rightX}&bottomY=${mapBounds?.bottomY}&topY=${mapBounds?.topY}`
+  //     // );
+  //     const data = await response.json();
+
+  //     console.log("Данные для карты: ", data);
+  //     if (response.ok) {
+  //       setRentObjects(data);
+  //     } else {
+  //       console.error("Ошибка при получении данных", data.message);
+  //     }
+  //   } catch (error) {
+  //     console.error("Произошла ошибка:", error);
+  //   } finally {
+  //     filters.showData && setLoading(false);
+  //   }
+  // };
 
   useEffect(() => {
     if (mapBounds !== undefined) {
       console.log("Координаты карты: ", mapBounds);
-      fetchMapData();
+      setSearchParams(
+        (urlParams) => {
+          urlParams.set("leftX", mapBounds.leftX.toString());
+          urlParams.set("rightX", mapBounds.rightX.toString());
+          urlParams.set("bottomY", mapBounds.bottomY.toString());
+          urlParams.set("topY", mapBounds.topY.toString());
+          return urlParams;
+        },
+        { replace: true }
+      );
+      //fetchMapData();
     }
-  }, [mapBounds, filters]);
+  }, [mapBounds]);
 
-  useEffect(() => {
-    fetchAllData();
-  }, []);
+  // useEffect(() => {
+  //   fetchAllData();
+  // }, []);
 
   useEffect(() => {
     console.log("Установка coordinates");
@@ -228,17 +240,17 @@ export const MapFindingPage = () => {
   const ending =
     flatsCount === 1 ? "е" : flatsCount > 1 && flatsCount < 5 ? "я" : "й";
 
-  const handleFiltersChange = (
-    newFilters: Partial<FilterState>,
-    navigate?: boolean
-  ) => {
-    setFilters((prevFilters) => ({ ...prevFilters, ...newFilters }));
-    setWithNavigate(navigate ?? true);
-  };
+  // const handleFiltersChange = (
+  //   newFilters: Partial<FilterState>,
+  //   navigate?: boolean
+  // ) => {
+  //   setFilters((prevFilters) => ({ ...prevFilters, ...newFilters }));
+  //   setWithNavigate(navigate ?? true);
+  // };
 
   return (
     <Stack flexDirection={"column"}>
-      <FilterOptions count={flatsCount} />
+      <FilterOptions count={flatsCount} path="/rental-search/map?" />
       <div
         style={{
           height: "100vh",

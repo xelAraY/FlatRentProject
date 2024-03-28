@@ -23,6 +23,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 export const AdditionalFilters = ({
   additionalFilters,
   count,
+  path,
 }: AdditionalFiltersProps) => {
   const [open, setOpen] = React.useState(false);
   const [flatsCount, setFlatsCount] = useState(count);
@@ -87,11 +88,21 @@ export const AdditionalFilters = ({
   const getSearchParams = (): string => {
     const paramsArray = [];
 
+    const leftXParam = searchParams.get("leftX");
+    const rightXParam = searchParams.get("rightX");
+    const bottomYParam = searchParams.get("bottomY");
+    const topYParam = searchParams.get("topY");
+
     const roomsParam = searchParams.get("numberOfRooms");
     const locationsParam = searchParams.get("locations");
     const minPriceParam = searchParams.get("minPrice");
     const maxPriceParam = searchParams.get("maxPrice");
     const currencyParam = searchParams.get("currencyType");
+
+    leftXParam && paramsArray.push(`leftX=${leftXParam}`);
+    rightXParam && paramsArray.push(`rightX=${rightXParam}`);
+    bottomYParam && paramsArray.push(`bottomY=${bottomYParam}`);
+    topYParam && paramsArray.push(`topY=${topYParam}`);
 
     roomsParam && paramsArray.push(`numberOfRooms=${roomsParam}`);
     locationsParam && paramsArray.push(`locations=${locationsParam}`);

@@ -13,7 +13,6 @@ export const RentFindingPage = () => {
   const [loading, setLoading] = useState(false);
 
   const fetchData = async () => {
-    setLoading(true);
     const queryParams = new URLSearchParams(location.search);
 
     console.log("Все данные");
@@ -49,7 +48,7 @@ export const RentFindingPage = () => {
       overflow="auto"
       style={{ backgroundColor: "#f3f5f7" }}
     >
-      <FilterOptions count={flatsCount} />
+      <FilterOptions count={flatsCount} path="/rental-search/flats?" />
       <Stack
         flexDirection={"column"}
         style={{ padding: "56px 56px 80px 56px" }}
