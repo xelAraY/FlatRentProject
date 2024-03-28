@@ -1,5 +1,5 @@
 import { Button } from "src/shared";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import {
   Box,
@@ -15,16 +15,19 @@ import { SelectFilter } from "./SelectFilter";
 import { SwitchFilter } from "./SwitchFilter";
 import {
   AdditionalFiltersProps,
-  FilterState,
+  AdditionalFiltersState,
   RangeValue,
 } from "src/interfaces/SearchInterfaces";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 export const AdditionalFilters = ({
   additionalFilters,
   count,
-  onFiltersChange: onFiltersChangeProps,
 }: AdditionalFiltersProps) => {
   const [open, setOpen] = React.useState(false);
+  const [flatsCount, setFlatsCount] = useState(count);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const bathroomOptions = ["Раздельный", "Совмещенный", "2 и более"];
   const balconyOptions = ["Есть", "Нет", "Лоджия"];
   const appliancesOptions = [
@@ -60,9 +63,8 @@ export const AdditionalFilters = ({
     "Пол года",
   ];
 
-  const onFiltersChange = (filters: Partial<FilterState>) => {
-    onFiltersChangeProps(filters, false);
-  };
+  const [filters, setFilters] =
+    useState<AdditionalFiltersState>(additionalFilters);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -82,108 +84,172 @@ export const AdditionalFilters = ({
     }
   }, [open]);
 
-  const handleBathroomFilterChange = (options: string[]) => {
-    const newFilters: Partial<FilterState> = {
-      bathroom: options,
-      showData: false,
-    };
-    onFiltersChange(newFilters);
+  const getSearchParams = (): string => {
+    const paramsArray = [];
+
+    const roomsParam = searchParams.get("numberOfRooms");
+    const locationsParam = searchParams.get("locations");
+    const minPriceParam = searchParams.get("minPrice");
+    const maxPriceParam = searchParams.get("maxPrice");
+    const currencyParam = searchParams.get("currencyType");
+
+    roomsParam && paramsArray.push(`numberOfRooms=${roomsParam}`);
+    locationsParam && paramsArray.push(`locations=${locationsParam}`);
+    minPriceParam && paramsArray.push(`minPrice=${minPriceParam}`);
+    maxPriceParam && paramsArray.push(`maxPrice=${maxPriceParam}`);
+    currencyParam && paramsArray.push(`currencyType=${currencyParam}`);
+
+    filters.bathroom.length > 0 &&
+      paramsArray.push(`bathroomType=${filters.bathroom.join(",")}`);
+    filters.balcony.length > 0 &&
+      paramsArray.push(`balconyType=${filters.balcony.join(",")}`);
+    filters.appliances.length > 0 &&
+      paramsArray.push(`appliances=${filters.appliances.join(",")}`);
+    filters.preferences.length > 0 &&
+      paramsArray.push(`preferences=${filters.preferences.join(",")}`);
+    filters.prepayment.length > 0 &&
+      paramsArray.push(`prepayment=${filters.prepayment.join(",")}`);
+
+    !!filters.rentalPeriod &&
+      paramsArray.push(`rentalPeriod=${filters.rentalPeriod}`);
+
+    filters.floor.valueFrom &&
+      paramsArray.push(`floorFrom=${filters.floor.valueFrom}`);
+    filters.floor.valueTo &&
+      paramsArray.push(`floorTo=${filters.floor.valueTo}`);
+
+    filters.totalArea.valueFrom &&
+      paramsArray.push(`totalAreaFrom=${filters.totalArea.valueFrom}`);
+    filters.totalArea.valueTo &&
+      paramsArray.push(`totalAreaTo=${filters.totalArea.valueTo}`);
+
+    filters.livingArea.valueFrom &&
+      paramsArray.push(`livingAreaFrom=${filters.livingArea.valueFrom}`);
+    filters.livingArea.valueTo &&
+      paramsArray.push(`livingAreaTo=${filters.livingArea.valueTo}`);
+
+    filters.kitchenArea.valueFrom &&
+      paramsArray.push(`kitchenAreaFrom=${filters.kitchenArea.valueFrom}`);
+    filters.kitchenArea.valueTo &&
+      paramsArray.push(`kitchenAreaTo=${filters.kitchenArea.valueTo}`);
+
+    filters.furniture && paramsArray.push(`furniture=${filters.furniture}`);
+    filters.withPhotos && paramsArray.push(`photos=${filters.withPhotos}`);
+
+    const queryParams = paramsArray.join("&");
+
+    return queryParams;
   };
 
-  const handleBalconyFilterChange = (options: string[]) => {
-    const newFilters: Partial<FilterState> = {
-      balcony: options,
-      showData: false,
-    };
-    onFiltersChange(newFilters);
+  const fetchFlatsCount = async () => {
+    const queryParams = getSearchParams();
+
+    const response = await fetch(
+      `api/search/filter?${
+        queryParams !== "" ? queryParams + "&showData=false" : "showData=false"
+      }`
+    );
+    const data = await response.json();
+
+    if (response.ok) {
+      console.log("Данные с сервера", data);
+      setFlatsCount(data[0].count);
+    } else {
+      console.error("Ошибка при получении данных", data.message);
+    }
   };
 
-  const handleAppliancesFilterChange = (options: string[]) => {
-    const newFilters: Partial<FilterState> = {
-      appliances: options,
-      showData: false,
-    };
-    onFiltersChange(newFilters);
-  };
+  useEffect(() => {
+    fetchFlatsCount();
+  }, [filters]);
 
-  const handleRentalPeriodFilterChange = (options: string[]) => {
-    const newFilters: Partial<FilterState> = {
-      rentalPeriod: options.length > 0 ? options[0] : "",
-      showData: false,
-    };
-    onFiltersChange(newFilters);
-  };
-
-  const handlePreferencesFilterChange = (options: string[]) => {
-    const newFilters: Partial<FilterState> = {
-      preferences: options,
-      showData: false,
-    };
-    onFiltersChange(newFilters);
-  };
-
-  const handlePrepaymentFilterChange = (options: string[]) => {
-    const newFilters: Partial<FilterState> = {
-      prepayment: options,
-      showData: false,
-    };
-    onFiltersChange(newFilters);
-  };
-
-  const handleFurnitureCheck = (option: boolean) => {
-    const newFilters: Partial<FilterState> = {
-      furniture: option,
-      showData: false,
-    };
-    onFiltersChange(newFilters);
-  };
-
-  const handlePhotosCheck = (option: boolean) => {
-    const newFilters: Partial<FilterState> = {
-      withPhotos: option,
-      showData: false,
-    };
-    onFiltersChange(newFilters);
-  };
-
-  const handleShowData = () => {
-    const newFilters: Partial<FilterState> = {
-      showData: true,
-    };
-    onFiltersChangeProps(newFilters, true);
+  const handleShowDataClick = () => {
+    navigate(`/rental-search/flats?${getSearchParams()}`);
     handleClose();
   };
 
-  const handleTotalAreaFilterChange = (option: RangeValue) => {
-    const newFilters: Partial<FilterState> = {
-      totalArea: option,
-      showData: false,
+  const handleBathroomFilterChange = (options: string[]) => {
+    const newFilters: Partial<AdditionalFiltersState> = {
+      bathroom: options,
     };
-    onFiltersChange(newFilters);
+    setFilters((prevFilters) => ({ ...prevFilters, ...newFilters }));
+  };
+
+  const handleBalconyFilterChange = (options: string[]) => {
+    const newFilters: Partial<AdditionalFiltersState> = {
+      balcony: options,
+    };
+    setFilters((prevFilters) => ({ ...prevFilters, ...newFilters }));
+  };
+
+  const handleAppliancesFilterChange = (options: string[]) => {
+    const newFilters: Partial<AdditionalFiltersState> = {
+      appliances: options,
+    };
+    setFilters((prevFilters) => ({ ...prevFilters, ...newFilters }));
+  };
+
+  const handleRentalPeriodFilterChange = (options: string[]) => {
+    const newFilters: Partial<AdditionalFiltersState> = {
+      rentalPeriod: options.length > 0 ? options[0] : "",
+    };
+    setFilters((prevFilters) => ({ ...prevFilters, ...newFilters }));
+  };
+
+  const handlePreferencesFilterChange = (options: string[]) => {
+    const newFilters: Partial<AdditionalFiltersState> = {
+      preferences: options,
+    };
+    setFilters((prevFilters) => ({ ...prevFilters, ...newFilters }));
+  };
+
+  const handlePrepaymentFilterChange = (options: string[]) => {
+    const newFilters: Partial<AdditionalFiltersState> = {
+      prepayment: options,
+    };
+    setFilters((prevFilters) => ({ ...prevFilters, ...newFilters }));
+  };
+
+  const handleFurnitureCheck = (option: boolean) => {
+    const newFilters: Partial<AdditionalFiltersState> = {
+      furniture: option,
+    };
+    setFilters((prevFilters) => ({ ...prevFilters, ...newFilters }));
+  };
+
+  const handlePhotosCheck = (option: boolean) => {
+    const newFilters: Partial<AdditionalFiltersState> = {
+      withPhotos: option,
+    };
+    setFilters((prevFilters) => ({ ...prevFilters, ...newFilters }));
+  };
+
+  const handleTotalAreaFilterChange = (option: RangeValue) => {
+    const newFilters: Partial<AdditionalFiltersState> = {
+      totalArea: option,
+    };
+    setFilters((prevFilters) => ({ ...prevFilters, ...newFilters }));
   };
 
   const handleLivingAreaFilterChange = (option: RangeValue) => {
-    const newFilters: Partial<FilterState> = {
+    const newFilters: Partial<AdditionalFiltersState> = {
       livingArea: option,
-      showData: false,
     };
-    onFiltersChange(newFilters);
+    setFilters((prevFilters) => ({ ...prevFilters, ...newFilters }));
   };
 
   const handleKitchenAreaFilterChange = (option: RangeValue) => {
-    const newFilters: Partial<FilterState> = {
+    const newFilters: Partial<AdditionalFiltersState> = {
       kitchenArea: option,
-      showData: false,
     };
-    onFiltersChange(newFilters);
+    setFilters((prevFilters) => ({ ...prevFilters, ...newFilters }));
   };
 
   const handleFloorFilterChange = (option: RangeValue) => {
-    const newFilters: Partial<FilterState> = {
+    const newFilters: Partial<AdditionalFiltersState> = {
       floor: option,
-      showData: false,
     };
-    onFiltersChange(newFilters);
+    setFilters((prevFilters) => ({ ...prevFilters, ...newFilters }));
   };
 
   return (
@@ -320,8 +386,8 @@ export const AdditionalFilters = ({
           >
             <Button>Сбросить</Button>
             <Button
-              onClick={handleShowData}
               variant="contained"
+              onClick={handleShowDataClick}
               style={{
                 marginRight: "6px",
                 width: "max-content",
@@ -330,7 +396,7 @@ export const AdditionalFilters = ({
               }}
             >
               <Typography fontSize="17px" marginLeft="3px">
-                Показать <b>{count}</b>
+                Показать <b>{flatsCount}</b>
               </Typography>
             </Button>
           </Stack>

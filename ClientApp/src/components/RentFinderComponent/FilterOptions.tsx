@@ -7,10 +7,7 @@ import { FilterOptionsProps } from "src/interfaces/SearchInterfaces";
 import { AdditionalFilters } from "./AdditionalFilters";
 import { useLocation, useParams } from "react-router-dom";
 
-export const FilterOptions = ({
-  count,
-  onFiltersChange,
-}: FilterOptionsProps) => {
+export const FilterOptions = ({ count }: FilterOptionsProps) => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
 
@@ -56,21 +53,14 @@ export const FilterOptions = ({
         alignItems={"center"}
         justifyContent={"center"}
       >
-        <RoomsSelect
-          rooms={numberOfRooms || []}
-          onFiltersChange={onFiltersChange}
-        />
-        <LocationsSelect
-          locations={locations || []}
-          onFiltersChange={onFiltersChange}
-        />
+        <RoomsSelect rooms={numberOfRooms || []} />
+        <LocationsSelect locations={locations || []} />
         <PriceComponent
           price={{
             min: minPrice ? Number(minPrice) : 0,
             max: maxPrice ? Number(maxPrice) : 0,
           }}
           currentCurrency={currencyType || "BYN"}
-          onFiltersChange={onFiltersChange}
           isHome={false}
         />
         <AdditionalFilters
@@ -101,7 +91,6 @@ export const FilterOptions = ({
             withPhotos: !!photos,
           }}
           count={count}
-          onFiltersChange={onFiltersChange}
         />
       </Stack>
     </Paper>

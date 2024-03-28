@@ -16,7 +16,7 @@ export interface RangeValue {
   valueTo: number | null;
 }
 
-interface AdditionalFilters {
+export interface AdditionalFiltersState {
   floor: RangeValue;
   totalArea: RangeValue;
   livingArea: RangeValue;
@@ -54,27 +54,23 @@ export interface FilterState {
 
 export interface FilterOptionsProps {
   count: number | null;
-  onFiltersChange: (
-    newFilters: Partial<FilterState>,
-    navigate?: boolean
-  ) => void;
 }
 
 export interface PriceProps {
   price: IPrice;
   currentCurrency: string;
-  onFiltersChange: (newFilters: Partial<FilterState>) => void;
+  onFiltersChange?: (newFilters: Partial<FilterState>) => void;
   isHome: boolean;
 }
 
 export interface RoomsProps {
   rooms: string[];
-  onFiltersChange: (newFilters: Partial<FilterState>) => void;
+  onFiltersChange?: (newFilters: Partial<FilterState>) => void;
 }
 
 export interface LocationProps {
   locations: string[];
-  onFiltersChange: (newFilters: Partial<FilterState>) => void;
+  onFiltersChange?: (newFilters: Partial<FilterState>) => void;
 }
 
 export interface SearchProps {
@@ -98,10 +94,6 @@ export interface SwitchFilterProps {
 }
 
 export interface AdditionalFiltersProps {
-  additionalFilters: AdditionalFilters;
+  additionalFilters: AdditionalFiltersState;
   count: number | null;
-  onFiltersChange: (
-    newFilters: Partial<FilterState>,
-    navigate?: boolean
-  ) => void;
 }

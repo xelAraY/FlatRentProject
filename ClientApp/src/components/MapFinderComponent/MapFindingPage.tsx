@@ -238,7 +238,7 @@ export const MapFindingPage = () => {
 
   return (
     <Stack flexDirection={"column"}>
-      <FilterOptions count={flatsCount} onFiltersChange={handleFiltersChange} />
+      <FilterOptions count={flatsCount} />
       <div
         style={{
           height: "100vh",

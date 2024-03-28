@@ -1,7 +1,8 @@
-import { Input, Slider, Stack, TextField } from "@mui/material";
+import { Slider, Stack, TextField } from "@mui/material";
 import { Button } from "src/shared";
 import { useState } from "react";
 import { FilterState, PriceProps } from "src/interfaces/SearchInterfaces";
+import { useSearchParams } from "react-router-dom";
 
 export const PopoverComponent = ({
   price,
@@ -9,6 +10,7 @@ export const PopoverComponent = ({
   onFiltersChange,
   isHome,
 }: PriceProps) => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [value, setValue] = useState<number[]>([price.min, price.max]);
 
   const currencies = [
@@ -23,32 +25,79 @@ export const PopoverComponent = ({
   const handleClickCurrBtn = (event: any) => {
     const { value } = event.currentTarget;
 
-    const newFilters: Partial<FilterState> = {
-      currentCurrency: value,
-    };
-
-    onFiltersChange(newFilters);
+    if (onFiltersChange) {
+      const newFilters: Partial<FilterState> = {
+        currentCurrency: value,
+      };
+      onFiltersChange(newFilters);
+    } else {
+      setSearchParams(
+        (urlParams) => {
+          if (value !== "") {
+            urlParams.set("currencyType", value);
+          } else {
+            urlParams.delete("currencyType");
+          }
+          return urlParams;
+        },
+        { replace: true }
+      );
+    }
   };
 
   const selectedBtn = { backgroundColor: "#bebebe" };
 
   const handleChange = (event: Event, newValue: number | number[]) => {
     const numbers: number[] = newValue as number[];
-    const newFilters: Partial<FilterState> = {
-      minPrice: numbers[0],
-      maxPrice: numbers[1],
-    };
+
+    if (onFiltersChange) {
+      const newFilters: Partial<FilterState> = {
+        minPrice: numbers[0],
+        maxPrice: numbers[1],
+      };
+      onFiltersChange(newFilters);
+    } else {
+      setSearchParams(
+        (urlParams) => {
+          if (numbers[0] !== 0) {
+            urlParams.set("minPrice", numbers[0].toString());
+          } else {
+            urlParams.delete("minPrice");
+          }
+          if (numbers[1] !== 0) {
+            urlParams.set("maxPrice", numbers[1].toString());
+          } else {
+            urlParams.delete("maxPrice");
+          }
+          return urlParams;
+        },
+        { replace: true }
+      );
+    }
     setValue(numbers);
-    onFiltersChange(newFilters);
   };
 
   const handleMinPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const minPrice = Number(event.target.value);
     if (!isNaN(minPrice)) {
-      const newFilters: Partial<FilterState> = {
-        minPrice: minPrice,
-      };
-      onFiltersChange(newFilters);
+      if (onFiltersChange) {
+        const newFilters: Partial<FilterState> = {
+          minPrice: minPrice,
+        };
+        onFiltersChange(newFilters);
+      } else {
+        setSearchParams(
+          (urlParams) => {
+            if (minPrice !== 0) {
+              urlParams.set("minPrice", minPrice.toString());
+            } else {
+              urlParams.delete("minPrice");
+            }
+            return urlParams;
+          },
+          { replace: true }
+        );
+      }
 
       setValue((prevValue) => {
         const newValue = [...prevValue];
@@ -61,10 +110,24 @@ export const PopoverComponent = ({
   const handleMaxPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const maxPrice = Number(event.target.value);
     if (!isNaN(maxPrice)) {
-      const newFilters: Partial<FilterState> = {
-        maxPrice: maxPrice,
-      };
-      onFiltersChange(newFilters);
+      if (onFiltersChange) {
+        const newFilters: Partial<FilterState> = {
+          maxPrice: maxPrice,
+        };
+        onFiltersChange(newFilters);
+      } else {
+        setSearchParams(
+          (urlParams) => {
+            if (maxPrice !== 0) {
+              urlParams.set("maxPrice", maxPrice.toString());
+            } else {
+              urlParams.delete("maxPrice");
+            }
+            return urlParams;
+          },
+          { replace: true }
+        );
+      }
 
       setValue((prevValue) => {
         const newValue = [...prevValue];

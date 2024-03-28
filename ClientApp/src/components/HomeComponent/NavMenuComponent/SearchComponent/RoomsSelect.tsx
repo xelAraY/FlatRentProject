@@ -5,9 +5,11 @@ import {
   Select,
   SelectChangeEvent,
 } from "@mui/material";
+import { URLSearchParamsInit, useSearchParams } from "react-router-dom";
 import { FilterState, RoomsProps } from "src/interfaces/SearchInterfaces";
 
 export const RoomsSelect = ({ rooms, onFiltersChange }: RoomsProps) => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const handleRoomsCountChange = (event: SelectChangeEvent<typeof rooms>) => {
     const {
       target: { value },
@@ -15,11 +17,24 @@ export const RoomsSelect = ({ rooms, onFiltersChange }: RoomsProps) => {
 
     const newRooms = Array.isArray(value) ? value : [value];
 
-    const newFilters: Partial<FilterState> = {
-      rooms: newRooms,
-    };
-
-    onFiltersChange(newFilters);
+    if (onFiltersChange) {
+      const newFilters: Partial<FilterState> = {
+        rooms: newRooms,
+      };
+      onFiltersChange(newFilters);
+    } else {
+      setSearchParams(
+        (urlParams) => {
+          if (newRooms.length > 0) {
+            urlParams.set("numberOfRooms", newRooms.join(","));
+          } else {
+            urlParams.delete("numberOfRooms");
+          }
+          return urlParams;
+        },
+        { replace: true }
+      );
+    }
   };
 
   const roomsAmount = ["1", "2", "3", "4", "5", "6+"];
