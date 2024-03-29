@@ -2,6 +2,7 @@ import { SignInPage } from "./components/SignInComponent/SignInPage";
 import { Home } from "./components/HomeComponent/Home";
 import { SignUpPage } from "./components/SignUpComponent/SignUpPage";
 import { RentFindingPage } from "./components/RentFinderComponent/RentFindingPage";
+import { FlatInfoPage } from "./components/flat-info-page";
 import { MapFindingPage } from "./components/MapFinderComponent/MapFindingPage";
 
 const AppRoutes = [
@@ -18,8 +19,12 @@ const AppRoutes = [
     element: <SignInPage />,
   },
   {
-    path: "/rental-search/:flats",
+    path: "/flats",
     element: <RentFindingPage />,
+  },
+  {
+    path: "/flats/:flatId",
+    element: <FlatInfoPage />,
   },
   {
     path: "/rental-search/map",

@@ -4,9 +4,12 @@ export interface RentObjectInformation {
   owner: Owner;
   address: Address;
   photos: string[];
+  appliances?: string[];
+  preferences?: string[];
+  additionalInformations?: string[];
 }
 
-interface RentObject {
+export interface RentObject {
   rentObjId: number;
   title: string;
   description: string;

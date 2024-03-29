@@ -17,29 +17,29 @@ export const App = () => {
     location.pathname !== "/rental-search/map";
 
   return (
-    <div>
-      <ThemeProvider
-        theme={createTheme({
-          palette: {},
-        })}
-      >
-        <Routes>
-          <Route
-            element={
-              <>
-                {showNavMenu && <NavMenu />}
+    <ThemeProvider
+      theme={createTheme({
+        palette: {},
+      })}
+    >
+      <Routes>
+        <Route
+          element={
+            <>
+              {showNavMenu && <NavMenu />}
+              <div style={{ flexGrow: 1, background: "#f3f5f7" }}>
                 <Outlet />
-                {showFooter && <Footer />}
-              </>
-            }
-          >
-            {AppRoutes.map((route, index) => {
-              const { element, ...rest } = route;
-              return <Route key={index} {...rest} element={element} />;
-            })}
-          </Route>
-        </Routes>
-      </ThemeProvider>
-    </div>
+              </div>
+              {showFooter && <Footer />}
+            </>
+          }
+        >
+          {AppRoutes.map((route, index) => {
+            const { element, ...rest } = route;
+            return <Route key={index} {...rest} element={element} />;
+          })}
+        </Route>
+      </Routes>
+    </ThemeProvider>
   );
 };
