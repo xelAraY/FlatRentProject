@@ -8,7 +8,6 @@ import { Stack, Typography } from "@mui/material";
 import { NavLink, useLocation } from "react-router-dom";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import { RentObjectInformation } from "src/interfaces/RentObj";
-import { FlatPreviewCard } from "../HomeComponent/ListingComponent/FlatPreviewCard";
 import { MapListPreviewCard } from "./MapListPreviewCard";
 
 const drawerWidth = 690;
@@ -36,8 +35,14 @@ export default function FlatsList({
     flatsCount === 1 ? "е" : flatsCount > 1 && flatsCount < 5 ? "я" : "й";
 
   return (
-    <Box sx={{ zIndex: 9999, position: "absolute", top: "50%" }}>
-      <Box>
+    <Box
+      sx={{
+        zIndex: 9999,
+        position: "absolute",
+        height: "-webkit-fill-available",
+      }}
+    >
+      <Box sx={{ position: "absolute", top: "45%" }}>
         <IconButton
           onClick={handleDrawerSwitch}
           edge="start"
@@ -71,6 +76,7 @@ export default function FlatsList({
           "& .MuiDrawer-paper": {
             width: drawerWidth,
             boxSizing: "border-box",
+            position: "absolute",
           },
         }}
         variant="persistent"

@@ -134,16 +134,27 @@ export const MapFindingPage = () => {
   const ending =
     flatsCount === 1 ? "е" : flatsCount > 1 && flatsCount < 5 ? "я" : "й";
 
+  map?.controls.add("smallMapDefaultSet");
+
   return (
-    <Stack flexDirection={"column"}>
+    <Stack
+      flexDirection={"column"}
+      height={"100%"}
+      sx={{
+        ".ymaps-2-1-79-zoom": {
+          display: "none",
+        },
+        ".ymaps-2-1-79-search": {
+          display: "none",
+        },
+      }}
+    >
       <FilterOptions count={flatsCount} path="/flats/map?" />
-      <div
-        style={
-          {
-            // height: "535px",
-            // width: "100%",
-          }
-        }
+      <Stack
+        style={{
+          height: "100%",
+          width: "100%",
+        }}
       >
         <YMaps
           query={{
@@ -210,8 +221,8 @@ export const MapFindingPage = () => {
                   }}
                   options={{
                     preset: showCost
-                      ? "islands#violetStretchyIcon"
-                      : "islands#violetCircleDotIcon",
+                      ? "islands#blueStretchyIcon"
+                      : "islands#blueCircleDotIcon",
                   }}
                   onClick={(e: any) => console.log(placemark.coordinates)}
                 />
@@ -220,7 +231,7 @@ export const MapFindingPage = () => {
             <ZoomControl />
           </Map>
         </YMaps>
-      </div>
+      </Stack>
     </Stack>
   );
 };
