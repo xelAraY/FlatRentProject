@@ -65,6 +65,11 @@ export const RoomsSelect = ({ rooms, onFiltersChange }: RoomsProps) => {
             },
           },
         }}
+        // sx={{
+        //   ".MuiOutlinedInput-input": {
+        //     padding: "12px 12px",
+        //   },
+        // }}
       >
         {roomsAmount.map((amount, index) => (
           <MenuItem

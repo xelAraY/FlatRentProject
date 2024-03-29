@@ -14,6 +14,7 @@ import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "src/shared";
 import { FilterOptions } from "../RentFinderComponent/FilterOptions";
+import FlatsList from "./FlatsList";
 
 interface PlacemarkInfo {
   coordinates: [number, number];
@@ -40,8 +41,13 @@ export const MapFindingPage = () => {
   const [rentObjects, setRentObjects] = useState<RentObjectInformation[]>([]);
   const [mapBounds, setMapBounds] = useState<MapBounds>();
   const location = useLocation();
+  const [open, setOpen] = useState(false);
 
   const navigate = useNavigate();
+
+  const handleFlatsListOpen = (isOpen: boolean) => {
+    setOpen(isOpen);
+  };
 
   map?.events.add("boundschange", function (e) {
     if (e.get("newBounds") !== e.get("oldBounds")) {
@@ -89,113 +95,6 @@ export const MapFindingPage = () => {
     setLoading(false);
   }, [location.search]);
 
-  // const fetchAllData = async () => {
-  //   console.log(location.search.toString());
-
-  //   const response = await fetch(
-  //     `api/search/filter${
-  //       location.search.toString() === ""
-  //         ? "?"
-  //         : location.search.toString() + "&"
-  //     }showData=${filters.showData}`
-  //   );
-  //   const data = await response.json();
-
-  //   console.log("Данные с сервера: ", data);
-  //   if (response.ok) {
-  //     setRentObjects(data);
-  //   } else {
-  //     console.error("Ошибка при получении данных", data.message);
-  //   }
-  // };
-
-  // const fetchMapData = async () => {
-  //   try {
-  //     const showData = filters.showData;
-  //     showData && setLoading(true);
-  //     const paramsArray = [];
-  //     filters.rooms.length > 0 &&
-  //       paramsArray.push(`numberOfRooms=${filters.rooms.join(",")}`);
-  //     filters.locations.length > 0 &&
-  //       paramsArray.push(`locations=${filters.locations.join(",")}`);
-  //     filters.minPrice !== 0 &&
-  //       paramsArray.push(`minPrice=${filters.minPrice}`);
-  //     filters.maxPrice !== 0 &&
-  //       paramsArray.push(`maxPrice=${filters.maxPrice}`);
-  //     paramsArray.push(`currencyType=${filters.currentCurrency}`);
-  //     filters.bathroom.length > 0 &&
-  //       paramsArray.push(`bathroomType=${filters.bathroom.join(",")}`);
-  //     filters.balcony.length > 0 &&
-  //       paramsArray.push(`balconyType=${filters.balcony.join(",")}`);
-  //     filters.appliances.length > 0 &&
-  //       paramsArray.push(`appliances=${filters.appliances.join(",")}`);
-  //     filters.preferences.length > 0 &&
-  //       paramsArray.push(`preferences=${filters.preferences.join(",")}`);
-  //     filters.prepayment.length > 0 &&
-  //       paramsArray.push(`prepayment=${filters.prepayment.join(",")}`);
-
-  //     !!filters.rentalPeriod &&
-  //       paramsArray.push(`rentalPeriod=${filters.rentalPeriod}`);
-
-  //     filters.floor.valueFrom &&
-  //       paramsArray.push(`floorFrom=${filters.floor.valueFrom}`);
-  //     filters.floor.valueTo &&
-  //       paramsArray.push(`floorTo=${filters.floor.valueTo}`);
-
-  //     filters.totalArea.valueFrom &&
-  //       paramsArray.push(`totalAreaFrom=${filters.totalArea.valueFrom}`);
-  //     filters.totalArea.valueTo &&
-  //       paramsArray.push(`totalAreaTo=${filters.totalArea.valueTo}`);
-
-  //     filters.livingArea.valueFrom &&
-  //       paramsArray.push(`livingAreaFrom=${filters.livingArea.valueFrom}`);
-  //     filters.livingArea.valueTo &&
-  //       paramsArray.push(`livingAreaTo=${filters.livingArea.valueTo}`);
-
-  //     filters.kitchenArea.valueFrom &&
-  //       paramsArray.push(`kitchenAreaFrom=${filters.kitchenArea.valueFrom}`);
-  //     filters.kitchenArea.valueTo &&
-  //       paramsArray.push(`kitchenAreaTo=${filters.kitchenArea.valueTo}`);
-
-  //     filters.furniture && paramsArray.push(`furniture=${filters.furniture}`);
-  //     filters.withPhotos && paramsArray.push(`photos=${filters.withPhotos}`);
-
-  //     const queryParams = paramsArray.join("&");
-  //     // const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-  //     // delay(5000);
-  //     withNavigate &&
-  //       navigate(
-  //         `/rental-search/map??leftX=${mapBounds?.leftX}&rightX=${
-  //           mapBounds?.rightX
-  //         }&bottomY=${mapBounds?.bottomY}&topY=${mapBounds?.topY}&showData=${
-  //           filters.showData
-  //         }${queryParams ? "&" + queryParams : ""}`
-  //       );
-  //     const response = await fetch(
-  //       `api/search/filter?leftX=${mapBounds?.leftX}&rightX=${
-  //         mapBounds?.rightX
-  //       }&bottomY=${mapBounds?.bottomY}&topY=${mapBounds?.topY}&showData=${
-  //         filters.showData
-  //       }${queryParams ? "&" + queryParams : ""}`
-  //     );
-  //     // const response = await fetch(
-  //     //   `api/search/map?leftX=${mapBounds?.leftX}&rightX=${mapBounds?.rightX}&bottomY=${mapBounds?.bottomY}&topY=${mapBounds?.topY}`
-  //     // );
-  //     const data = await response.json();
-
-  //     console.log("Данные для карты: ", data);
-  //     if (response.ok) {
-  //       setRentObjects(data);
-  //     } else {
-  //       console.error("Ошибка при получении данных", data.message);
-  //     }
-  //   } catch (error) {
-  //     console.error("Произошла ошибка:", error);
-  //   } finally {
-  //     filters.showData && setLoading(false);
-  //   }
-  // };
-
   useEffect(() => {
     if (mapBounds !== undefined) {
       console.log("Координаты карты: ", mapBounds);
@@ -209,13 +108,8 @@ export const MapFindingPage = () => {
         },
         { replace: true }
       );
-      //fetchMapData();
     }
   }, [mapBounds]);
-
-  // useEffect(() => {
-  //   fetchAllData();
-  // }, []);
 
   useEffect(() => {
     console.log("Установка coordinates");
@@ -240,22 +134,16 @@ export const MapFindingPage = () => {
   const ending =
     flatsCount === 1 ? "е" : flatsCount > 1 && flatsCount < 5 ? "я" : "й";
 
-  // const handleFiltersChange = (
-  //   newFilters: Partial<FilterState>,
-  //   navigate?: boolean
-  // ) => {
-  //   setFilters((prevFilters) => ({ ...prevFilters, ...newFilters }));
-  //   setWithNavigate(navigate ?? true);
-  // };
-
   return (
     <Stack flexDirection={"column"}>
       <FilterOptions count={flatsCount} path="/rental-search/map?" />
       <div
-        style={{
-          height: "100vh",
-          width: "100vw",
-        }}
+        style={
+          {
+            // height: "535px",
+            // width: "100%",
+          }
+        }
       >
         <YMaps
           query={{
@@ -270,12 +158,17 @@ export const MapFindingPage = () => {
             options={{ minZoom: 5 }}
             instanceRef={(ref) => setMap(ref)}
           >
+            <FlatsList
+              onListSwitch={handleFlatsListOpen}
+              flatsCount={flatsCount}
+              rentObjects={rentObjects}
+            />
             <div
               style={{
                 position: "absolute",
                 backgroundColor: "#1d2126b3",
                 zIndex: 9999,
-                left: "45%",
+                left: open ? "67%" : "45%",
                 top: "30%",
                 padding: "8px 16px",
                 color: "white",
@@ -286,7 +179,6 @@ export const MapFindingPage = () => {
                 Найдено {flatsCount} объявлени{ending}
               </Typography>
             </div>
-
             <Button
               variant="contained"
               startIcon={<FormatListBulletedIcon />}
@@ -296,7 +188,7 @@ export const MapFindingPage = () => {
                 fontWeight: 600,
                 position: "absolute",
                 bottom: "5%",
-                left: "47%",
+                left: open ? "69.5%" : "47.5%",
                 zIndex: 9999,
               }}
               color="primary"
