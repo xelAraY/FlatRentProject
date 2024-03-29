@@ -48,7 +48,7 @@ export const RentFindingPage = () => {
       overflow="auto"
       style={{ backgroundColor: "#f3f5f7" }}
     >
-      <FilterOptions count={flatsCount} path="/rental-search/flats?" />
+      <FilterOptions count={flatsCount} path="/flats?" />
       <Stack
         flexDirection={"column"}
         style={{ padding: "56px 56px 80px 56px" }}
@@ -70,7 +70,7 @@ export const RentFindingPage = () => {
               }}
             />
             <NavLink
-              to={`/rental-search/map${location.search}`}
+              to={`/flats/map${location.search}`}
               style={{ textDecoration: "none" }}
             >
               <Stack flexDirection={"row"} alignItems={"center"}>

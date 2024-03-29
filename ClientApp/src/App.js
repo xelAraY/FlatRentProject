@@ -14,7 +14,7 @@ export const App = () => {
   const showFooter =
     location.pathname !== "/sign-in" &&
     location.pathname !== "/sign-up" &&
-    location.pathname !== "/rental-search/map";
+    location.pathname !== "/flats/map";
 
   return (
     <ThemeProvider

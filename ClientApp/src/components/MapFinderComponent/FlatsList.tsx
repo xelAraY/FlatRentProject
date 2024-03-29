@@ -98,10 +98,7 @@ export default function FlatsList({
                 margin: "0 16px",
               }}
             />
-            <NavLink
-              to={`/rental-search/flats`}
-              style={{ textDecoration: "none" }}
-            >
+            <NavLink to={`/flats`} style={{ textDecoration: "none" }}>
               <Stack flexDirection={"row"} alignItems={"center"}>
                 <FormatListBulletedIcon
                   style={{ marginRight: "6px" }}

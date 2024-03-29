@@ -136,7 +136,7 @@ export const MapFindingPage = () => {
 
   return (
     <Stack flexDirection={"column"}>
-      <FilterOptions count={flatsCount} path="/rental-search/map?" />
+      <FilterOptions count={flatsCount} path="/flats/map?" />
       <div
         style={
           {
@@ -182,7 +182,7 @@ export const MapFindingPage = () => {
             <Button
               variant="contained"
               startIcon={<FormatListBulletedIcon />}
-              onClick={() => navigate("/rental-search/flats")}
+              onClick={() => navigate("/flats")}
               sx={{
                 fontSize: "16px",
                 fontWeight: 600,

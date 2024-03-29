@@ -27,7 +27,7 @@ const AppRoutes = [
     element: <FlatInfoPage />,
   },
   {
-    path: "/rental-search/map",
+    path: "/flats/map",
     element: <MapFindingPage />,
   },
 ];

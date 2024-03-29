@@ -175,7 +175,7 @@ export const AdditionalFilters = ({
   }, [filters]);
 
   const handleShowDataClick = () => {
-    navigate(`/rental-search/flats?${getSearchParams()}`);
+    navigate(`/flats?${getSearchParams()}`);
     handleClose();
   };
 
