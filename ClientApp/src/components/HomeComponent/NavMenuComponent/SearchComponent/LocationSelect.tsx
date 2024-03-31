@@ -29,7 +29,7 @@ export const LocationsSelect = ({
     } else {
       setSearchParams(
         (urlParams) => {
-          if (locations.length > 0) {
+          if (newLocations.length > 0) {
             urlParams.set("locations", newLocations.join(","));
           } else {
             urlParams.delete("locations");
@@ -41,7 +41,7 @@ export const LocationsSelect = ({
     }
   };
 
-  const roomsAmount = [
+  const locationsAmount = [
     "Могилев",
     "Минск",
     "Брест",
@@ -77,7 +77,7 @@ export const LocationsSelect = ({
           },
         }}
       >
-        {roomsAmount.map((amount, index) => (
+        {locationsAmount.map((amount, index) => (
           <MenuItem style={{ borderRadius: "4px" }} value={amount} key={index}>
             {amount}
           </MenuItem>

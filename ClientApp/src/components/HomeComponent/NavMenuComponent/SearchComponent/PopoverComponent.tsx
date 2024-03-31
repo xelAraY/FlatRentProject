@@ -50,30 +50,12 @@ export const PopoverComponent = ({
   const handleChange = (event: Event, newValue: number | number[]) => {
     const numbers: number[] = newValue as number[];
 
-    if (onFiltersChange) {
-      const newFilters: Partial<FilterState> = {
-        minPrice: numbers[0],
-        maxPrice: numbers[1],
-      };
-      onFiltersChange(newFilters);
-    } else {
-      setSearchParams(
-        (urlParams) => {
-          if (numbers[0] !== 0) {
-            urlParams.set("minPrice", numbers[0].toString());
-          } else {
-            urlParams.delete("minPrice");
-          }
-          if (numbers[1] !== 0) {
-            urlParams.set("maxPrice", numbers[1].toString());
-          } else {
-            urlParams.delete("maxPrice");
-          }
-          return urlParams;
-        },
-        { replace: true }
-      );
-    }
+    const newFilters: Partial<FilterState> = {
+      minPrice: numbers[0],
+      maxPrice: numbers[1],
+    };
+    onFiltersChange?.(newFilters);
+
     setValue(numbers);
   };
 
@@ -90,8 +72,12 @@ export const PopoverComponent = ({
           (urlParams) => {
             if (minPrice !== 0) {
               urlParams.set("minPrice", minPrice.toString());
+              urlParams.set("currencyType", currentCurrency);
             } else {
               urlParams.delete("minPrice");
+              if (!urlParams.get("maxPrice")) {
+                urlParams.delete("currencyType");
+              }
             }
             return urlParams;
           },
@@ -120,8 +106,12 @@ export const PopoverComponent = ({
           (urlParams) => {
             if (maxPrice !== 0) {
               urlParams.set("maxPrice", maxPrice.toString());
+              urlParams.set("currencyType", currentCurrency);
             } else {
               urlParams.delete("maxPrice");
+              if (!urlParams.get("minPrice")) {
+                urlParams.delete("currencyType");
+              }
             }
             return urlParams;
           },
@@ -138,7 +128,7 @@ export const PopoverComponent = ({
   };
 
   const valueText = (value: number) => `${value} ${currentCurrency}`;
-
+  console.log("values ", value);
   return (
     <Stack flexDirection="column" spacing={2} padding={2} width={"min-content"}>
       <Stack flexDirection="row" spacing={1} useFlexGap>
@@ -161,7 +151,7 @@ export const PopoverComponent = ({
       </Stack>
       <Stack flexDirection="row" spacing={2} useFlexGap>
         <TextField
-          value={value[0] === 0 ? null : value[0]}
+          value={value[0] === 0 ? "" : value[0]}
           onChange={handleMinPriceChange}
           label="От"
           variant="standard"
@@ -169,7 +159,7 @@ export const PopoverComponent = ({
           key={"min"}
         />
         <TextField
-          value={price.max !== 0 ? price.max : null}
+          value={price.max !== 0 ? price.max : ""}
           onChange={handleMaxPriceChange}
           label="До"
           variant="standard"

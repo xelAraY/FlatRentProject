@@ -15,21 +15,27 @@ const drawerWidth = 690;
 interface FlatsListProps {
   onListSwitch: (isOpen: boolean) => void;
   flatsCount: number;
+  isOpen: boolean;
   rentObjects: RentObjectInformation[];
 }
 
 export default function FlatsList({
   onListSwitch,
   flatsCount,
+  isOpen,
   rentObjects,
 }: FlatsListProps) {
-  const [open, setOpen] = React.useState(false);
+  // const [open, setOpen] = React.useState(isOpen);
   const location = useLocation();
 
   const handleDrawerSwitch = () => {
-    onListSwitch(!open);
-    setOpen(!open);
+    // setOpen(!open);
+    onListSwitch(!isOpen);
   };
+
+  React.useEffect(() => {
+    console.log("Open: ", isOpen);
+  }, []);
 
   const ending =
     flatsCount === 1 ? "е" : flatsCount > 1 && flatsCount < 5 ? "я" : "й";
@@ -52,12 +58,12 @@ export default function FlatsList({
             borderRadius: "0 10px 10px 0",
             backgroundColor: "#1976d2",
             marginLeft: "0",
-            transform: open ? "translateX(690px)" : "translateX(0)",
+            transform: isOpen ? "translateX(690px)" : "translateX(0)",
             transition: "transform 225ms cubic-bezier(0, 0, 0.2, 1) 0ms",
           }}
           size="large"
         >
-          {open ? (
+          {isOpen ? (
             <KeyboardDoubleArrowLeftIcon
               fontSize="large"
               style={{ color: "white" }}
@@ -81,7 +87,7 @@ export default function FlatsList({
         }}
         variant="persistent"
         anchor="left"
-        open={open}
+        open={isOpen}
       >
         <Stack>
           <Typography
