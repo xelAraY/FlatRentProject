@@ -175,7 +175,7 @@ export const AdditionalFilters = ({
   }, [filters]);
 
   const handleShowDataClick = () => {
-    navigate(`/flats?${getSearchParams()}`);
+    navigate(`${path}?${getSearchParams()}`);
     handleClose();
   };
 
@@ -287,6 +287,7 @@ export const AdditionalFilters = ({
         open={open}
         onClose={handleClose}
         scroll={"paper"}
+        style={{ zIndex: 100000 }}
       >
         <DialogTitle id="scroll-dialog-title">
           <Box>

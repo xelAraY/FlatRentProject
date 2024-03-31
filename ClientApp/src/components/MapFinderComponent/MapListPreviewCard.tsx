@@ -1,19 +1,22 @@
 import {
+  Alert,
   Box,
   Button,
   Card,
   CardActionArea,
   CardContent,
+  Snackbar,
   Stack,
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { RentObjectInformation } from "src/interfaces/RentObj";
 import "react-image-gallery/styles/css/image-gallery.css";
-import ImageGallery from "react-image-gallery";
-import { StyledImageGalery } from "../HomeComponent/ListingComponent/styled";
 import { ImageGalleryStyled } from "src/shared";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import SyncOutlinedIcon from "@mui/icons-material/SyncOutlined";
+import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 
 interface CardProps {
   rentInformation: RentObjectInformation;
@@ -43,6 +46,8 @@ export const MapListPreviewCard = ({
   const heigth = isSuperLarge ? 700 : isLarge ? 500 : isMedium ? 300 : 250;
 
   const [images, setImages] = React.useState<ForPhotos[]>([]);
+  const [showContact, setShowContact] = useState(false);
+  const [isAlertOpen, setIsAlertOpen] = React.useState(false);
 
   React.useEffect(() => {
     let imagess: ForPhotos[] = [];
@@ -67,6 +72,26 @@ export const MapListPreviewCard = ({
       : currency === "EUR"
       ? Math.round(price * 3.5045)
       : price;
+
+  const onCopyPhoneNumber = async () => {
+    await navigator.clipboard.writeText(rentInformation.owner.phoneNumber);
+    openAlert();
+  };
+
+  const openAlert = () => {
+    setIsAlertOpen(true);
+  };
+
+  const closeAlert = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setIsAlertOpen(false);
+  };
 
   return (
     <Box padding={"10px 20px"}>
@@ -110,15 +135,22 @@ export const MapListPreviewCard = ({
               }}
             >
               <Stack>
-                <Stack flexDirection="row" alignItems="center">
-                  <Typography gutterBottom variant="h6" fontWeight="600">
-                    {bynPrice} р./мес.&nbsp;
-                  </Typography>
-                  <Typography gutterBottom variant="body2" fontWeight="400">
-                    ≈{rentInformation.rentObject.rentPrice}{" "}
-                    {rentInformation.currency}
-                    /мес.
-                  </Typography>
+                <Stack
+                  flexDirection="row"
+                  alignItems="center"
+                  justifyContent={"space-between"}
+                >
+                  <Stack flexDirection="row" alignItems="center">
+                    <Typography gutterBottom variant="h6" fontWeight="600">
+                      {bynPrice} р./мес.&nbsp;
+                    </Typography>
+                    <Typography gutterBottom variant="body2" fontWeight="400">
+                      ≈{rentInformation.rentObject.rentPrice}{" "}
+                      {rentInformation.currency}
+                      /мес.
+                    </Typography>
+                  </Stack>
+                  <FavoriteBorderOutlinedIcon fontSize="medium" />
                 </Stack>
                 <Stack flexDirection="row" flexWrap="wrap" gap="0.5rem">
                   <Typography variant="subtitle2">
@@ -151,22 +183,88 @@ export const MapListPreviewCard = ({
                   </Typography>
                 </Stack>
               </Stack>
-              <Box display={"flex"} justifyContent={"end"}>
-                <Button
-                  variant="contained"
-                  color="info"
-                  style={{ textTransform: "none" }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    console.log("show contacts");
-                  }}
+              <Stack>
+                <Box display={"flex"} justifyContent={"end"}>
+                  {!showContact ? (
+                    <Button
+                      variant="contained"
+                      color="info"
+                      style={{ textTransform: "none" }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowContact(true);
+                        console.log("show contacts");
+                      }}
+                    >
+                      {/* не удаляй e.stopPropagation(); а то будет вызываться onClick у Card */}
+                      Контакт
+                    </Button>
+                  ) : (
+                    <Stack textAlign={"end"}>
+                      <Stack
+                        flexDirection={"row"}
+                        alignItems={"center"}
+                        spacing={"5px"}
+                        useFlexGap
+                      >
+                        <Typography
+                          fontSize={18}
+                          fontWeight={600}
+                          color="#1976d2"
+                          style={{ flexGrow: 1 }}
+                        >
+                          {rentInformation.owner.phoneNumber}{" "}
+                        </Typography>
+                        <ContentCopyIcon
+                          sx={{
+                            fontSize: "15px",
+                            color: "#1976d2",
+                            ":hover": {
+                              color: "#1565c0",
+                            },
+                          }}
+                          onClick={onCopyPhoneNumber}
+                        />
+                      </Stack>
+
+                      <Typography>{rentInformation.owner.name}</Typography>
+                    </Stack>
+                  )}
+                </Box>
+                <Stack
+                  flexDirection={"row"}
+                  marginTop={"6px"}
+                  justifyContent={"space-between"}
                 >
-                  {/* не удаляй e.stopPropagation(); а то будет вызываться onClick у Card */}
-                  Контакт
-                </Button>
-              </Box>
+                  <Stack
+                    flexDirection={"row"}
+                    spacing={"3px"}
+                    useFlexGap
+                    alignItems={"center"}
+                  >
+                    <Typography fontSize={14}>
+                      {`${new Date(
+                        rentInformation.rentObject.updatedAt
+                      ).toLocaleDateString()}`}
+                    </Typography>
+                    <SyncOutlinedIcon fontSize="inherit" />
+                  </Stack>
+
+                  <Typography fontSize={14}>Контактное лицо</Typography>
+                </Stack>
+              </Stack>
             </CardContent>
           </Stack>
+          <Snackbar
+            open={isAlertOpen}
+            autoHideDuration={2000}
+            onClose={closeAlert}
+            anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          >
+            <Alert onClose={closeAlert} severity="success">
+              Скопировано в буфер обмена
+            </Alert>
+          </Snackbar>
         </CardActionArea>
       </Card>
     </Box>

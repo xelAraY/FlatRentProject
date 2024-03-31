@@ -5,7 +5,7 @@ import {
   Select,
   SelectChangeEvent,
 } from "@mui/material";
-import { URLSearchParamsInit, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { FilterState, RoomsProps } from "src/interfaces/SearchInterfaces";
 
 export const RoomsSelect = ({ rooms, onFiltersChange }: RoomsProps) => {
@@ -16,7 +16,6 @@ export const RoomsSelect = ({ rooms, onFiltersChange }: RoomsProps) => {
     } = event;
 
     const newRooms = Array.isArray(value) ? value : [value];
-
     if (onFiltersChange) {
       const newFilters: Partial<FilterState> = {
         rooms: newRooms,

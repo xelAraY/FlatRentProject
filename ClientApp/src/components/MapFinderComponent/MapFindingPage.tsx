@@ -19,6 +19,7 @@ import FlatsList from "./FlatsList";
 interface PlacemarkInfo {
   coordinates: [number, number];
   cost: string;
+  id: number;
 }
 
 interface MapBounds {
@@ -36,9 +37,12 @@ export const MapFindingPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [placemarks, setPlacemarks] = useState<PlacemarkInfo[]>([]);
   const [map, setMap] = React.useState<ymaps.Map>();
+  const [clusterer, setClusterer] = React.useState<ymaps.Clusterer>();
   const [showCost, setShowCost] = React.useState(false);
   const [loading, setLoading] = useState(false);
   const [rentObjects, setRentObjects] = useState<RentObjectInformation[]>([]);
+  const [selectedObject, setSelectedObject] =
+    useState<RentObjectInformation | null>(null);
   const [mapBounds, setMapBounds] = useState<MapBounds>();
   const location = useLocation();
   const [open, setOpen] = useState(false);
@@ -46,8 +50,47 @@ export const MapFindingPage = () => {
   const navigate = useNavigate();
 
   const handleFlatsListOpen = (isOpen: boolean) => {
+    if (!isOpen) {
+      setSelectedObject(null);
+    }
     setOpen(isOpen);
   };
+
+  useEffect(() => {
+    if (selectedObject) {
+      setOpen(true);
+    } else {
+      setOpen(false);
+    }
+  }, [selectedObject]);
+
+  const handlePlacemarkClick = (id: number) => {
+    const selectedObject = rentObjects.find(
+      (rentObj) => rentObj.rentObject.rentObjId === id
+    );
+
+    setSelectedObject((prevSelectedObject) => {
+      if (selectedObject !== undefined) {
+        if (
+          prevSelectedObject?.rentObject.rentObjId ===
+          selectedObject.rentObject.rentObjId
+        ) {
+          return null;
+        }
+        return selectedObject;
+      }
+      return null;
+    });
+  };
+
+  clusterer?.events.add("click", function (e) {
+    console.log("click clusterer", e);
+    // console.log("geo objects ", clusterer.getGeoObjects());
+    setOpen(!open);
+    // if (clusterer.getGeoObjects().length > 1) {
+    //   setSelectedObject(null);
+    // }
+  });
 
   map?.events.add("boundschange", function (e) {
     if (e.get("newBounds") !== e.get("oldBounds")) {
@@ -125,6 +168,7 @@ export const MapFindingPage = () => {
       return {
         coordinates: [rentInf.address.latitude, rentInf.address.longitude],
         cost: bynPrice.toString(),
+        id: rentInf.rentObject.rentObjId,
       };
     });
     setPlacemarks(placemarksArray);
@@ -149,7 +193,7 @@ export const MapFindingPage = () => {
         },
       }}
     >
-      <FilterOptions count={flatsCount} path="/flats/map?" />
+      <FilterOptions count={flatsCount} path="/flats/map" />
       <Stack
         style={{
           height: "100%",
@@ -171,8 +215,9 @@ export const MapFindingPage = () => {
           >
             <FlatsList
               onListSwitch={handleFlatsListOpen}
-              flatsCount={flatsCount}
-              rentObjects={rentObjects}
+              flatsCount={selectedObject ? 1 : flatsCount}
+              isOpen={open}
+              rentObjects={selectedObject ? [selectedObject] : rentObjects}
             />
             <div
               style={{
@@ -209,8 +254,9 @@ export const MapFindingPage = () => {
             <Clusterer
               options={{
                 preset: "islands#blackIcon",
-                groupByCoordinates: false,
+                hasBalloon: false,
               }}
+              instanceRef={(ref: ymaps.Clusterer) => setClusterer(ref)}
             >
               {placemarks.map((placemark, index) => (
                 <Placemark
@@ -220,11 +266,17 @@ export const MapFindingPage = () => {
                     iconContent: showCost ? `${placemark.cost}р` : "",
                   }}
                   options={{
-                    preset: showCost
-                      ? "islands#blueStretchyIcon"
-                      : "islands#blueCircleDotIcon",
+                    preset:
+                      showCost &&
+                      selectedObject?.rentObject.rentObjId === placemark.id
+                        ? "islands#yellowStretchyIcon"
+                        : showCost
+                        ? "islands#blueStretchyIcon"
+                        : selectedObject?.rentObject.rentObjId === placemark.id
+                        ? "islands#yellowCircleDotIcon"
+                        : "islands#blueCircleDotIcon",
                   }}
-                  onClick={(e: any) => console.log(placemark.coordinates)}
+                  onClick={() => handlePlacemarkClick(placemark.id)}
                 />
               ))}
             </Clusterer>
