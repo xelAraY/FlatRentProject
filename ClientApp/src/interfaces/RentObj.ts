@@ -43,7 +43,7 @@ interface Owner {
   lastLogin: Date;
 }
 
-interface Address {
+export interface Address {
   region: string;
   city: string;
   street: string;

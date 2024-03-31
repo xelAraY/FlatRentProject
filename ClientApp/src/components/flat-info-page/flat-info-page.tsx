@@ -2,8 +2,12 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import { RentObjectInformation } from "src/interfaces/RentObj";
 import { Grid, Stack } from "@mui/material";
-import { DescriptionPaper, DetailsPaper, MainPaper } from "./components";
-import { SingleObjectMap } from "src/shared";
+import {
+  DescriptionPaper,
+  DetailsPaper,
+  MainPaper,
+  LocationPaper,
+} from "./components";
 
 const FlatInfoPage: React.FC = () => {
   const { flatId } = useParams();
@@ -33,18 +37,7 @@ const FlatInfoPage: React.FC = () => {
               flatInfo={flatInfo?.rentObject}
               preferences={flatInfo?.preferences}
             />
-            <div
-              ref={mapRef}
-              style={{ height: "60vh", width: "100%", flexGrow: "1" }}
-            >
-              <SingleObjectMap
-                coordinates={[
-                  flatInfo?.address.latitude || 0,
-                  flatInfo?.address.longitude || 0,
-                ]}
-                houseNumber={flatInfo?.address.houseNumber || ""}
-              />
-            </div>
+            <LocationPaper locationInfo={flatInfo.address} mapRef={mapRef} />
           </Stack>
         </Grid>
         <Grid item xs="auto">

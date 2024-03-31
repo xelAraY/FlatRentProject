@@ -11,11 +11,11 @@ interface MapInfo {
 export const SingleObjectMap = ({ coordinates, houseNumber }: MapInfo) => {
   const [mapData, _setMapData] = useState({
     center: coordinates,
-    zoom: 16,
+    zoom: 15,
   });
 
   return (
-    <SingStyled className="TEST">
+    <SingStyled>
       <YMaps
         query={{
           load: "package.full",
