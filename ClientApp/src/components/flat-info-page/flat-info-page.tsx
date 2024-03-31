@@ -2,7 +2,8 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import { RentObjectInformation } from "src/interfaces/RentObj";
 import { Grid, Stack } from "@mui/material";
-import { DetailsPaper, MainPaper } from "./components";
+import { DescriptionPaper, DetailsPaper, MainPaper } from "./components";
+import { SingleObjectMap } from "src/shared";
 
 const FlatInfoPage: React.FC = () => {
   const { flatId } = useParams();
@@ -21,24 +22,38 @@ const FlatInfoPage: React.FC = () => {
 
   const scrollToMap = () => mapRef?.current?.scrollIntoView();
 
-  return (
-    <Stack p="3rem 5rem">
+  return flatInfo ? (
+    <Stack p="3rem 5rem" height="100%" width="100%">
       <Grid container columnGap="2rem">
         <Grid item xs={8}>
           <Stack gap="1rem">
             <MainPaper flatInfo={flatInfo} onScrollToMap={scrollToMap} />
+            <DescriptionPaper flatInfo={flatInfo?.rentObject} />
             <DetailsPaper
               flatInfo={flatInfo?.rentObject}
               preferences={flatInfo?.preferences}
             />
+            <div
+              ref={mapRef}
+              style={{ height: "60vh", width: "100%", flexGrow: "1" }}
+            >
+              <SingleObjectMap
+                coordinates={[
+                  flatInfo?.address.latitude || 0,
+                  flatInfo?.address.longitude || 0,
+                ]}
+                houseNumber={flatInfo?.address.houseNumber || ""}
+              />
+            </div>
           </Stack>
         </Grid>
         <Grid item xs="auto">
           <div style={{ position: "sticky", top: "10%" }}>info</div>
         </Grid>
       </Grid>
-      <div ref={mapRef}>MAP</div>
     </Stack>
+  ) : (
+    <></>
   );
 };
 

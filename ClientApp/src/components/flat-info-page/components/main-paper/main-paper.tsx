@@ -85,11 +85,10 @@ const MainPaper: React.FC<MainPaperProps> = ({ flatInfo, onScrollToMap }) => {
         gap: "1rem",
       }}
     >
-      {flatInfo?.rentObject?.title && (
-        <Typography variant="h4" fontWeight={600}>
-          {flatInfo?.rentObject?.title}
-        </Typography>
-      )}
+      <Typography variant="h4" fontWeight={600}>
+        {flatInfo?.rentObject?.title ||
+          `Сдается ${flatInfo?.rentObject?.roomsCount}-комнатная квартира`}
+      </Typography>
       <Stack
         flexDirection="row"
         gap="1rem"
@@ -134,7 +133,6 @@ const MainPaper: React.FC<MainPaperProps> = ({ flatInfo, onScrollToMap }) => {
           </IconButton>
         </Stack>
       </Stack>
-
       {flatInfo?.photos.length ? (
         <ImageGalleryStyled
           items={images}
@@ -158,7 +156,6 @@ const MainPaper: React.FC<MainPaperProps> = ({ flatInfo, onScrollToMap }) => {
           width="100%"
         />
       )}
-
       <Stack flexDirection="row" gap="2rem">
         <Stack>
           <Typography variant="h6" fontWeight={600}>

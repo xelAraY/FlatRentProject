@@ -11,18 +11,23 @@ interface MapInfo {
 export const SingleObjectMap = ({ coordinates, houseNumber }: MapInfo) => {
   const [mapData, _setMapData] = useState({
     center: coordinates,
-    zoom: 12,
+    zoom: 16,
   });
 
   return (
-    <SingStyled>
+    <SingStyled className="TEST">
       <YMaps
         query={{
           load: "package.full",
           apikey: "9b519c88-ed0c-45e5-934a-7132b8bc1451",
         }}
       >
-        <Map defaultState={mapData} options={{ minZoom: 5 }}>
+        <Map
+          defaultState={mapData}
+          options={{ minZoom: 5 }}
+          width={"100%"}
+          height={"100%"}
+        >
           <Placemark
             geometry={coordinates}
             properties={{
