@@ -61,6 +61,7 @@ const DetailsPaper: React.FC<DetailsPaperProps> = ({
           />
         )}
         <InfoRow title={"Предоплата"} value={`${flatInfo?.prepayment}`} />
+        <InfoRow title={"Срок аренды"} value={`${flatInfo?.rentalPeriod}`} />
         {flatInfo?.rent && (
           <InfoRow title={"Квартплата"} value={`${flatInfo.rent}`} />
         )}

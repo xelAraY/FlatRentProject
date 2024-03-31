@@ -11,7 +11,7 @@ interface MapInfo {
 export const SingleObjectMap = ({ coordinates, houseNumber }: MapInfo) => {
   const [mapData, _setMapData] = useState({
     center: coordinates,
-    zoom: 12,
+    zoom: 15,
   });
 
   return (
@@ -22,7 +22,12 @@ export const SingleObjectMap = ({ coordinates, houseNumber }: MapInfo) => {
           apikey: "9b519c88-ed0c-45e5-934a-7132b8bc1451",
         }}
       >
-        <Map defaultState={mapData} options={{ minZoom: 5 }}>
+        <Map
+          defaultState={mapData}
+          options={{ minZoom: 5 }}
+          width={"100%"}
+          height={"100%"}
+        >
           <Placemark
             geometry={coordinates}
             properties={{

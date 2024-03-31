@@ -1,11 +1,12 @@
-import { Box, Grid, Stack, Typography } from "@mui/material";
+import { Box, Grid, Link, Stack, Typography } from "@mui/material";
 
 interface InfoRowProps {
   title: string;
   value: string;
+  link?: string;
 }
 
-export const InfoRow: React.FC<InfoRowProps> = ({ title, value }) => {
+export const InfoRow: React.FC<InfoRowProps> = ({ title, value, link }) => {
   return (
     <>
       <Grid item xs={5}>
@@ -17,7 +18,13 @@ export const InfoRow: React.FC<InfoRowProps> = ({ title, value }) => {
         </Stack>
       </Grid>
       <Grid item xs={7}>
-        {value}
+        {link ? (
+          <Link href={link} target="_blank" underline="hover">
+            {value}
+          </Link>
+        ) : (
+          value
+        )}
       </Grid>
     </>
   );
