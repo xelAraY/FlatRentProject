@@ -7,6 +7,7 @@ import {
   DetailsPaper,
   MainPaper,
   LocationPaper,
+  ApplianciesPaper,
 } from "./components";
 
 const FlatInfoPage: React.FC = () => {
@@ -37,6 +38,7 @@ const FlatInfoPage: React.FC = () => {
               flatInfo={flatInfo?.rentObject}
               preferences={flatInfo?.preferences}
             />
+            <ApplianciesPaper appliancies={flatInfo.appliances} />
             <LocationPaper locationInfo={flatInfo.address} mapRef={mapRef} />
           </Stack>
         </Grid>

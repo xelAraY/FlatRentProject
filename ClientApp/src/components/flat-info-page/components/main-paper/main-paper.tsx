@@ -117,6 +117,7 @@ const MainPaper: React.FC<MainPaperProps> = ({ flatInfo, onScrollToMap }) => {
 
           <Link
             underline="hover"
+            variant="body1"
             onClick={onScrollToMap}
             sx={{ cursor: "pointer" }}
           >
