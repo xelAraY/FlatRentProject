@@ -11,7 +11,11 @@ import {
 import React from "react";
 import { RentObjectInformation } from "src/interfaces/RentObj";
 import "react-image-gallery/styles/css/image-gallery.css";
-import { ImageGalleryStyled } from "src/shared";
+import {
+  DOLLAR_EXCHANGE_RATE,
+  EURO_EXCHANGE_RATE,
+  ImageGalleryStyled,
+} from "src/shared";
 
 interface CardProps {
   rentInformation: RentObjectInformation;
@@ -63,9 +67,9 @@ export const FlatPreviewCard = ({
   const price = rentInformation.rentObject.rentPrice;
   const bynPrice =
     currency === "USD"
-      ? Math.round(price * 3.2063)
+      ? Math.round(price * DOLLAR_EXCHANGE_RATE)
       : currency === "EUR"
-      ? Math.round(price * 3.5045)
+      ? Math.round(price * EURO_EXCHANGE_RATE)
       : price;
 
   return (
