@@ -38,6 +38,9 @@ export const MapFindingPage = () => {
   const [placemarks, setPlacemarks] = useState<PlacemarkInfo[]>([]);
   const [map, setMap] = React.useState<ymaps.Map>();
   const [clusterer, setClusterer] = React.useState<ymaps.Clusterer>();
+
+  // const [newCoords, setNewCoords] = useState([53.900487, 27.555324]);
+
   const [showCost, setShowCost] = React.useState(false);
   const [loading, setLoading] = useState(false);
   const [rentObjects, setRentObjects] = useState<RentObjectInformation[]>([]);
@@ -211,7 +214,9 @@ export const MapFindingPage = () => {
             height={"100%"}
             defaultState={mapData}
             options={{ minZoom: 5 }}
-            instanceRef={(ref) => setMap(ref)}
+            instanceRef={(ref: React.SetStateAction<ymaps.Map | undefined>) =>
+              setMap(ref)
+            }
           >
             <FlatsList
               onListSwitch={handleFlatsListOpen}
@@ -281,6 +286,19 @@ export const MapFindingPage = () => {
               ))}
             </Clusterer>
             <ZoomControl />
+            {/* <Placemark
+              geometry={newCoords}
+              options={{ draggable: true }}
+              onDragEnd={(event: any) => {
+                setNewCoords(event.get("target").geometry.getCoordinates());
+              }}
+              instanceRef={testRef}
+              properties={{
+                hintContent: newCoords
+                  .map((coord) => coord.toString().substring(0, 9))
+                  .join(","),
+              }}
+            /> */}
           </Map>
         </YMaps>
       </Stack>

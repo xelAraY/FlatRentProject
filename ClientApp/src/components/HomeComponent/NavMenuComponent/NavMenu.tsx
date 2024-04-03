@@ -1,26 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import "./NavMenu.css";
-import { Avatar, Stack, Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { Button } from "src/shared";
 import { isLoggedIn } from "src/helpFunctions/tokenCheck";
 import PersonIcon from "@mui/icons-material/Person";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
 export const NavMenu = () => {
   const [isLogged, setIsLogged] = useState(false);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    console.log("token = ", localStorage.getItem("token"));
-    setIsLogged(!isLogged);
-  };
-
   useEffect(() => {
-    setIsLogged(isLoggedIn);
-  }, []);
+    setIsLogged(isLoggedIn());
+  }, [isLoggedIn()]);
 
-  const addNewPage = isLogged ? "/new" : "/sign-in";
+  const addNewPage = isLoggedIn() ? "/new" : "/sign-in";
 
   return (
     <header>
@@ -48,27 +43,47 @@ export const NavMenu = () => {
             {isLogged ? (
               <Stack
                 flexDirection="row"
-                spacing={2}
+                spacing={3}
                 useFlexGap
                 alignItems="center"
               >
-                <Avatar className="avatar-image">
-                  <PersonIcon />
-                </Avatar>
                 <NavLink
-                  to="/"
-                  className="nav-menu-link"
-                  onClick={handleLogout}
+                  to={"/account/favourites"}
+                  style={{ textDecoration: "none" }}
                 >
-                  Выйти
+                  <Stack
+                    flexDirection={"row"}
+                    alignItems={"center"}
+                    spacing={1}
+                    useFlexGap
+                  >
+                    <FavoriteIcon fontSize="large" />
+                    <Typography>Избранное</Typography>
+                  </Stack>
+                </NavLink>
+                <NavLink to={"/account"} style={{ textDecoration: "none" }}>
+                  {/* <Avatar className="avatar-image"> */}
+                  <Stack
+                    flexDirection={"row"}
+                    alignItems={"center"}
+                    spacing={1}
+                    useFlexGap
+                  >
+                    <PersonIcon fontSize="large" />
+                    <Typography>Профиль</Typography>
+                  </Stack>
+                  {/* </Avatar> */}
                 </NavLink>
               </Stack>
             ) : (
               <Stack flexDirection="row" spacing={2} useFlexGap>
-                <NavLink to="/sign-in" className="nav-menu-link">
+                {/* <NavLink to="/sign-in" className="nav-menu-link">
+                  Войти
+                </NavLink> */}
+                <NavLink to="/sign-in" className="shine-button">
                   Войти
                 </NavLink>
-                <NavLink to="/sign-up" className="nav-menu-link">
+                <NavLink to="/sign-up" className="shine-button">
                   Зарегистрироваться
                 </NavLink>
               </Stack>
