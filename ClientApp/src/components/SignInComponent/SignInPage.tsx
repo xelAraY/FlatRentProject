@@ -44,14 +44,14 @@ export const SignInPage = () => {
 
       const data = await response.json();
       if (response.ok) {
-        console.log("Успешная регистрация");
+        console.log("Успешный вход");
         localStorage.setItem("token", data.token);
         setIsError(false);
         navigate("/");
       } else {
         setIsError(true);
         setResponceMsg(data.message);
-        console.error("Ошибка регистрации: ", responceMsg);
+        console.error("Ошибка входа: ", responceMsg);
       }
     } catch (error) {
       console.error("Произошла ошибка:", error);
