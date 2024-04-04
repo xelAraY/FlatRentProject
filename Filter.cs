@@ -1,10 +1,12 @@
 
 using System.Net;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 public static class Filter
 {
-  public static async Task<List<object>> GetRecentRentObjectsCommonQuery(IQueryable<RentObject> rentObjectsQuery, ApplicationDbContext _context, bool showData = true, int? takeCount = null, MapParams? mapParams = null)
+  private static int listingsPerPage = 20;
+  public static async Task<List<object>> GetRecentRentObjectsCommonQuery(IQueryable<RentObject> rentObjectsQuery, ApplicationDbContext _context, bool showData = true, int? page = null, int? takeCount = null, MapParams? mapParams = null)
   {
     if (!showData)
     {
@@ -22,10 +24,12 @@ public static class Filter
       {
         query = query.OrderByDescending(ro => ro.CreatedAt).Take(takeCount.Value);
       }
-      else
-      {
-        query = query.OrderByDescending(ro => ro.CreatedAt);
+      else if (page.HasValue && page.Value > 0) {
+        query = query.OrderByDescending(ro => ro.CreatedAt).Skip((page.Value-1)*listingsPerPage).Take(listingsPerPage);  
+      } else {
+        query = query.OrderByDescending(ro => ro.CreatedAt);  
       }
+      
 
       var recentRentObjects = await query
           .Join(

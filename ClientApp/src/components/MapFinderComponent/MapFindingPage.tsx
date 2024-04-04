@@ -160,7 +160,13 @@ export const MapFindingPage = () => {
   const fetchData = async () => {
     const queryParams = new URLSearchParams(location.search);
 
-    console.log("Все данные");
+    setSearchParams(
+      (urlParams) => {
+        urlParams.delete("page");
+        return urlParams;
+      },
+      { replace: true }
+    );
 
     const response = await fetch(
       `api/search/filter?${
@@ -287,7 +293,7 @@ export const MapFindingPage = () => {
             <Button
               variant="contained"
               startIcon={<FormatListBulletedIcon />}
-              onClick={() => navigate("/flats")}
+              onClick={() => navigate("/flats?page=1")}
               sx={{
                 fontSize: "16px",
                 fontWeight: 600,

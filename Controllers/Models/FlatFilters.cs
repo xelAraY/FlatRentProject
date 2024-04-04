@@ -47,4 +47,5 @@ public class RentObjectFilter
   public decimal? TopY { get; set; }
 
   public bool ShowData { get; set; }
+  public int? Page { get; set; }
 }

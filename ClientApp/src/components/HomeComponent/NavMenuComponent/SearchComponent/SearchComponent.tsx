@@ -85,7 +85,7 @@ export const SearchComponent = () => {
           }}
         />
         <Stack flexDirection="row" justifyContent="space-between">
-          <NavLink to={"/flats"}>
+          <NavLink to={"/flats?page=1"}>
             <Button
               variant="outlined"
               style={{
@@ -101,7 +101,7 @@ export const SearchComponent = () => {
               </Typography>
             </Button>
           </NavLink>
-          <NavLink to={`/flats?${queryParams}`}>
+          <NavLink to={`/flats?page=1${queryParams ? "&" + queryParams : ""}`}>
             <Button
               variant="contained"
               style={{ marginRight: "6px", fontSize: "17px" }}
