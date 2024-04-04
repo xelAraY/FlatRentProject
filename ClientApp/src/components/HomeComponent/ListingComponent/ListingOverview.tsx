@@ -9,6 +9,7 @@ interface ListingOverviewProps {
   requestPath: string;
   title: string;
   subTitle: string;
+  favourites: number[];
 }
 
 export const ListingOverview = (props: ListingOverviewProps) => {
@@ -44,6 +45,8 @@ export const ListingOverview = (props: ListingOverviewProps) => {
   }, [props.requestPath]);
 
   const numberOfRentObjects = 4;
+
+  console.log("overview: ", props.favourites);
 
   return (
     <Stack
@@ -99,6 +102,9 @@ export const ListingOverview = (props: ListingOverviewProps) => {
                     onCardClick={(flatId: number) =>
                       navigate(`/flats/${flatId}`)
                     }
+                    isFavourite={props.favourites.includes(
+                      rentObject.rentObject.rentObjId
+                    )}
                   />
                 </Grid>
               ))}

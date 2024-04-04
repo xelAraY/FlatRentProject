@@ -1,9 +1,10 @@
 import { Box, Grid, Paper } from "@mui/material";
 import { NavigationBar } from "./NavigationBar";
 import { NavigationTopBar } from "./NavigationTopBar";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import { ProfilePage } from "./Pages/ProfilePage";
 import { HomePage } from "./Pages/HomePage";
+import { useEffect } from "react";
 
 export enum ElementType {
   Home,
@@ -16,6 +17,8 @@ export enum ElementType {
 }
 
 export const AccountPage = () => {
+  const navigate = useNavigate();
+
   const AccountRoutes = [
     {
       path: `/`,

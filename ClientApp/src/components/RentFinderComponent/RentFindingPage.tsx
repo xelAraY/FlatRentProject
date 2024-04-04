@@ -6,10 +6,13 @@ import { RentObjectInformation } from "src/interfaces/RentObj";
 import { FlatsList } from "./FlatsList";
 import { NoFoundObject } from "./NoFoundObject";
 import MapIcon from "@mui/icons-material/Map";
+import { isLoggedIn } from "src/helpFunctions/tokenCheck";
+import { jwtDecode } from "jwt-decode";
 
 export const RentFindingPage = () => {
   const location = useLocation();
   const [rentObjects, setRentObjects] = useState<RentObjectInformation[]>([]);
+  const [favListings, setFavListings] = useState<number[]>([]);
   const [loading, setLoading] = useState(false);
 
   const fetchData = async () => {
@@ -32,9 +35,38 @@ export const RentFindingPage = () => {
     }
   };
 
+  const fetchFavourites = async () => {
+    if (isLoggedIn()) {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const decodedToken: any = jwtDecode(token);
+        const favouritesResponce = await fetch(
+          `api/account/favourites/${decodedToken.name}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const data = await favouritesResponce.json();
+
+        if (favouritesResponce.ok) {
+          console.log("Список избранного ", data);
+          setFavListings(data);
+        } else {
+          console.error("Ошибка при получении данных", data);
+        }
+      }
+    }
+  };
+
   useEffect(() => {
     setLoading(true);
+    console.log("wqeqweqwew");
     fetchData();
+    fetchFavourites();
     setLoading(false);
   }, [location.search]);
 
@@ -83,7 +115,11 @@ export const RentFindingPage = () => {
           </Stack>
         </Stack>
         {flatsCount === 0 && !loading && <NoFoundObject />}
-        <FlatsList rentObjects={rentObjects} isLoading={loading} />
+        <FlatsList
+          rentObjects={rentObjects}
+          isLoading={loading}
+          favourites={favListings}
+        />
       </Stack>
     </Stack>
   );
