@@ -5,6 +5,7 @@ import {
   Card,
   CardActionArea,
   CardContent,
+  IconButton,
   Snackbar,
   Stack,
   Typography,
@@ -16,11 +17,17 @@ import "react-image-gallery/styles/css/image-gallery.css";
 import { ImageGalleryStyled } from "src/shared";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import SyncOutlinedIcon from "@mui/icons-material/SyncOutlined";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
+import { isLoggedIn } from "src/helpFunctions/tokenCheck";
+import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 interface CardProps {
   rentInformation: RentObjectInformation;
   keyNumber: number;
+  isFavourite: boolean;
+  onFavouriteChange: (isChange: boolean) => void;
 }
 
 interface ForPhotos {
@@ -33,6 +40,8 @@ interface ForPhotos {
 export const MapListPreviewCard = ({
   rentInformation,
   keyNumber,
+  isFavourite,
+  onFavouriteChange,
 }: CardProps) => {
   const isMedium = useMediaQuery((theme: any) =>
     theme.breakpoints.between("xl", "2000")
@@ -48,6 +57,7 @@ export const MapListPreviewCard = ({
   const [images, setImages] = React.useState<ForPhotos[]>([]);
   const [showContact, setShowContact] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = React.useState(false);
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     let imagess: ForPhotos[] = [];
@@ -91,6 +101,52 @@ export const MapListPreviewCard = ({
     }
 
     setIsAlertOpen(false);
+  };
+
+  const toggleFavourite = async (
+    objectId: number,
+    username: string,
+    token: string
+  ) => {
+    console.log("Избранное: ", objectId, username);
+    try {
+      const response = await fetch("api/account/toggleFavourite", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ objectId, username }),
+      });
+      if (!response.ok) {
+        throw new Error("Ошибка при выполнении запроса");
+      }
+      const data = await response.json();
+      console.log("Результат добавления/удаления избранного: ", data);
+    } catch (error) {
+      console.error("Произошла ошибка:", error);
+    }
+  };
+
+  const handleFavouriteChange = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.stopPropagation();
+    if (isLoggedIn()) {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const decodedToken: any = jwtDecode(token);
+        toggleFavourite(
+          rentInformation.rentObject.rentObjId,
+          decodedToken.name,
+          token
+        );
+      }
+      onFavouriteChange(true);
+      // setFavourite(!favourite);
+    } else {
+      navigate("/sign-in");
+    }
   };
 
   return (
@@ -150,7 +206,18 @@ export const MapListPreviewCard = ({
                       /мес.
                     </Typography>
                   </Stack>
-                  <FavoriteBorderOutlinedIcon fontSize="medium" />
+                  <IconButton
+                    color="primary"
+                    onClick={(
+                      e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+                    ) => handleFavouriteChange(e)}
+                  >
+                    {isFavourite ? (
+                      <FavoriteIcon />
+                    ) : (
+                      <FavoriteBorderOutlinedIcon />
+                    )}
+                  </IconButton>
                 </Stack>
                 <Stack flexDirection="row" flexWrap="wrap" gap="0.5rem">
                   <Typography variant="subtitle2">

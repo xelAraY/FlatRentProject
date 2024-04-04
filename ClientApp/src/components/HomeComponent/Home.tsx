@@ -13,6 +13,11 @@ interface IRentalObjectsGroupData {
 
 export const Home = () => {
   const [favListings, setFavListings] = useState<number[]>([]);
+  const [favouriteChanged, setFavouriteChanged] = useState(true);
+
+  const handleFavouriteChange = (isChanged: boolean) => {
+    setFavouriteChanged(isChanged);
+  };
 
   const rentalObjectsGroupData: IRentalObjectsGroupData[] = [
     {
@@ -46,35 +51,38 @@ export const Home = () => {
   ];
 
   const getFavouritesListings = async () => {
-    if (isLoggedIn()) {
-      const token = localStorage.getItem("token");
-      if (token) {
-        const decodedToken: any = jwtDecode(token);
-        const favouritesResponce = await fetch(
-          `api/account/favourites/${decodedToken.name}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        const data = await favouritesResponce.json();
+    if (favouriteChanged) {
+      if (isLoggedIn()) {
+        const token = localStorage.getItem("token");
+        if (token) {
+          const decodedToken: any = jwtDecode(token);
+          const favouritesResponce = await fetch(
+            `api/account/favourites/${decodedToken.name}`,
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          const data = await favouritesResponce.json();
 
-        if (favouritesResponce.ok) {
-          console.log("Список избранного ", data);
-          setFavListings(data);
-        } else {
-          console.log("Ошибка при получении данных", data);
+          if (favouritesResponce.ok) {
+            console.log("Список избранного ", data);
+            setFavListings([...data]);
+          } else {
+            console.log("Ошибка при получении данных", data);
+          }
         }
       }
+      setFavouriteChanged(false);
     }
   };
 
   useEffect(() => {
     getFavouritesListings();
-  }, []);
+  }, [favouriteChanged]);
 
   return (
     <Box>
@@ -89,6 +97,7 @@ export const Home = () => {
             title={rntObjGroup.title}
             subTitle={rntObjGroup.subTitle}
             favourites={favListings}
+            onFavouriteChange={handleFavouriteChange}
           />
         ))}
       </Stack>

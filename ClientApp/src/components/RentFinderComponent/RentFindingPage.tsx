@@ -14,6 +14,11 @@ export const RentFindingPage = () => {
   const [rentObjects, setRentObjects] = useState<RentObjectInformation[]>([]);
   const [favListings, setFavListings] = useState<number[]>([]);
   const [loading, setLoading] = useState(false);
+  const [favouriteChanged, setFavouriteChanged] = useState(true);
+
+  const handleFavouriteChange = (isChanged: boolean) => {
+    setFavouriteChanged(isChanged);
+  };
 
   const fetchData = async () => {
     const queryParams = new URLSearchParams(location.search);
@@ -35,40 +40,45 @@ export const RentFindingPage = () => {
     }
   };
 
-  const fetchFavourites = async () => {
-    if (isLoggedIn()) {
-      const token = localStorage.getItem("token");
-      if (token) {
-        const decodedToken: any = jwtDecode(token);
-        const favouritesResponce = await fetch(
-          `api/account/favourites/${decodedToken.name}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        const data = await favouritesResponce.json();
+  const getFavouritesListings = async () => {
+    if (favouriteChanged) {
+      if (isLoggedIn()) {
+        const token = localStorage.getItem("token");
+        if (token) {
+          const decodedToken: any = jwtDecode(token);
+          const favouritesResponce = await fetch(
+            `api/account/favourites/${decodedToken.name}`,
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          const data = await favouritesResponce.json();
 
-        if (favouritesResponce.ok) {
-          console.log("Список избранного ", data);
-          setFavListings(data);
-        } else {
-          console.error("Ошибка при получении данных", data);
+          if (favouritesResponce.ok) {
+            console.log("Список избранного ", data);
+            setFavListings([...data]);
+          } else {
+            console.error("Ошибка при получении данных", data);
+          }
         }
       }
+      setFavouriteChanged(false);
     }
   };
 
   useEffect(() => {
     setLoading(true);
-    console.log("wqeqweqwew");
     fetchData();
-    fetchFavourites();
     setLoading(false);
   }, [location.search]);
+
+  useEffect(() => {
+    getFavouritesListings();
+  }, [favouriteChanged]);
 
   const flatsCount = rentObjects.length;
   const ending =
@@ -119,6 +129,7 @@ export const RentFindingPage = () => {
           rentObjects={rentObjects}
           isLoading={loading}
           favourites={favListings}
+          onFavouritesChanged={handleFavouriteChange}
         />
       </Stack>
     </Stack>

@@ -10,6 +10,7 @@ interface ListingOverviewProps {
   title: string;
   subTitle: string;
   favourites: number[];
+  onFavouriteChange: (isChanged: boolean) => void;
 }
 
 export const ListingOverview = (props: ListingOverviewProps) => {
@@ -105,6 +106,7 @@ export const ListingOverview = (props: ListingOverviewProps) => {
                     isFavourite={props.favourites.includes(
                       rentObject.rentObject.rentObjId
                     )}
+                    onFavouriteChange={props.onFavouriteChange}
                   />
                 </Grid>
               ))}

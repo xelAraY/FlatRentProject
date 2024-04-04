@@ -23,6 +23,7 @@ interface CardProps {
   rentInformation: RentObjectInformation;
   keyNumber: number;
   isFavourite: boolean;
+  onFavouriteChange: (isChange: boolean) => void;
   onCardClick: (flatId: number) => void;
 }
 
@@ -38,6 +39,7 @@ export const FlatPreviewCard = ({
   keyNumber,
   isFavourite,
   onCardClick,
+  onFavouriteChange,
 }: CardProps) => {
   const isMedium = useMediaQuery((theme: any) =>
     theme.breakpoints.between("xl", "2000")
@@ -51,12 +53,12 @@ export const FlatPreviewCard = ({
   const heigth = isSuperLarge ? 700 : isLarge ? 500 : isMedium ? 300 : 250;
 
   const [images, setImages] = useState<ForPhotos[]>([]);
-  const [favourite, setFavourite] = useState(isFavourite);
+  // const [favourite, setFavourite] = useState(isFavourite);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    console.log("Favourite ", favourite);
-  }, []);
+  // useEffect(() => {
+  //   setFavourite(isFavourite);
+  // }, [isFavourite]);
 
   React.useEffect(() => {
     let imagess: ForPhotos[] = [];
@@ -121,7 +123,8 @@ export const FlatPreviewCard = ({
           token
         );
       }
-      setFavourite(!favourite);
+      onFavouriteChange(true);
+      // setFavourite(!favourite);
     } else {
       navigate("/sign-in");
     }
@@ -178,7 +181,7 @@ export const FlatPreviewCard = ({
                 handleFavouriteChange(e)
               }
             >
-              {favourite ? <FavoriteIcon /> : <FavoriteBorderOutlinedIcon />}
+              {isFavourite ? <FavoriteIcon /> : <FavoriteBorderOutlinedIcon />}
             </IconButton>
           </Stack>
           <Stack flexDirection="row" flexWrap="wrap" gap="0.5rem">

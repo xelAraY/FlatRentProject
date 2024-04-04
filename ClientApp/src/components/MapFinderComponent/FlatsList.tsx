@@ -14,6 +14,8 @@ const drawerWidth = 690;
 
 interface FlatsListProps {
   onListSwitch: (isOpen: boolean) => void;
+  onFavouriteChange: (isChanged: boolean) => void;
+  favourites: number[];
   flatsCount: number;
   isOpen: boolean;
   rentObjects: RentObjectInformation[];
@@ -21,6 +23,8 @@ interface FlatsListProps {
 
 export default function FlatsList({
   onListSwitch,
+  onFavouriteChange,
+  favourites,
   flatsCount,
   isOpen,
   rentObjects,
@@ -127,6 +131,10 @@ export default function FlatsList({
               <MapListPreviewCard
                 rentInformation={rentObject}
                 keyNumber={index}
+                isFavourite={favourites.includes(
+                  rentObject.rentObject.rentObjId
+                )}
+                onFavouriteChange={onFavouriteChange}
               />
             ))}
           </Stack>

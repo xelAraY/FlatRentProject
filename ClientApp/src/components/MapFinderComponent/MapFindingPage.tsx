@@ -15,6 +15,8 @@ import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "src/shared";
 import { FilterOptions } from "../RentFinderComponent/FilterOptions";
 import FlatsList from "./FlatsList";
+import { isLoggedIn } from "src/helpFunctions/tokenCheck";
+import { jwtDecode } from "jwt-decode";
 
 interface PlacemarkInfo {
   coordinates: [number, number];
@@ -38,6 +40,8 @@ export const MapFindingPage = () => {
   const [placemarks, setPlacemarks] = useState<PlacemarkInfo[]>([]);
   const [map, setMap] = React.useState<ymaps.Map>();
   const [clusterer, setClusterer] = React.useState<ymaps.Clusterer>();
+  const [favouriteChanged, setFavouriteChanged] = useState(true);
+  const [favListings, setFavListings] = useState<number[]>([]);
 
   // const [newCoords, setNewCoords] = useState([53.900487, 27.555324]);
 
@@ -51,6 +55,44 @@ export const MapFindingPage = () => {
   const [open, setOpen] = useState(false);
 
   const navigate = useNavigate();
+
+  const handleFavouriteChange = (isChanged: boolean) => {
+    setFavouriteChanged(isChanged);
+  };
+
+  const getFavouritesListings = async () => {
+    if (favouriteChanged) {
+      if (isLoggedIn()) {
+        const token = localStorage.getItem("token");
+        if (token) {
+          const decodedToken: any = jwtDecode(token);
+          const favouritesResponce = await fetch(
+            `api/account/favourites/${decodedToken.name}`,
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          const data = await favouritesResponce.json();
+
+          if (favouritesResponce.ok) {
+            console.log("Список избранного ", data);
+            setFavListings([...data]);
+          } else {
+            console.log("Ошибка при получении данных", data);
+          }
+        }
+      }
+      setFavouriteChanged(false);
+    }
+  };
+
+  useEffect(() => {
+    getFavouritesListings();
+  }, [favouriteChanged]);
 
   const handleFlatsListOpen = (isOpen: boolean) => {
     if (!isOpen) {
@@ -223,6 +265,8 @@ export const MapFindingPage = () => {
               flatsCount={selectedObject ? 1 : flatsCount}
               isOpen={open}
               rentObjects={selectedObject ? [selectedObject] : rentObjects}
+              onFavouriteChange={handleFavouriteChange}
+              favourites={favListings}
             />
             <div
               style={{
