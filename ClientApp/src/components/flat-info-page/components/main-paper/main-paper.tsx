@@ -89,7 +89,6 @@ const MainPaper: React.FC<MainPaperProps> = ({
     username: string,
     token: string
   ) => {
-    console.log("Избранное: ", objectId, username);
     try {
       const response = await fetch("api/account/toggleFavourite", {
         method: "POST",
@@ -102,8 +101,6 @@ const MainPaper: React.FC<MainPaperProps> = ({
       if (!response.ok) {
         throw new Error("Ошибка при выполнении запроса");
       }
-      const data = await response.json();
-      console.log("Результат добавления/удаления избранного: ", data);
     } catch (error) {
       console.error("Произошла ошибка:", error);
     }

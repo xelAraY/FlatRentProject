@@ -5,7 +5,7 @@ import IconButton from "@mui/material/IconButton";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 import { Stack, Typography } from "@mui/material";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import { RentObjectInformation } from "src/interfaces/RentObj";
 import { MapListPreviewCard } from "./MapListPreviewCard";
@@ -29,17 +29,9 @@ export default function FlatsList({
   isOpen,
   rentObjects,
 }: FlatsListProps) {
-  // const [open, setOpen] = React.useState(isOpen);
-  const location = useLocation();
-
   const handleDrawerSwitch = () => {
-    // setOpen(!open);
     onListSwitch(!isOpen);
   };
-
-  React.useEffect(() => {
-    console.log("Open: ", isOpen);
-  }, []);
 
   const ending =
     flatsCount === 1 ? "е" : flatsCount > 1 && flatsCount < 5 ? "я" : "й";

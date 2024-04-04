@@ -99,7 +99,6 @@ export const FlatPreviewCard = ({
     username: string,
     token: string
   ) => {
-    console.log("Избранное: ", objectId, username);
     try {
       const response = await fetch("api/account/toggleFavourite", {
         method: "POST",
@@ -112,8 +111,6 @@ export const FlatPreviewCard = ({
       if (!response.ok) {
         throw new Error("Ошибка при выполнении запроса");
       }
-      const data = await response.json();
-      console.log("Результат добавления/удаления избранного: ", data);
     } catch (error) {
       console.error("Произошла ошибка:", error);
     }
@@ -231,7 +228,6 @@ export const FlatPreviewCard = ({
                 style={{ textTransform: "none" }}
                 onClick={(e) => {
                   e.stopPropagation();
-                  console.log("show contacts");
                 }}
               >
                 {/* не удаляй e.stopPropagation(); а то будет вызываться onClick у Card */}

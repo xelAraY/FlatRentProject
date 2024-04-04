@@ -70,14 +70,12 @@ export const SignUpPage = () => {
 
       const data = await response.json();
       if (response.status === 422) {
-        console.log(data);
         //setErrors(data);
         return;
       }
 
       setResponceMsg(data.message);
       if (response.ok) {
-        console.log("Успешная регистрация");
         setIsError(false);
         navigate("/");
       } else {

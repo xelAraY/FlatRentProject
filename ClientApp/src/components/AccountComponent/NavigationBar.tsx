@@ -43,16 +43,15 @@ export const NavigationBar = () => {
     const token = localStorage.getItem("token");
     if (token) {
       const decodedToken: any = jwtDecode(token);
-      const response = await fetch(
-        `api/account/deleteUser/${decodedToken.name}`,
-        { method: "DELETE" }
-      );
-      const data = await response.json();
-      if (response.ok) {
-        console.log("Успешное удаление данных ", data);
-      } else {
-        console.error("Ошибка при получении данных ", data);
-      }
+      await fetch(`api/account/deleteUser/${decodedToken.name}`, {
+        method: "DELETE",
+      });
+      // const data = await response.json();
+      // if (response.ok) {
+      //   console.log("Успешное удаление данных ", data);
+      // } else {
+      //   console.error("Ошибка при получении данных ", data);
+      // }
       localStorage.removeItem("token");
       navigate("/");
     }

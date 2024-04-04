@@ -51,7 +51,6 @@ export const RentFindingPage = () => {
     const data = await response.json();
 
     if (response.ok) {
-      console.log("Новые Данные с сервера", data);
       setRentObjects(data);
     } else {
       console.error("Ошибка при получении данных", data.message);
@@ -92,7 +91,6 @@ export const RentFindingPage = () => {
           const data = await favouritesResponce.json();
 
           if (favouritesResponce.ok) {
-            console.log("Список избранного ", data);
             setFavListings([...data]);
           } else {
             console.error("Ошибка при получении данных", data);
@@ -105,7 +103,6 @@ export const RentFindingPage = () => {
 
   useEffect(() => {
     const currPage = Number(searchParams.get("page"));
-    console.log("curr Page ", currPage);
     setCurrentPage(currPage ? currPage : 1);
     setLoading(true);
     fetchData();

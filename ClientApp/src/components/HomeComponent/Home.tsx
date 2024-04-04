@@ -70,10 +70,9 @@ export const Home = () => {
           const data = await favouritesResponce.json();
 
           if (favouritesResponce.ok) {
-            console.log("Список избранного ", data);
             setFavListings([...data]);
           } else {
-            console.log("Ошибка при получении данных", data);
+            console.error("Ошибка при получении данных", data);
           }
         }
       }

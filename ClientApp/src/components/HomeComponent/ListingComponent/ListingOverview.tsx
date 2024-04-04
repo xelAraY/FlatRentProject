@@ -30,7 +30,6 @@ export const ListingOverview = (props: ListingOverviewProps) => {
         const data = await response.json();
 
         if (response.ok) {
-          console.log("Данные с сервера", data);
           setRentObjects(data);
         } else {
           console.error("Ошибка при получении данных", data.message);
@@ -46,8 +45,6 @@ export const ListingOverview = (props: ListingOverviewProps) => {
   }, [props.requestPath]);
 
   const numberOfRentObjects = 4;
-
-  console.log("overview: ", props.favourites);
 
   return (
     <Stack

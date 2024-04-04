@@ -108,7 +108,6 @@ export const MapListPreviewCard = ({
     username: string,
     token: string
   ) => {
-    console.log("Избранное: ", objectId, username);
     try {
       const response = await fetch("api/account/toggleFavourite", {
         method: "POST",
@@ -121,8 +120,6 @@ export const MapListPreviewCard = ({
       if (!response.ok) {
         throw new Error("Ошибка при выполнении запроса");
       }
-      const data = await response.json();
-      console.log("Результат добавления/удаления избранного: ", data);
     } catch (error) {
       console.error("Произошла ошибка:", error);
     }
@@ -152,10 +149,7 @@ export const MapListPreviewCard = ({
   return (
     <Box padding={"10px 20px"}>
       <Card key={keyNumber} style={{ width: "100%", maxHeight: "300px" }}>
-        <CardActionArea
-          onClick={() => console.log("show details")}
-          disableTouchRipple
-        >
+        <CardActionArea disableTouchRipple>
           <Stack flexDirection={"row"} width={"100%"}>
             <Stack width="50%">
               {rentInformation?.photos.length ? (
@@ -260,7 +254,6 @@ export const MapListPreviewCard = ({
                       onClick={(e) => {
                         e.stopPropagation();
                         setShowContact(true);
-                        console.log("show contacts");
                       }}
                     >
                       {/* не удаляй e.stopPropagation(); а то будет вызываться onClick у Card */}

@@ -44,7 +44,6 @@ export const SignInPage = () => {
 
       const data = await response.json();
       if (response.ok) {
-        console.log("Успешный вход");
         localStorage.setItem("token", data.token);
         setIsError(false);
         navigate("/");

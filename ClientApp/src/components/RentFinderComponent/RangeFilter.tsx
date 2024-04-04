@@ -30,7 +30,6 @@ export const RangeFilter = ({
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const valueFrom = Number(event.target.value);
-    console.log(valueFrom);
     if (!isNaN(valueFrom)) {
       onChangeValueFrom(valueFrom);
     }

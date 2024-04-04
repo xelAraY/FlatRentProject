@@ -79,10 +79,9 @@ export const MapFindingPage = () => {
           const data = await favouritesResponce.json();
 
           if (favouritesResponce.ok) {
-            console.log("Список избранного ", data);
             setFavListings([...data]);
           } else {
-            console.log("Ошибка при получении данных", data);
+            console.error("Ошибка при получении данных", data);
           }
         }
       }
@@ -129,17 +128,11 @@ export const MapFindingPage = () => {
   };
 
   clusterer?.events.add("click", function (e) {
-    console.log("click clusterer", e);
-    // console.log("geo objects ", clusterer.getGeoObjects());
     setOpen(!open);
-    // if (clusterer.getGeoObjects().length > 1) {
-    //   setSelectedObject(null);
-    // }
   });
 
   map?.events.add("boundschange", function (e) {
     if (e.get("newBounds") !== e.get("oldBounds")) {
-      console.log("Bounds ", e.get("newBounds"));
       const bottomLeftCorner = e.get("newBounds")[0];
       const topRightCorner = e.get("newBounds")[1];
       const bounds: MapBounds = {
@@ -176,7 +169,6 @@ export const MapFindingPage = () => {
     const data = await response.json();
 
     if (response.ok) {
-      console.log("Новые Данные с сервера", data);
       setRentObjects(data);
     } else {
       console.error("Ошибка при получении данных", data.message);
@@ -191,7 +183,6 @@ export const MapFindingPage = () => {
 
   useEffect(() => {
     if (mapBounds !== undefined) {
-      console.log("Координаты карты: ", mapBounds);
       setSearchParams(
         (urlParams) => {
           urlParams.set("leftX", mapBounds.leftX.toString());
@@ -206,7 +197,6 @@ export const MapFindingPage = () => {
   }, [mapBounds]);
 
   useEffect(() => {
-    console.log("Установка coordinates");
     const placemarksArray: PlacemarkInfo[] = rentObjects.map((rentInf) => {
       const currency = rentInf.currency;
       const price = rentInf.rentObject.rentPrice;

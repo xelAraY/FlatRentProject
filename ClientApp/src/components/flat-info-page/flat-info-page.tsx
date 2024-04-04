@@ -43,7 +43,6 @@ const FlatInfoPage: React.FC = () => {
             throw new Error("Ошибка при выполнении запроса");
           }
           const data = await response.json();
-          console.log("Есть в избранном: ", data);
           setIsFavourite(data);
         }
       } else {
@@ -71,8 +70,6 @@ const FlatInfoPage: React.FC = () => {
   const mapRef = React.useRef<HTMLDivElement | null>(null);
 
   const scrollToMap = () => mapRef?.current?.scrollIntoView();
-
-  console.log("FlatInfo: ", flatInfo);
 
   return flatInfo ? (
     <Stack p="3rem 5rem" height="100%" width="100%">

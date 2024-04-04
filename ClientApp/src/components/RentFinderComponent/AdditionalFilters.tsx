@@ -163,7 +163,6 @@ export const AdditionalFilters = ({
     const data = await response.json();
 
     if (response.ok) {
-      console.log("Данные с сервера", data);
       setFlatsCount(data[0].count);
     } else {
       console.error("Ошибка при получении данных", data.message);
