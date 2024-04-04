@@ -8,6 +8,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
+using Microsoft.AspNetCore.Authorization;
+using System.Runtime.Serialization;
 
 namespace FlatRent.Controllers;
 
@@ -122,6 +124,27 @@ public class FlatController : ControllerBase
     catch (Exception ex)
     {
       return BadRequest(new { Message = $"Ошибка при получении дополнительной информации: {ex.Message}" });
+    }
+  }
+
+  [Authorize]
+  [HttpGet("isFavourite")]
+  public async Task<IActionResult> IsFavourite([FromQuery] int objectId, [FromQuery] string userName)
+  {
+    try
+    {
+      var user = await _context.Users.FirstOrDefaultAsync(u => u.Name == userName);
+      if (user == null)
+        return NotFound(new { Message = $"User with username '{userName}' not found."});
+
+      var exists = await _context.Favourites
+        .AnyAsync(f => f.UserId == user.Id && f.RentObjectId == objectId);
+
+      return Ok(exists);
+    }
+    catch (Exception ex)
+    {
+      return BadRequest( new { Message = $"Error while retrieving favourites: {ex.Message}"});
     }
   }
 }

@@ -4,6 +4,7 @@ import { ListingOverview } from "./ListingComponent/ListingOverview";
 import { NavMenuImage } from "./NavMenuComponent/NavMenuImage";
 import { isLoggedIn } from "src/helpFunctions/tokenCheck";
 import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 interface IRentalObjectsGroupData {
   path: string;
