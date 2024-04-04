@@ -12,7 +12,11 @@ import {
 import React, { useEffect, useState } from "react";
 import { RentObjectInformation } from "src/interfaces/RentObj";
 import "react-image-gallery/styles/css/image-gallery.css";
-import { ImageGalleryStyled } from "src/shared";
+import {
+  DOLLAR_EXCHANGE_RATE,
+  EURO_EXCHANGE_RATE,
+  ImageGalleryStyled,
+} from "src/shared";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import { isLoggedIn } from "src/helpFunctions/tokenCheck";

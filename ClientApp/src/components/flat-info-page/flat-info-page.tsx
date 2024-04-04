@@ -8,6 +8,7 @@ import {
   MainPaper,
   LocationPaper,
   ApplianciesPaper,
+  OwnerPaper,
 } from "./components";
 import { isLoggedIn } from "src/helpFunctions/tokenCheck";
 import { jwtDecode } from "jwt-decode";
@@ -93,8 +94,16 @@ const FlatInfoPage: React.FC = () => {
             <LocationPaper locationInfo={flatInfo.address} mapRef={mapRef} />
           </Stack>
         </Grid>
-        <Grid item xs="auto">
-          <div style={{ position: "sticky", top: "10%" }}>info</div>
+        <Grid
+          item
+          xs="auto"
+          sx={{
+            "&.MuiGrid-root": {
+              flexGrow: 1,
+            },
+          }}
+        >
+          <OwnerPaper flatInfo={flatInfo} />
         </Grid>
       </Grid>
     </Stack>
