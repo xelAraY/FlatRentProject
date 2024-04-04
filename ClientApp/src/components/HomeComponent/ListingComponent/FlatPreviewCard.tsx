@@ -9,7 +9,7 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { RentObjectInformation } from "src/interfaces/RentObj";
 import "react-image-gallery/styles/css/image-gallery.css";
 import {
@@ -80,17 +80,17 @@ export const FlatPreviewCard = ({
   const price = rentInformation.rentObject.rentPrice;
   const bynPrice =
     currency === "USD"
-      ? Math.round(price * 3.2063)
+      ? Math.round(price * DOLLAR_EXCHANGE_RATE)
       : currency === "EUR"
-      ? Math.round(price * 3.5045)
+      ? Math.round(price * EURO_EXCHANGE_RATE)
       : price;
 
   let currencyType = searchParams.get("currencyType");
   let anotherPrice = 0;
   if (currencyType === "EUR") {
-    anotherPrice = Math.round(bynPrice / 3.5045);
+    anotherPrice = Math.round(bynPrice / EURO_EXCHANGE_RATE);
   } else {
-    anotherPrice = Math.round(bynPrice / 3.2063);
+    anotherPrice = Math.round(bynPrice / DOLLAR_EXCHANGE_RATE);
     currencyType = "USD";
   }
 
