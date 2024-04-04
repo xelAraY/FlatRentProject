@@ -17,7 +17,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import { isLoggedIn } from "src/helpFunctions/tokenCheck";
 import { jwtDecode } from "jwt-decode";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 interface CardProps {
   rentInformation: RentObjectInformation;
@@ -53,12 +53,9 @@ export const FlatPreviewCard = ({
   const heigth = isSuperLarge ? 700 : isLarge ? 500 : isMedium ? 300 : 250;
 
   const [images, setImages] = useState<ForPhotos[]>([]);
-  // const [favourite, setFavourite] = useState(isFavourite);
-  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  // useEffect(() => {
-  //   setFavourite(isFavourite);
-  // }, [isFavourite]);
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     let imagess: ForPhotos[] = [];
@@ -83,6 +80,15 @@ export const FlatPreviewCard = ({
       : currency === "EUR"
       ? Math.round(price * 3.5045)
       : price;
+
+  let currencyType = searchParams.get("currencyType");
+  let anotherPrice = 0;
+  if (currencyType === "EUR") {
+    anotherPrice = Math.round(bynPrice / 3.5045);
+  } else {
+    anotherPrice = Math.round(bynPrice / 3.2063);
+    currencyType = "USD";
+  }
 
   const toggleFavourite = async (
     objectId: number,
@@ -170,9 +176,7 @@ export const FlatPreviewCard = ({
                 {bynPrice} р./мес.&nbsp;
               </Typography>
               <Typography gutterBottom variant="body2" fontWeight="400">
-                ≈{rentInformation.rentObject.rentPrice}{" "}
-                {rentInformation.currency}
-                /мес.
+                ≈{anotherPrice} {currencyType}/мес.
               </Typography>
             </Stack>
             <IconButton
