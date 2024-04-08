@@ -7,7 +7,6 @@ import {
   IconButton,
   Paper,
   Stack,
-  Typography,
 } from "@mui/material";
 import React, { useState } from "react";
 import ApartmentIcon from "@mui/icons-material/Apartment";
@@ -21,7 +20,6 @@ import { jwtDecode } from "jwt-decode";
 import { Button } from "src/shared";
 
 export const NavigationBar = () => {
-  const [myRentOpen, setMyRentOpen] = useState(false);
   const [openDeleteAlert, setOpenDeleteAlert] = useState(false);
 
   const navigate = useNavigate();
@@ -85,12 +83,6 @@ export const NavigationBar = () => {
             <ApartmentIcon style={{ marginRight: "10px" }} />
             Мои объявления
           </IconButton>
-          {myRentOpen && (
-            <Stack>
-              <Typography>Квартиры продажа</Typography>
-              <Typography>Квартиры аренда</Typography>
-            </Stack>
-          )}
         </Stack>
         <IconButton
           color="primary"

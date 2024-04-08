@@ -105,4 +105,56 @@ public class AccountController : ControllerBase
         return BadRequest(new { Message = $"Ошибка: {ex.Message}"});
     }
   }
+
+  [HttpPost("updateProfileImage")]
+  public async Task<IActionResult> UpdateProfileImage([FromBody] UpdateAvatarImage model)
+  {
+    try
+    {
+      var user = await _context.Users.FirstOrDefaultAsync(u => u.Name == model.Username);
+      if (user == null)
+      {
+        return NotFound( new { Message = $"User '{model.Username}' not found."});
+      }
+
+      user.AvatarImageUrl = model.ImageUrl;
+      if (user.RegistrationDate.Kind != DateTimeKind.Utc)
+      {
+        user.RegistrationDate = DateTime.SpecifyKind(user.RegistrationDate, DateTimeKind.Utc);
+      }
+
+      if (user.LastLogin.HasValue && user.LastLogin.Value.Kind != DateTimeKind.Utc)
+      {
+        user.LastLogin = DateTime.SpecifyKind(user.LastLogin.Value, DateTimeKind.Utc);
+      }
+
+      _context.Users.Update(user);
+      await _context.SaveChangesAsync();
+
+      return Ok( new { Message = $"Profile image updated successfully for user '{model.Username}'."});
+    }
+    catch (Exception ex)
+    {
+      return StatusCode( 500, new { Message = $"Error updating profile image: {ex.Message}"});
+    }
+  }
+
+  [HttpGet("getAvatarImage/{username}")]
+  public async Task<IActionResult> GetProfileImage(string username)
+  {
+    try
+    {
+      var user = await _context.Users.FirstOrDefaultAsync(u => u.Name == username);
+      if (user == null || string.IsNullOrEmpty(user.AvatarImageUrl))
+      {
+        return NotFound(new {Message = $"Profile image not found for user '{username}'."});
+      }
+
+      return Ok(new { user.AvatarImageUrl });
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, new {Message = $"Error retrieving profile image: {ex.Message}"});
+    }
+  }
 }

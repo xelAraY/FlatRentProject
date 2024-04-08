@@ -41,7 +41,7 @@ public class FlatController : ControllerBase
           .Join(
               _context.Currencies,
               result => result.RentObject.CurrencyId,
-              currency => currency.CurrId,
+              currency => currency.Id,
               (result, currency) => new { result.RentObject, result.Owner, Currency = currency }
           )
           .Join(
@@ -53,7 +53,7 @@ public class FlatController : ControllerBase
           .Select(result => new
           {
             result.RentObject,
-            Currency = result.Currency.CurrCode,
+            Currency = result.Currency.Code,
             Owner = new
             {
               result.Owner.Name,

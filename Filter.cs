@@ -41,7 +41,7 @@ public static class Filter
           .Join(
               _context.Currencies,
               result => result.RentObject.CurrencyId,
-              currency => currency.CurrId,
+              currency => currency.Id,
               (result, currency) => new { result.RentObject, result.Owner, Currency = currency }
           )
           .Join(
@@ -53,7 +53,7 @@ public static class Filter
           .Select(result => new
           {
             result.RentObject,
-            Currency = result.Currency.CurrCode,
+            Currency = result.Currency.Code,
             Owner = new
             {
               result.Owner.Name,
@@ -278,8 +278,8 @@ public static class Filter
         .Join(
             context.Currencies,
             ro => ro.CurrencyId,
-            currency => currency.CurrId,
-            (ro, currency) => new { RentObject = ro, Currency = currency.CurrCode }
+            currency => currency.Id,
+            (ro, currency) => new { RentObject = ro, Currency = currency.Code }
         );
 
     if (minPrice.HasValue)
@@ -343,7 +343,7 @@ public static class Filter
         .Join(
             _context.Currencies,
             result => result.RentObject.CurrencyId,
-            currency => currency.CurrId,
+            currency => currency.Id,
             (result, currency) => new { result.RentObject, result.Owner, Currency = currency }
         )
         .Join(
@@ -355,7 +355,7 @@ public static class Filter
         .Select(result => new
         {
           result.RentObject,
-          Currency = result.Currency.CurrCode,
+          Currency = result.Currency.Code,
           Owner = new
           {
             result.Owner.Name,

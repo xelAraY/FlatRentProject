@@ -1,4 +1,4 @@
-import { Paper, Stack, TextField, Typography } from "@mui/material";
+import { Link, Paper, Stack, TextField, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { Button } from "src/shared";
 import "./../HomeComponent/NavMenuComponent/NavMenu.css";
@@ -140,6 +140,15 @@ export const SignInPage = () => {
           <Typography color={textColor} fontFamily="serif" marginTop="5px">
             {responceMsg}
           </Typography>
+          <Link
+            href="/sign-up"
+            variant="body2"
+            underline="none"
+            textAlign={"end"}
+            marginTop={1}
+          >
+            Нет аккаунта? Регистрация
+          </Link>
         </Stack>
       </Paper>
     </Stack>

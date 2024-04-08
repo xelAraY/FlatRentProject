@@ -53,7 +53,7 @@ public class RegistrationController : ControllerBase
                 }
 
                 string passwordHash =  BCrypt.Net.BCrypt.HashPassword(model.Password);
-                using (var insertCommand = new NpgsqlCommand("INSERT INTO users (usr_name, full_name, email, phone_number, password_hash, profile_picture_url, registration_date, last_login) VALUES (@Username, @Fullname, @Email, @PhoneNumber, @PasswordHash, @ProfilePictureUrl, @RegistrationDate, @LastLogin)", connection))
+                using (var insertCommand = new NpgsqlCommand("INSERT INTO users (usr_name, full_name, email, phone_number, password_hash, avatar_image_url, registration_date, last_login) VALUES (@Username, @Fullname, @Email, @PhoneNumber, @PasswordHash, @AvatarImageUrl, @RegistrationDate, @LastLogin)", connection))
                 {
                     insertCommand.Parameters.AddWithValue("@Username", model.Username);
                     insertCommand.Parameters.AddWithValue("@Fullname", model.Fullname);
@@ -61,7 +61,7 @@ public class RegistrationController : ControllerBase
                     insertCommand.Parameters.AddWithValue("@PhoneNumber", model.PhoneNumber);
                     insertCommand.Parameters.AddWithValue("@PasswordHash", passwordHash);
                     insertCommand.Parameters.AddWithValue("@RegistrationDate", DateTime.Now);
-                    insertCommand.Parameters.AddWithValue("@ProfilePictureUrl", DBNull.Value);
+                    insertCommand.Parameters.AddWithValue("@AvatarImageUrl", DBNull.Value);
                     insertCommand.Parameters.AddWithValue("@LastLogin", DBNull.Value);
 
                     await insertCommand.ExecuteNonQueryAsync();

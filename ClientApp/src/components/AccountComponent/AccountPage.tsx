@@ -48,8 +48,7 @@ export const AccountPage = () => {
         <Grid item xs={2.5}>
           <NavigationBar />
         </Grid>
-        <Grid item xs={7.5}>
-          {/* <Paper elevation={3} style={{ padding: "16px" }}> */}
+        <Grid item xs={8.5}>
           <Grid container spacing={2} padding={2}>
             <Grid item xs={12}>
               <NavigationTopBar />
@@ -63,7 +62,6 @@ export const AccountPage = () => {
               </Routes>
             </Grid>
           </Grid>
-          {/* </Paper> */}
         </Grid>
       </Grid>
     </Box>

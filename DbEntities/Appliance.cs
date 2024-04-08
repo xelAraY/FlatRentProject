@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 [Table("appliances")]
 public class Appliance
 {
-  [Column("appl_id")]
+  [Column("id")]
   [Key]
   public int Id { get; set; }
 
-  [Column("appl_name")]
+  [Column("name")]
   public string Name { get; set; }
 }

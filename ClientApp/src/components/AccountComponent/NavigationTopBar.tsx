@@ -6,6 +6,8 @@ import { useLocation } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
 import PersonIcon from "@mui/icons-material/Person";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import DomainAddIcon from "@mui/icons-material/DomainAdd";
+import DashboardIcon from "@mui/icons-material/Dashboard";
 
 export const NavigationTopBar = () => {
   const location = useLocation();
@@ -56,8 +58,20 @@ export const NavigationTopBar = () => {
             spacing={"5px"}
             useFlexGap
           >
-            <FavoriteIcon />
+            <DomainAddIcon />
             <Typography>Новое объявление</Typography>
+          </Stack>
+        );
+      case "myListings":
+        return (
+          <Stack
+            flexDirection={"row"}
+            alignItems={"center"}
+            spacing={"5px"}
+            useFlexGap
+          >
+            <DashboardIcon />
+            <Typography>Мои объявления</Typography>
           </Stack>
         );
     }
@@ -70,11 +84,15 @@ export const NavigationTopBar = () => {
     path: `/${words.slice(0, index + 1).join("/")}`,
   }));
 
-  const states = linksInf.map((inf, index) => (
-    <Link underline="hover" key={index} color="inherit" href={inf.path}>
-      {getLinkContent(inf.word)}
-    </Link>
-  ));
+  const states = linksInf.map((inf, index) =>
+    index !== linksInf.length - 1 ? (
+      <Link underline="hover" key={index} color="inherit" href={inf.path}>
+        {getLinkContent(inf.word)}
+      </Link>
+    ) : (
+      getLinkContent(inf.word)
+    )
+  );
 
   return (
     <Stack spacing={2}>

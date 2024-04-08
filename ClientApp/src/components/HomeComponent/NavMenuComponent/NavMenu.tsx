@@ -15,7 +15,7 @@ export const NavMenu = () => {
     setIsLogged(isLoggedIn());
   }, [isLoggedIn()]);
 
-  const addNewPage = isLoggedIn() ? "/new" : "/sign-in";
+  const addNewPage = isLoggedIn() ? "/account/newListing" : "/sign-in";
 
   return (
     <header>

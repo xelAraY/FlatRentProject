@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 [Table("rent_objects")]
 public class RentObject
 {
-  [Column("rnt_obj_id")]
+  [Column("id")]
   [Key]
   public int RentObjId { get; set; }
 

@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 [Table("photos")]
 public class Photo
 {
-  [Column("pht_id")]
+  [Column("id")]
   [Key]
-  public int PhotoId { get; set; }
+  public int Id { get; set; }
 
   [Column("rent_object_id")]
   public int RentObjId { get; set; }

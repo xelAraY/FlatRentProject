@@ -26,7 +26,7 @@ export interface RentObject {
   plate: string;
   addressId: number;
   rentPrice: number;
-  currId: number; //
+  id: number; //
   prepayment: string;
   rent: string;
   rentalPeriod: string;
