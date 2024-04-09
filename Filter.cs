@@ -1,10 +1,12 @@
 
 using System.Net;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 public static class Filter
 {
-  public static async Task<List<object>> GetRecentRentObjectsCommonQuery(IQueryable<RentObject> rentObjectsQuery, ApplicationDbContext _context, bool showData = true, int? takeCount = null, MapParams? mapParams = null)
+  private static int listingsPerPage = 20;
+  public static async Task<List<object>> GetRecentRentObjectsCommonQuery(IQueryable<RentObject> rentObjectsQuery, ApplicationDbContext _context, bool showData = true, int? page = null, int? takeCount = null, MapParams? mapParams = null)
   {
     if (!showData)
     {
@@ -22,10 +24,12 @@ public static class Filter
       {
         query = query.OrderByDescending(ro => ro.CreatedAt).Take(takeCount.Value);
       }
-      else
-      {
-        query = query.OrderByDescending(ro => ro.CreatedAt);
+      else if (page.HasValue && page.Value > 0) {
+        query = query.OrderByDescending(ro => ro.CreatedAt).Skip((page.Value-1)*listingsPerPage).Take(listingsPerPage);  
+      } else {
+        query = query.OrderByDescending(ro => ro.CreatedAt);  
       }
+      
 
       var recentRentObjects = await query
           .Join(
@@ -37,7 +41,7 @@ public static class Filter
           .Join(
               _context.Currencies,
               result => result.RentObject.CurrencyId,
-              currency => currency.CurrId,
+              currency => currency.Id,
               (result, currency) => new { result.RentObject, result.Owner, Currency = currency }
           )
           .Join(
@@ -49,7 +53,7 @@ public static class Filter
           .Select(result => new
           {
             result.RentObject,
-            Currency = result.Currency.CurrCode,
+            Currency = result.Currency.Code,
             Owner = new
             {
               result.Owner.Name,
@@ -274,8 +278,8 @@ public static class Filter
         .Join(
             context.Currencies,
             ro => ro.CurrencyId,
-            currency => currency.CurrId,
-            (ro, currency) => new { RentObject = ro, Currency = currency.CurrCode }
+            currency => currency.Id,
+            (ro, currency) => new { RentObject = ro, Currency = currency.Code }
         );
 
     if (minPrice.HasValue)
@@ -339,7 +343,7 @@ public static class Filter
         .Join(
             _context.Currencies,
             result => result.RentObject.CurrencyId,
-            currency => currency.CurrId,
+            currency => currency.Id,
             (result, currency) => new { result.RentObject, result.Owner, Currency = currency }
         )
         .Join(
@@ -351,7 +355,7 @@ public static class Filter
         .Select(result => new
         {
           result.RentObject,
-          Currency = result.Currency.CurrCode,
+          Currency = result.Currency.Code,
           Owner = new
           {
             result.Owner.Name,

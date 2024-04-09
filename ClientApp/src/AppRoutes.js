@@ -4,6 +4,7 @@ import { SignUpPage } from "./components/SignUpComponent/SignUpPage";
 import { RentFindingPage } from "./components/RentFinderComponent/RentFindingPage";
 import { FlatInfoPage } from "./components/flat-info-page";
 import { MapFindingPage } from "./components/MapFinderComponent/MapFindingPage";
+import { AccountPage } from "./components/AccountComponent/AccountPage";
 import { AddListingPage } from "./components/AddListingPage";
 
 const AppRoutes = [
@@ -34,6 +35,10 @@ const AppRoutes = [
   {
     path: "/addNewListing",
     element: <AddListingPage />,
+  },
+  {
+    path: "/account/*",
+    element: <AccountPage />,
   },
 ];
 

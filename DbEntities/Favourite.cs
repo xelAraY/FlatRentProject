@@ -1,16 +1,16 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-[Table("photos")]
-public class Photo
+[Table("favourites")]
+public class Favourite
 {
   [Column("id")]
   [Key]
   public int Id { get; set; }
+  
+  [Column("user_id")]
+  public int UserId { get; set; }
 
   [Column("rent_object_id")]
-  public int RentObjId { get; set; }
-
-  [Column("picture_url")]
-  public string? Url { get; set; }
+  public int RentObjectId { get; set; }
 }

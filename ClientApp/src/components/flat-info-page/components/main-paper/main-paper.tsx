@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Alert,
   IconButton,
@@ -15,6 +15,10 @@ import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import DirectionsWalkOutlinedIcon from "@mui/icons-material/DirectionsWalkOutlined";
 import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
+import { isLoggedIn } from "src/helpFunctions/tokenCheck";
+import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 // import { ReactComponent as Logo } from "./../../../../../";
 
 interface ForPhotos {
@@ -27,12 +31,19 @@ interface ForPhotos {
 interface MainPaperProps {
   flatInfo?: RentObjectInformation;
   onScrollToMap: () => void;
+  isFavourite: boolean;
+  onFavouriteChange: (isChange: boolean) => void;
 }
 
-const MainPaper: React.FC<MainPaperProps> = ({ flatInfo, onScrollToMap }) => {
+const MainPaper: React.FC<MainPaperProps> = ({
+  flatInfo,
+  isFavourite,
+  onScrollToMap,
+  onFavouriteChange,
+}) => {
   const [fullScreen, setFullScreen] = React.useState(false);
-
   const [images, setImages] = React.useState<ForPhotos[]>([]);
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     let imagess: ForPhotos[] = [];
@@ -71,6 +82,47 @@ const MainPaper: React.FC<MainPaperProps> = ({ flatInfo, onScrollToMap }) => {
     }
 
     setIsAlertOpen(false);
+  };
+
+  const toggleFavourite = async (
+    objectId: number,
+    username: string,
+    token: string
+  ) => {
+    try {
+      const response = await fetch("api/account/toggleFavourite", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ objectId, username }),
+      });
+      if (!response.ok) {
+        throw new Error("Ошибка при выполнении запроса");
+      }
+    } catch (error) {
+      console.error("Произошла ошибка:", error);
+    }
+  };
+
+  const handleFavouriteChange = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    if (isLoggedIn()) {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const decodedToken: any = jwtDecode(token);
+        toggleFavourite(
+          flatInfo?.rentObject?.rentObjId || 0,
+          decodedToken.nickName,
+          token
+        );
+      }
+      onFavouriteChange(true);
+    } else {
+      navigate("/sign-in");
+    }
   };
 
   return (
@@ -126,8 +178,14 @@ const MainPaper: React.FC<MainPaperProps> = ({ flatInfo, onScrollToMap }) => {
         </Stack>
 
         <Stack flexDirection="row" gap="1rem">
-          <IconButton color="default" size="large">
-            <FavoriteIcon fontSize="inherit" />
+          <IconButton
+            color="primary"
+            size="large"
+            onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) =>
+              handleFavouriteChange(e)
+            }
+          >
+            {isFavourite ? <FavoriteIcon /> : <FavoriteBorderOutlinedIcon />}
           </IconButton>
           <IconButton color="default" size="large" onClick={onCopyPathClick}>
             <ContentCopyOutlinedIcon fontSize="inherit" />

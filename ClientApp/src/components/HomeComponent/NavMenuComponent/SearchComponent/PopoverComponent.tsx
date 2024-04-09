@@ -128,7 +128,6 @@ export const PopoverComponent = ({
   };
 
   const valueText = (value: number) => `${value} ${currentCurrency}`;
-  console.log("values ", value);
   return (
     <Stack flexDirection="column" spacing={2} padding={2} width={"min-content"}>
       <Stack flexDirection="row" spacing={1} useFlexGap>

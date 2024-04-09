@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.AspNetCore.Identity;
 
 namespace FlatRent.Controllers;
 
@@ -31,7 +33,6 @@ public class AuthController : ControllerBase
             if (user != null && BCrypt.Net.BCrypt.Verify(model.Password, user.PassHash))
             {
                 var token = GenerateJwtToken(user);
-
                 return Ok(new { Token = token });
             }
 
@@ -48,11 +49,14 @@ public class AuthController : ControllerBase
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("My_super_long_secret_key_here123!@#"));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        var claims = new[]
+        var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.Name, user.Name),
-            new Claim(ClaimTypes.Email, user.Email),
-            // Другие нужные вам утверждения
+            new Claim("nickName", user.Name != null ? user.Name : ""),
+            new Claim("name", user.FullName != null ? user.FullName : ""),
+            new Claim("surname", user.Surname != null ? user.Surname : ""),
+            new Claim("email", user.Email != null ? user.Email : ""),
+            new Claim("phoneNumber", user.PhoneNumber != null ? user.PhoneNumber : ""),
+            new Claim("gender", user.Gender != null ? user.Gender : "")
         };
 
         var token = new JwtSecurityToken(

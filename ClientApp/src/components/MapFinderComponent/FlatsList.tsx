@@ -5,7 +5,7 @@ import IconButton from "@mui/material/IconButton";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 import { Stack, Typography } from "@mui/material";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import { RentObjectInformation } from "src/interfaces/RentObj";
 import { MapListPreviewCard } from "./MapListPreviewCard";
@@ -14,6 +14,8 @@ const drawerWidth = 690;
 
 interface FlatsListProps {
   onListSwitch: (isOpen: boolean) => void;
+  onFavouriteChange: (isChanged: boolean) => void;
+  favourites: number[];
   flatsCount: number;
   isOpen: boolean;
   rentObjects: RentObjectInformation[];
@@ -21,21 +23,15 @@ interface FlatsListProps {
 
 export default function FlatsList({
   onListSwitch,
+  onFavouriteChange,
+  favourites,
   flatsCount,
   isOpen,
   rentObjects,
 }: FlatsListProps) {
-  // const [open, setOpen] = React.useState(isOpen);
-  const location = useLocation();
-
   const handleDrawerSwitch = () => {
-    // setOpen(!open);
     onListSwitch(!isOpen);
   };
-
-  React.useEffect(() => {
-    console.log("Open: ", isOpen);
-  }, []);
 
   const ending =
     flatsCount === 1 ? "е" : flatsCount > 1 && flatsCount < 5 ? "я" : "й";
@@ -127,6 +123,10 @@ export default function FlatsList({
               <MapListPreviewCard
                 rentInformation={rentObject}
                 keyNumber={index}
+                isFavourite={favourites.includes(
+                  rentObject.rentObject.rentObjId
+                )}
+                onFavouriteChange={onFavouriteChange}
               />
             ))}
           </Stack>

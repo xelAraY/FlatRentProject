@@ -22,6 +22,19 @@ export const App = () => {
         palette: {},
       })}
     >
+      {/* <div
+        style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
+      >
+        {showNavMenu && <NavMenu />}
+        <div style={{ flexGrow: 1, background: "#f3f5f7" }}>
+          <Routes>
+            {AppRoutes.map((route, index) => (
+              <Route key={index} {...route} />
+            ))}
+          </Routes>
+        </div>
+        {showFooter && <Footer />}
+      </div> */}
       <Routes>
         <Route
           element={

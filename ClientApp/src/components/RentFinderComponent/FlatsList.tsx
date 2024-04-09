@@ -3,13 +3,21 @@ import { RentObjectInformation } from "src/interfaces/RentObj";
 import { SkeletonPreview } from "../HomeComponent/ListingComponent/SkeletonPreview";
 import { FlatPreviewCard } from "../HomeComponent/ListingComponent/FlatPreviewCard";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 interface FlatsListProps {
   rentObjects: RentObjectInformation[];
   isLoading: boolean;
+  favourites: number[];
+  onFavouritesChanged: (isChanged: boolean) => void;
 }
 
-export const FlatsList = ({ rentObjects, isLoading }: FlatsListProps) => {
+export const FlatsList = ({
+  rentObjects,
+  isLoading,
+  favourites,
+  onFavouritesChanged,
+}: FlatsListProps) => {
   const numberOfRentObjects = 4;
   const navigate = useNavigate();
 
@@ -42,6 +50,10 @@ export const FlatsList = ({ rentObjects, isLoading }: FlatsListProps) => {
                   rentInformation={rentObject}
                   keyNumber={index}
                   onCardClick={(flatId: number) => navigate(`/flats/${flatId}`)}
+                  isFavourite={favourites.includes(
+                    rentObject.rentObject.rentObjId
+                  )}
+                  onFavouriteChange={onFavouritesChanged}
                 />
               </Grid>
             ))}

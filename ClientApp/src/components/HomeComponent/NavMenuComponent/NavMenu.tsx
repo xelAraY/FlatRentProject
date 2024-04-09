@@ -1,26 +1,60 @@
 import React, { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import "./NavMenu.css";
 import { Avatar, Stack, Typography } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { Button } from "src/shared";
 import { isLoggedIn } from "src/helpFunctions/tokenCheck";
-import PersonIcon from "@mui/icons-material/Person";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import LoginIcon from "@mui/icons-material/Login";
+import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
+import { jwtDecode } from "jwt-decode";
+import { UserInfo } from "src/interfaces/UserInfo";
 
 export const NavMenu = () => {
+  const navigate = useNavigate();
   const [isLogged, setIsLogged] = useState(false);
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    console.log("token = ", localStorage.getItem("token"));
-    setIsLogged(!isLogged);
-  };
+  const [userInfo, setUserInfo] = useState<UserInfo>();
+  const [avatarUrl, setAvatarUrl] = useState<string>("");
 
   useEffect(() => {
-    setIsLogged(isLoggedIn);
+    setIsLogged(isLoggedIn());
+  }, [isLoggedIn()]);
+
+  useEffect(() => {
+    if (isLoggedIn()) {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const decodedToken: any = jwtDecode(token);
+        setUserInfo(decodedToken);
+      }
+    } else {
+      navigate("/sign-in");
+    }
   }, []);
 
-  const addNewPage = isLogged ? "/new" : "/sign-in";
+  useEffect(() => {
+    if (userInfo) {
+      fetch(`api/account/getAvatarImage/${userInfo?.nickName}`)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(
+              `Failed to fetch avatar data: ${response.status} ${response.statusText}`
+            );
+          }
+          return response.json();
+        })
+        .then((data) => {
+          setAvatarUrl(data.avatarImageUrl);
+        })
+        .catch((error) => {
+          console.error("Error fetching avatar data:", error);
+        });
+      // setFirstLoad(true);
+    }
+  }, [userInfo]);
+
+  const addNewPage = isLoggedIn() ? "/account/newListing" : "/sign-in";
 
   return (
     <header>
@@ -48,37 +82,71 @@ export const NavMenu = () => {
             {isLogged ? (
               <Stack
                 flexDirection="row"
-                spacing={2}
+                spacing={3}
                 useFlexGap
                 alignItems="center"
               >
-                <Avatar className="avatar-image">
-                  <PersonIcon />
-                </Avatar>
                 <NavLink
-                  to="/"
-                  className="nav-menu-link"
-                  onClick={handleLogout}
+                  to={"/account/favourites"}
+                  style={{ textDecoration: "none" }}
                 >
-                  Выйти
+                  <Stack
+                    flexDirection={"row"}
+                    alignItems={"center"}
+                    spacing={1}
+                    useFlexGap
+                  >
+                    <FavoriteIcon fontSize="large" />
+                    <Typography>Избранное</Typography>
+                  </Stack>
+                </NavLink>
+                <NavLink to={"/account"} style={{ textDecoration: "none" }}>
+                  {/* <Avatar className="avatar-image"> */}
+                  <Stack
+                    flexDirection={"row"}
+                    alignItems={"center"}
+                    spacing={1}
+                    useFlexGap
+                  >
+                    <Avatar
+                      style={{ backgroundColor: "#0366d6" }}
+                      src={avatarUrl}
+                    />
+                    <Typography>Профиль</Typography>
+                  </Stack>
                 </NavLink>
               </Stack>
             ) : (
               <Stack flexDirection="row" spacing={2} useFlexGap>
-                <NavLink to="/sign-in" className="nav-menu-link">
+                {/* <NavLink to="/sign-in" className="nav-menu-link">
                   Войти
-                </NavLink>
-                <NavLink to="/sign-up" className="nav-menu-link">
-                  Зарегистрироваться
-                </NavLink>
+                </NavLink> */}
+                <Button
+                  variant="contained"
+                  startIcon={<LoginIcon />}
+                  // style={{ backgroundColor: "#efcd6c" }}
+                >
+                  <NavLink to="/sign-in" className="nav-menu-add-link">
+                    Войти
+                  </NavLink>
+                </Button>
+                <Button
+                  variant="contained"
+                  startIcon={<PersonAddAltIcon />}
+                  // style={{ backgroundColor: "#efcd6c" }}
+                >
+                  <NavLink to="/sign-up" className="nav-menu-add-link">
+                    Зарегистрироваться
+                  </NavLink>
+                </Button>
               </Stack>
             )}
 
             <Button
               variant="contained"
+              startIcon={<AddIcon />}
               // style={{ backgroundColor: "#efcd6c" }}
             >
-              <AddIcon style={{ marginRight: "5px" }} sx={{ fontSize: 30 }} />
               <NavLink to={addNewPage} className="nav-menu-add-link">
                 Добавить объявление
               </NavLink>

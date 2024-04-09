@@ -4,11 +4,12 @@ import {
   Card,
   CardActionArea,
   CardContent,
+  IconButton,
   Stack,
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { RentObjectInformation } from "src/interfaces/RentObj";
 import "react-image-gallery/styles/css/image-gallery.css";
 import {
@@ -16,10 +17,17 @@ import {
   EURO_EXCHANGE_RATE,
   ImageGalleryStyled,
 } from "src/shared";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
+import { isLoggedIn } from "src/helpFunctions/tokenCheck";
+import { jwtDecode } from "jwt-decode";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 interface CardProps {
   rentInformation: RentObjectInformation;
   keyNumber: number;
+  isFavourite: boolean;
+  onFavouriteChange: (isChange: boolean) => void;
   onCardClick: (flatId: number) => void;
 }
 
@@ -33,7 +41,9 @@ interface ForPhotos {
 export const FlatPreviewCard = ({
   rentInformation,
   keyNumber,
+  isFavourite,
   onCardClick,
+  onFavouriteChange,
 }: CardProps) => {
   const isMedium = useMediaQuery((theme: any) =>
     theme.breakpoints.between("xl", "2000")
@@ -46,7 +56,10 @@ export const FlatPreviewCard = ({
   );
   const heigth = isSuperLarge ? 700 : isLarge ? 500 : isMedium ? 300 : 250;
 
-  const [images, setImages] = React.useState<ForPhotos[]>([]);
+  const [images, setImages] = useState<ForPhotos[]>([]);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     let imagess: ForPhotos[] = [];
@@ -71,6 +84,58 @@ export const FlatPreviewCard = ({
       : currency === "EUR"
       ? Math.round(price * EURO_EXCHANGE_RATE)
       : price;
+
+  let currencyType = searchParams.get("currencyType");
+  let anotherPrice = 0;
+  if (currencyType === "EUR") {
+    anotherPrice = Math.round(bynPrice / EURO_EXCHANGE_RATE);
+  } else {
+    anotherPrice = Math.round(bynPrice / DOLLAR_EXCHANGE_RATE);
+    currencyType = "USD";
+  }
+
+  const toggleFavourite = async (
+    objectId: number,
+    username: string,
+    token: string
+  ) => {
+    try {
+      const response = await fetch("api/account/toggleFavourite", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ objectId, username }),
+      });
+      if (!response.ok) {
+        throw new Error("Ошибка при выполнении запроса");
+      }
+    } catch (error) {
+      console.error("Произошла ошибка:", error);
+    }
+  };
+
+  const handleFavouriteChange = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.stopPropagation();
+    if (isLoggedIn()) {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const decodedToken: any = jwtDecode(token);
+        toggleFavourite(
+          rentInformation.rentObject.rentObjId,
+          decodedToken.nickName,
+          token
+        );
+      }
+      onFavouriteChange(true);
+      // setFavourite(!favourite);
+    } else {
+      navigate("/sign-in");
+    }
+  };
 
   return (
     <Card key={keyNumber} style={{ width: "100%", minWidth: "300px" }}>
@@ -102,14 +167,27 @@ export const FlatPreviewCard = ({
           )}
         </Stack>
         <CardContent>
-          <Stack flexDirection="row" alignItems="center">
-            <Typography gutterBottom variant="h6" fontWeight="600">
-              {bynPrice} р./мес.&nbsp;
-            </Typography>
-            <Typography gutterBottom variant="body2" fontWeight="400">
-              ≈{rentInformation.rentObject.rentPrice} {rentInformation.currency}
-              /мес.
-            </Typography>
+          <Stack
+            flexDirection="row"
+            alignItems="center"
+            justifyContent={"space-between"}
+          >
+            <Stack flexDirection="row" alignItems="center">
+              <Typography gutterBottom variant="h6" fontWeight="600">
+                {bynPrice} р./мес.&nbsp;
+              </Typography>
+              <Typography gutterBottom variant="body2" fontWeight="400">
+                ≈{anotherPrice} {currencyType}/мес.
+              </Typography>
+            </Stack>
+            <IconButton
+              color="primary"
+              onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) =>
+                handleFavouriteChange(e)
+              }
+            >
+              {isFavourite ? <FavoriteIcon /> : <FavoriteBorderOutlinedIcon />}
+            </IconButton>
           </Stack>
           <Stack flexDirection="row" flexWrap="wrap" gap="0.5rem">
             <Typography variant="subtitle2">
@@ -150,7 +228,6 @@ export const FlatPreviewCard = ({
                 style={{ textTransform: "none" }}
                 onClick={(e) => {
                   e.stopPropagation();
-                  console.log("show contacts");
                 }}
               >
                 {/* не удаляй e.stopPropagation(); а то будет вызываться onClick у Card */}

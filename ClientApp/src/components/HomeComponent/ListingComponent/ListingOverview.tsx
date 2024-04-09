@@ -9,6 +9,8 @@ interface ListingOverviewProps {
   requestPath: string;
   title: string;
   subTitle: string;
+  favourites: number[];
+  onFavouriteChange: (isChanged: boolean) => void;
 }
 
 export const ListingOverview = (props: ListingOverviewProps) => {
@@ -28,7 +30,6 @@ export const ListingOverview = (props: ListingOverviewProps) => {
         const data = await response.json();
 
         if (response.ok) {
-          console.log("Данные с сервера", data);
           setRentObjects(data);
         } else {
           console.error("Ошибка при получении данных", data.message);
@@ -99,6 +100,10 @@ export const ListingOverview = (props: ListingOverviewProps) => {
                     onCardClick={(flatId: number) =>
                       navigate(`/flats/${flatId}`)
                     }
+                    isFavourite={props.favourites.includes(
+                      rentObject.rentObject.rentObjId
+                    )}
+                    onFavouriteChange={props.onFavouriteChange}
                   />
                 </Grid>
               ))}

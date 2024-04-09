@@ -15,6 +15,8 @@ import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "src/shared";
 import { FilterOptions } from "../RentFinderComponent/FilterOptions";
 import FlatsList from "./FlatsList";
+import { isLoggedIn } from "src/helpFunctions/tokenCheck";
+import { jwtDecode } from "jwt-decode";
 
 interface PlacemarkInfo {
   coordinates: [number, number];
@@ -38,6 +40,11 @@ export const MapFindingPage = () => {
   const [placemarks, setPlacemarks] = useState<PlacemarkInfo[]>([]);
   const [map, setMap] = React.useState<ymaps.Map>();
   const [clusterer, setClusterer] = React.useState<ymaps.Clusterer>();
+  const [favouriteChanged, setFavouriteChanged] = useState(true);
+  const [favListings, setFavListings] = useState<number[]>([]);
+
+  // const [newCoords, setNewCoords] = useState([53.900487, 27.555324]);
+
   const [showCost, setShowCost] = React.useState(false);
   const [loading, setLoading] = useState(false);
   const [rentObjects, setRentObjects] = useState<RentObjectInformation[]>([]);
@@ -48,6 +55,43 @@ export const MapFindingPage = () => {
   const [open, setOpen] = useState(false);
 
   const navigate = useNavigate();
+
+  const handleFavouriteChange = (isChanged: boolean) => {
+    setFavouriteChanged(isChanged);
+  };
+
+  const getFavouritesListings = async () => {
+    if (favouriteChanged) {
+      if (isLoggedIn()) {
+        const token = localStorage.getItem("token");
+        if (token) {
+          const decodedToken: any = jwtDecode(token);
+          const favouritesResponce = await fetch(
+            `api/account/favourites/${decodedToken.nickName}`,
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          const data = await favouritesResponce.json();
+
+          if (favouritesResponce.ok) {
+            setFavListings([...data]);
+          } else {
+            console.error("Ошибка при получении данных", data);
+          }
+        }
+      }
+      setFavouriteChanged(false);
+    }
+  };
+
+  useEffect(() => {
+    getFavouritesListings();
+  }, [favouriteChanged]);
 
   const handleFlatsListOpen = (isOpen: boolean) => {
     if (!isOpen) {
@@ -84,17 +128,11 @@ export const MapFindingPage = () => {
   };
 
   clusterer?.events.add("click", function (e) {
-    console.log("click clusterer", e);
-    // console.log("geo objects ", clusterer.getGeoObjects());
     setOpen(!open);
-    // if (clusterer.getGeoObjects().length > 1) {
-    //   setSelectedObject(null);
-    // }
   });
 
   map?.events.add("boundschange", function (e) {
     if (e.get("newBounds") !== e.get("oldBounds")) {
-      console.log("Bounds ", e.get("newBounds"));
       const bottomLeftCorner = e.get("newBounds")[0];
       const topRightCorner = e.get("newBounds")[1];
       const bounds: MapBounds = {
@@ -115,7 +153,13 @@ export const MapFindingPage = () => {
   const fetchData = async () => {
     const queryParams = new URLSearchParams(location.search);
 
-    console.log("Все данные");
+    setSearchParams(
+      (urlParams) => {
+        urlParams.delete("page");
+        return urlParams;
+      },
+      { replace: true }
+    );
 
     const response = await fetch(
       `api/search/filter?${
@@ -125,7 +169,6 @@ export const MapFindingPage = () => {
     const data = await response.json();
 
     if (response.ok) {
-      console.log("Новые Данные с сервера", data);
       setRentObjects(data);
     } else {
       console.error("Ошибка при получении данных", data.message);
@@ -140,7 +183,6 @@ export const MapFindingPage = () => {
 
   useEffect(() => {
     if (mapBounds !== undefined) {
-      console.log("Координаты карты: ", mapBounds);
       setSearchParams(
         (urlParams) => {
           urlParams.set("leftX", mapBounds.leftX.toString());
@@ -155,7 +197,6 @@ export const MapFindingPage = () => {
   }, [mapBounds]);
 
   useEffect(() => {
-    console.log("Установка coordinates");
     const placemarksArray: PlacemarkInfo[] = rentObjects.map((rentInf) => {
       const currency = rentInf.currency;
       const price = rentInf.rentObject.rentPrice;
@@ -211,13 +252,17 @@ export const MapFindingPage = () => {
             height={"100%"}
             defaultState={mapData}
             options={{ minZoom: 5 }}
-            instanceRef={(ref) => setMap(ref)}
+            instanceRef={(ref: React.SetStateAction<ymaps.Map | undefined>) =>
+              setMap(ref)
+            }
           >
             <FlatsList
               onListSwitch={handleFlatsListOpen}
               flatsCount={selectedObject ? 1 : flatsCount}
               isOpen={open}
               rentObjects={selectedObject ? [selectedObject] : rentObjects}
+              onFavouriteChange={handleFavouriteChange}
+              favourites={favListings}
             />
             <div
               style={{
@@ -238,7 +283,7 @@ export const MapFindingPage = () => {
             <Button
               variant="contained"
               startIcon={<FormatListBulletedIcon />}
-              onClick={() => navigate("/flats")}
+              onClick={() => navigate("/flats?page=1")}
               sx={{
                 fontSize: "16px",
                 fontWeight: 600,
@@ -281,6 +326,19 @@ export const MapFindingPage = () => {
               ))}
             </Clusterer>
             <ZoomControl />
+            {/* <Placemark
+              geometry={newCoords}
+              options={{ draggable: true }}
+              onDragEnd={(event: any) => {
+                setNewCoords(event.get("target").geometry.getCoordinates());
+              }}
+              instanceRef={testRef}
+              properties={{
+                hintContent: newCoords
+                  .map((coord) => coord.toString().substring(0, 9))
+                  .join(","),
+              }}
+            /> */}
           </Map>
         </YMaps>
       </Stack>
