@@ -149,30 +149,29 @@ export const ProfilePage = () => {
     };
   };
 
-  const updateAvatarImage = async () => {
-    if (userInfo) {
-      try {
-        await fetch("api/account/updateProfileImage", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userName: userInfo.nickName,
-            imageUrl: avatarUrl,
-          }),
-        });
-      } catch (error) {
-        console.error("Произошла ошибка ", error);
-      }
-    }
-  };
-
   useEffect(() => {
     // if (firstLoad) {
     //   setFirstLoad(false);
     //   return;
     // }
+    const updateAvatarImage = async () => {
+      if (userInfo) {
+        try {
+          await fetch("api/account/updateProfileImage", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              userName: userInfo.nickName,
+              imageUrl: avatarUrl,
+            }),
+          });
+        } catch (error) {
+          console.error("Произошла ошибка ", error);
+        }
+      }
+    };
     updateAvatarImage();
   }, [avatarUrl]);
 
@@ -212,7 +211,32 @@ export const ProfilePage = () => {
     }));
   };
 
-  const handleUpdateUserInfo = () => {};
+  const handleUpdateUserInfo = async () => {
+    const userData = {
+      username: userInfo.nickName,
+      name: userInfo.name,
+      surname: userInfo.surname,
+      phoneNumber: userInfo.phoneNumber,
+      gender: userInfo.gender,
+    };
+    try {
+      const response = await fetch("api/account/updateUserData", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(userData),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        // localStorage.setItem("token", data.token);
+        setInfoChanged(false);
+        console.log("Successfully updated ", data.message);
+      } else {
+        console.error("Error while updating user data ", data.message);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <Grid container spacing={2}>
@@ -314,6 +338,12 @@ export const ProfilePage = () => {
                     helperText={
                       error ? "Номер телефона должен содержать 13 цифр" : ""
                     }
+                    sx={{
+                      ".MuiFormHelperText-root": {
+                        top: "2.5rem",
+                        position: "absolute",
+                      },
+                    }}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">+375</InputAdornment>
@@ -341,9 +371,6 @@ export const ProfilePage = () => {
                       return selected;
                     }}
                   >
-                    <MenuItem disabled value="">
-                      Не указано
-                    </MenuItem>
                     <MenuItem value={"Мужской"}>Мужской</MenuItem>
                     <MenuItem value={"Женский"}>Женский</MenuItem>
                   </Select>

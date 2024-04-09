@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 using Microsoft.AspNetCore.Authorization;
+using System.Text.RegularExpressions;
 
 namespace FlatRent.Controllers;
 
@@ -157,4 +158,71 @@ public class AccountController : ControllerBase
       return StatusCode(500, new {Message = $"Error retrieving profile image: {ex.Message}"});
     }
   }
+
+  [HttpPost("updateUserData")]
+  public async Task<IActionResult> UpdateUserData([FromBody] UserDataModel data)
+  {
+    try
+    {
+      if (!Regex.IsMatch(data.PhoneNumber, @"^\+375\d{2}\d{7}$"))
+      {
+        return BadRequest(new { Message = "Неправильный формат номера телефона. Используйте формат +375XXXXXXXXX." });
+      }
+
+      var user = await _context.Users.FirstOrDefaultAsync(u => u.Name == data.Username);
+      if (user == null)
+      {
+        return NotFound( new { Message = $"User '{data.Username}' not found."});
+      }
+
+      user.FullName = data.Name;
+      user.Surname = data.SurName;
+      user.PhoneNumber = data.PhoneNumber;
+      user.Gender = data.Gender;
+      if (user.RegistrationDate.Kind != DateTimeKind.Utc)
+      {
+        user.RegistrationDate = DateTime.SpecifyKind(user.RegistrationDate, DateTimeKind.Utc);
+      }
+
+      if (user.LastLogin.HasValue && user.LastLogin.Value.Kind != DateTimeKind.Utc)
+      {
+        user.LastLogin = DateTime.SpecifyKind(user.LastLogin.Value, DateTimeKind.Utc);
+      }
+      _context.Users.Update(user);
+      await _context.SaveChangesAsync();
+
+      var token = GenerateJwtToken(user);
+      return Ok( new { Token = token, Message = $"User data successfully updated for user '{data.Username}'."});
+    }
+    catch (Exception ex)
+    {
+      return StatusCode( 500, new { Message = $"Error updating user data: {ex.Message}"});
+    }
+  }
+
+  private string GenerateJwtToken(User user)
+    {
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("My_super_long_secret_key_here123!@#"));
+        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        var claims = new List<Claim>
+        {
+            new Claim("nickName", user.Name != null ? user.Name : ""),
+            new Claim("name", user.FullName != null ? user.FullName : ""),
+            new Claim("surname", user.Surname != null ? user.Surname : ""),
+            new Claim("email", user.Email != null ? user.Email : ""),
+            new Claim("phoneNumber", user.PhoneNumber != null ? user.PhoneNumber : ""),
+            new Claim("gender", user.Gender != null ? user.Gender : "")
+        };
+
+        var token = new JwtSecurityToken(
+            "your_issuer",
+            "your_audience",
+            claims,
+            expires: DateTime.Now.AddHours(1),
+            signingCredentials: credentials
+        );
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
+    }
 }
