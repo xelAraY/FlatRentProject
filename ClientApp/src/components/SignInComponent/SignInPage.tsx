@@ -104,7 +104,7 @@ export const SignInPage = () => {
         <Stack flexDirection="column" height="auto" width="270px">
           <TextField
             id="usr_name"
-            label="Никнейм"
+            label="Имя пользователя"
             variant="outlined"
             name="user_name"
             placeholder="Ivan2002"
