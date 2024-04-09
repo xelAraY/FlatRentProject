@@ -27,7 +27,7 @@ const GeneralTab: React.FC = () => {
       <Typography variant="subtitle1" mb="0.5rem">
         Количество комнат
       </Typography>
-      <Stack flexDirection="row">
+      <Stack flexDirection="row" gap="0.5rem">
         <Button
           variant={roomsCountButton === 0 ? "contained" : "outlined"}
           onClick={() => handleChange(0)}
@@ -110,11 +110,13 @@ function VerticalLinearStepper() {
         {steps.map((step, index) => (
           <Step
             key={step.label}
-            sx={{
-              "& .MuiStepIcon-root": {
-                color: "green !important",
-              },
-            }}
+            sx={
+              {
+                // "& .MuiStepIcon-root": {
+                //   color: "green !important",
+                // },
+              }
+            }
             completed={false}
             onClick={() => setActiveStep(index)}
           >

@@ -5,7 +5,6 @@ import { RentFindingPage } from "./components/RentFinderComponent/RentFindingPag
 import { FlatInfoPage } from "./components/flat-info-page";
 import { MapFindingPage } from "./components/MapFinderComponent/MapFindingPage";
 import { AccountPage } from "./components/AccountComponent/AccountPage";
-import { AddListingPage } from "./components/AddListingPage";
 
 const AppRoutes = [
   {
@@ -31,10 +30,6 @@ const AppRoutes = [
   {
     path: "/flats/map",
     element: <MapFindingPage />,
-  },
-  {
-    path: "/addNewListing",
-    element: <AddListingPage />,
   },
   {
     path: "/account/*",
