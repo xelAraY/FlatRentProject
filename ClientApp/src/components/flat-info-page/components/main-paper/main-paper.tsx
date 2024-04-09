@@ -115,7 +115,7 @@ const MainPaper: React.FC<MainPaperProps> = ({
         const decodedToken: any = jwtDecode(token);
         toggleFavourite(
           flatInfo?.rentObject?.rentObjId || 0,
-          decodedToken.name,
+          decodedToken.nickName,
           token
         );
       }

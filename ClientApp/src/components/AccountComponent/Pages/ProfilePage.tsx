@@ -1,12 +1,4 @@
-import {
-  Avatar,
-  Box,
-  Grid,
-  Paper,
-  Stack,
-  Typography,
-  styled,
-} from "@mui/material";
+import { Avatar, Grid, Paper, Stack, Typography, styled } from "@mui/material";
 import { jwtDecode } from "jwt-decode";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -14,6 +6,7 @@ import { isLoggedIn } from "src/helpFunctions/tokenCheck";
 import { Button } from "src/shared";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { UserInfo } from "src/interfaces/UserInfo";
 
 function stringToColor(string: string) {
   let hash = 0;
@@ -47,11 +40,6 @@ function stringAvatar(name: string) {
   };
 }
 
-interface UserInfo {
-  name: string;
-  email: string;
-}
-
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
   clipPath: "inset(50%)",
@@ -72,7 +60,7 @@ export const ProfilePage = () => {
 
   useEffect(() => {
     if (userInfo) {
-      fetch(`api/account/getAvatarImage/${userInfo?.name}`)
+      fetch(`api/account/getAvatarImage/${userInfo?.nickName}`)
         .then((response) => {
           if (!response.ok) {
             throw new Error(
@@ -89,6 +77,7 @@ export const ProfilePage = () => {
         });
       // setFirstLoad(true);
     }
+    console.log("userInfo: ", userInfo);
   }, [userInfo]);
 
   useEffect(() => {
@@ -96,6 +85,7 @@ export const ProfilePage = () => {
       const token = localStorage.getItem("token");
       if (token) {
         const decodedToken: any = jwtDecode(token);
+        console.log("tokenInfo: ", decodedToken);
         setUserInfo(decodedToken);
       }
     } else {
@@ -127,7 +117,7 @@ export const ProfilePage = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            userName: userInfo.name,
+            userName: userInfo.nickName,
             imageUrl: avatarUrl,
           }),
         });
@@ -157,7 +147,7 @@ export const ProfilePage = () => {
               />
             ) : (
               <Avatar
-                {...stringAvatar(userInfo ? userInfo.name : "User")}
+                {...stringAvatar(userInfo ? userInfo.nickName : "User")}
                 style={{ width: 160, height: 160, fontSize: "50px" }}
               />
             )}
@@ -182,7 +172,7 @@ export const ProfilePage = () => {
             </Button>
             <Stack alignItems={"center"}>
               <Typography variant="h4" fontWeight={600}>
-                {userInfo?.name}
+                {userInfo?.nickName}
               </Typography>
               <Typography variant="h6">Собственник</Typography>
             </Stack>
@@ -190,9 +180,30 @@ export const ProfilePage = () => {
         </Paper>
       </Grid>
       <Grid item xs={8}>
-        <Paper elevation={3}>
-          <Stack direction="row" spacing={2}>
-            Profile information
+        <Paper elevation={3} style={{ padding: 20, height: "100%" }}>
+          <Stack flexDirection={"row"} spacing={14} useFlexGap>
+            <Grid container>
+              <Grid item sm={4} xs={12}>
+                <Typography>Имя</Typography>
+              </Grid>
+              <Grid item sm={8} xs={12}>
+                <Typography>
+                  {userInfo?.name ? userInfo.name : "Неизвестно"}
+                </Typography>
+              </Grid>
+              <Grid item sm={4} xs={12}>
+                <Typography>Email</Typography>
+              </Grid>
+              <Grid item sm={8} xs={12}>
+                <Typography>{userInfo?.email}</Typography>
+              </Grid>
+              <Grid item sm={4} xs={12}>
+                <Typography>Номер телефона</Typography>
+              </Grid>
+              <Grid item sm={8} xs={12}>
+                <Typography>{userInfo?.phoneNumber}</Typography>
+              </Grid>
+            </Grid>
           </Stack>
         </Paper>
       </Grid>

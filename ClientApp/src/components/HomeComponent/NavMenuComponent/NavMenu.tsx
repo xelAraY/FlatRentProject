@@ -1,19 +1,58 @@
 import React, { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import "./NavMenu.css";
-import { Stack, Typography } from "@mui/material";
+import { Avatar, Stack, Typography } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { Button } from "src/shared";
 import { isLoggedIn } from "src/helpFunctions/tokenCheck";
-import PersonIcon from "@mui/icons-material/Person";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import LoginIcon from "@mui/icons-material/Login";
+import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
+import { jwtDecode } from "jwt-decode";
+import { UserInfo } from "src/interfaces/UserInfo";
 
 export const NavMenu = () => {
+  const navigate = useNavigate();
   const [isLogged, setIsLogged] = useState(false);
+  const [userInfo, setUserInfo] = useState<UserInfo>();
+  const [avatarUrl, setAvatarUrl] = useState<string>("");
 
   useEffect(() => {
     setIsLogged(isLoggedIn());
   }, [isLoggedIn()]);
+
+  useEffect(() => {
+    if (isLoggedIn()) {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const decodedToken: any = jwtDecode(token);
+        setUserInfo(decodedToken);
+      }
+    } else {
+      navigate("/sign-in");
+    }
+  }, []);
+
+  useEffect(() => {
+    if (userInfo) {
+      fetch(`api/account/getAvatarImage/${userInfo?.nickName}`)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(
+              `Failed to fetch avatar data: ${response.status} ${response.statusText}`
+            );
+          }
+          return response.json();
+        })
+        .then((data) => {
+          setAvatarUrl(data.avatarImageUrl);
+        })
+        .catch((error) => {
+          console.error("Error fetching avatar data:", error);
+        });
+      // setFirstLoad(true);
+    }
+  }, [userInfo]);
 
   const addNewPage = isLoggedIn() ? "/account/newListing" : "/sign-in";
 
@@ -69,10 +108,12 @@ export const NavMenu = () => {
                     spacing={1}
                     useFlexGap
                   >
-                    <PersonIcon fontSize="large" />
+                    <Avatar
+                      style={{ backgroundColor: "#0366d6" }}
+                      src={avatarUrl}
+                    />
                     <Typography>Профиль</Typography>
                   </Stack>
-                  {/* </Avatar> */}
                 </NavLink>
               </Stack>
             ) : (
@@ -80,20 +121,32 @@ export const NavMenu = () => {
                 {/* <NavLink to="/sign-in" className="nav-menu-link">
                   Войти
                 </NavLink> */}
-                <NavLink to="/sign-in" className="shine-button">
-                  Войти
-                </NavLink>
-                <NavLink to="/sign-up" className="shine-button">
-                  Зарегистрироваться
-                </NavLink>
+                <Button
+                  variant="contained"
+                  startIcon={<LoginIcon />}
+                  // style={{ backgroundColor: "#efcd6c" }}
+                >
+                  <NavLink to="/sign-in" className="nav-menu-add-link">
+                    Войти
+                  </NavLink>
+                </Button>
+                <Button
+                  variant="contained"
+                  startIcon={<PersonAddAltIcon />}
+                  // style={{ backgroundColor: "#efcd6c" }}
+                >
+                  <NavLink to="/sign-up" className="nav-menu-add-link">
+                    Зарегистрироваться
+                  </NavLink>
+                </Button>
               </Stack>
             )}
 
             <Button
               variant="contained"
+              startIcon={<AddIcon />}
               // style={{ backgroundColor: "#efcd6c" }}
             >
-              <AddIcon style={{ marginRight: "5px" }} sx={{ fontSize: 30 }} />
               <NavLink to={addNewPage} className="nav-menu-add-link">
                 Добавить объявление
               </NavLink>

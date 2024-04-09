@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.AspNetCore.Identity;
 
 namespace FlatRent.Controllers;
 
@@ -50,8 +52,10 @@ public class AuthController : ControllerBase
 
         var claims = new List<Claim>
         {
-            new Claim(JwtRegisteredClaimNames.Name, user.Name),
-            new Claim(JwtRegisteredClaimNames.Email, user.Email),
+            new Claim("nickName", user.Name),
+            new Claim("name", user.FullName),
+            new Claim("email", user.Email),
+            new Claim("phoneNumber", user.PhoneNumber),
         };
 
         var token = new JwtSecurityToken(

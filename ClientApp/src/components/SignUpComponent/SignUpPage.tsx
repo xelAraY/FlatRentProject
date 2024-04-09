@@ -1,8 +1,8 @@
-import { Link, Paper, Stack, TextField, Typography } from "@mui/material";
+import { Paper, Stack, TextField, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { Button } from "src/shared";
 import "./../HomeComponent/NavMenuComponent/NavMenu.css";
-import { NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 
 interface Errors {
   usrNameMiss: boolean;
@@ -135,10 +135,10 @@ export const SignUpPage = () => {
         <Stack flexDirection="column" height="auto" width="270px">
           <TextField
             id="usr_name"
-            label="Имя пользователя"
+            label="Никнейм"
             variant="outlined"
             name="user_name"
-            placeholder="Иван"
+            placeholder="Ivan2002"
             required
             helperText={errors?.usrNameMiss ? "Имя обязательно" : ""}
             error={errors?.usrNameMiss}
@@ -219,11 +219,13 @@ export const SignUpPage = () => {
             {responceMsg}
           </Typography>
           <Link
-            href="/sign-in"
-            variant="body2"
-            underline="none"
-            textAlign={"end"}
-            marginTop={1}
+            to="/sign-in"
+            style={{
+              marginTop: "6px",
+              textAlign: "end",
+              textDecoration: "none",
+              fontSize: "14px",
+            }}
           >
             Уже есть аккаунт? Войти
           </Link>

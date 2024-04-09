@@ -1,8 +1,8 @@
-import { Link, Paper, Stack, TextField, Typography } from "@mui/material";
+import { Paper, Stack, TextField, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { Button } from "src/shared";
 import "./../HomeComponent/NavMenuComponent/NavMenu.css";
-import { NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 
 export const SignInPage = () => {
   const [username, setUsername] = useState("");
@@ -104,10 +104,10 @@ export const SignInPage = () => {
         <Stack flexDirection="column" height="auto" width="270px">
           <TextField
             id="usr_name"
-            label="Имя пользователя"
+            label="Никнейм"
             variant="outlined"
             name="user_name"
-            placeholder="Иван"
+            placeholder="Ivan2002"
             required
             value={username}
             onChange={handleUsernameChange}
@@ -141,11 +141,13 @@ export const SignInPage = () => {
             {responceMsg}
           </Typography>
           <Link
-            href="/sign-up"
-            variant="body2"
-            underline="none"
-            textAlign={"end"}
-            marginTop={1}
+            to="/sign-up"
+            style={{
+              marginTop: "6px",
+              textAlign: "end",
+              textDecoration: "none",
+              fontSize: "14px",
+            }}
           >
             Нет аккаунта? Регистрация
           </Link>

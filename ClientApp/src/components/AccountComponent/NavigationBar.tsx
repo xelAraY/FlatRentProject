@@ -41,7 +41,7 @@ export const NavigationBar = () => {
     const token = localStorage.getItem("token");
     if (token) {
       const decodedToken: any = jwtDecode(token);
-      await fetch(`api/account/deleteUser/${decodedToken.name}`, {
+      await fetch(`api/account/deleteUser/${decodedToken.nickName}`, {
         method: "DELETE",
       });
       // const data = await response.json();

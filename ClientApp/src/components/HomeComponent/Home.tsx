@@ -4,7 +4,6 @@ import { ListingOverview } from "./ListingComponent/ListingOverview";
 import { NavMenuImage } from "./NavMenuComponent/NavMenuImage";
 import { isLoggedIn } from "src/helpFunctions/tokenCheck";
 import { jwtDecode } from "jwt-decode";
-import { useNavigate } from "react-router-dom";
 
 interface IRentalObjectsGroupData {
   path: string;
@@ -57,8 +56,9 @@ export const Home = () => {
         const token = localStorage.getItem("token");
         if (token) {
           const decodedToken: any = jwtDecode(token);
+          console.log("decode token: ", decodedToken);
           const favouritesResponce = await fetch(
-            `api/account/favourites/${decodedToken.name}`,
+            `api/account/favourites/${decodedToken.nickName}`,
             {
               method: "GET",
               headers: {
