@@ -67,7 +67,7 @@ export const MapFindingPage = () => {
         if (token) {
           const decodedToken: any = jwtDecode(token);
           const favouritesResponce = await fetch(
-            `api/account/favourites/${decodedToken.nickName}`,
+            `api/account/favourites/${decodedToken.nickname}`,
             {
               method: "GET",
               headers: {

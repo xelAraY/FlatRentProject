@@ -108,7 +108,7 @@ export const HomePage = () => {
       const token = localStorage.getItem("token");
       if (token) {
         const decodedToken: any = jwtDecode(token);
-        setUserName(decodedToken.nickName);
+        setUserName(decodedToken.nickname);
       }
     }
   }, []);

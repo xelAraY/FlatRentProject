@@ -56,9 +56,8 @@ export const Home = () => {
         const token = localStorage.getItem("token");
         if (token) {
           const decodedToken: any = jwtDecode(token);
-          console.log("decode token: ", decodedToken);
           const favouritesResponce = await fetch(
-            `api/account/favourites/${decodedToken.nickName}`,
+            `api/account/favourites/${decodedToken.nickname}`,
             {
               method: "GET",
               headers: {

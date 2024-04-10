@@ -9,12 +9,10 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import LoginIcon from "@mui/icons-material/Login";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import { jwtDecode } from "jwt-decode";
-import { UserInfo } from "src/interfaces/UserInfo";
 
 export const NavMenu = () => {
   const navigate = useNavigate();
   const [isLogged, setIsLogged] = useState(false);
-  const [userInfo, setUserInfo] = useState<UserInfo>();
   const [avatarUrl, setAvatarUrl] = useState<string>("");
 
   useEffect(() => {
@@ -26,33 +24,32 @@ export const NavMenu = () => {
       const token = localStorage.getItem("token");
       if (token) {
         const decodedToken: any = jwtDecode(token);
-        setUserInfo(decodedToken);
+
+        fetch(`api/account/getAvatarImage/${decodedToken.nickname}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(
+                `Failed to fetch avatar data: ${response.status} ${response.statusText}`
+              );
+            }
+            return response.json();
+          })
+          .then((data) => {
+            setAvatarUrl(data.avatarImageUrl);
+          })
+          .catch((error) => {
+            console.error("Error fetching avatar data:", error);
+          });
       }
     } else {
       navigate("/sign-in");
     }
   }, []);
-
-  useEffect(() => {
-    if (userInfo) {
-      fetch(`api/account/getAvatarImage/${userInfo?.nickName}`)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error(
-              `Failed to fetch avatar data: ${response.status} ${response.statusText}`
-            );
-          }
-          return response.json();
-        })
-        .then((data) => {
-          setAvatarUrl(data.avatarImageUrl);
-        })
-        .catch((error) => {
-          console.error("Error fetching avatar data:", error);
-        });
-      // setFirstLoad(true);
-    }
-  }, [userInfo]);
 
   const addNewPage = isLoggedIn() ? "/account/newListing" : "/sign-in";
 

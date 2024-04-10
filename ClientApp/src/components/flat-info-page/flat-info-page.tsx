@@ -31,7 +31,7 @@ const FlatInfoPage: React.FC = () => {
         if (token) {
           const decodedToken: any = jwtDecode(token);
           const response = await fetch(
-            `api/flat/isFavourite?objectId=${flatInfo?.rentObject.rentObjId}&userName=${decodedToken.nickName}`,
+            `api/flat/isFavourite?objectId=${flatInfo?.rentObject.rentObjId}&userName=${decodedToken.nickname}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,

@@ -51,12 +51,7 @@ public class AuthController : ControllerBase
 
         var claims = new List<Claim>
         {
-            new Claim("nickName", user.Name != null ? user.Name : ""),
-            new Claim("name", user.FullName != null ? user.FullName : ""),
-            new Claim("surname", user.Surname != null ? user.Surname : ""),
-            new Claim("email", user.Email != null ? user.Email : ""),
-            new Claim("phoneNumber", user.PhoneNumber != null ? user.PhoneNumber : ""),
-            new Claim("gender", user.Gender != null ? user.Gender : "")
+            new Claim("nickname", user.Name ?? "")
         };
 
         var token = new JwtSecurityToken(

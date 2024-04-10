@@ -24,6 +24,7 @@ public class AccountController : ControllerBase
     _context = context;
   }
 
+  [Authorize]
   [HttpDelete("deleteUser/{username}")]
   public async Task<IActionResult> DeleteUser(string username)
   {
@@ -107,39 +108,41 @@ public class AccountController : ControllerBase
     }
   }
 
-  [HttpPost("updateProfileImage")]
-  public async Task<IActionResult> UpdateProfileImage([FromBody] UpdateAvatarImage model)
-  {
-    try
-    {
-      var user = await _context.Users.FirstOrDefaultAsync(u => u.Name == model.Username);
-      if (user == null)
-      {
-        return NotFound( new { Message = $"User '{model.Username}' not found."});
-      }
+  // [Authorize]
+  // [HttpPost("updateProfileImage")]
+  // public async Task<IActionResult> UpdateProfileImage([FromBody] UpdateAvatarImage model)
+  // {
+  //   try
+  //   {
+  //     var user = await _context.Users.FirstOrDefaultAsync(u => u.Name == model.Username);
+  //     if (user == null)
+  //     {
+  //       return NotFound( new { Message = $"User '{model.Username}' not found."});
+  //     }
 
-      user.AvatarImageUrl = model.ImageUrl;
-      if (user.RegistrationDate.Kind != DateTimeKind.Utc)
-      {
-        user.RegistrationDate = DateTime.SpecifyKind(user.RegistrationDate, DateTimeKind.Utc);
-      }
+  //     user.AvatarImageUrl = model.ImageUrl;
+  //     if (user.RegistrationDate.Kind != DateTimeKind.Utc)
+  //     {
+  //       user.RegistrationDate = DateTime.SpecifyKind(user.RegistrationDate, DateTimeKind.Utc);
+  //     }
 
-      if (user.LastLogin.HasValue && user.LastLogin.Value.Kind != DateTimeKind.Utc)
-      {
-        user.LastLogin = DateTime.SpecifyKind(user.LastLogin.Value, DateTimeKind.Utc);
-      }
+  //     if (user.LastLogin.HasValue && user.LastLogin.Value.Kind != DateTimeKind.Utc)
+  //     {
+  //       user.LastLogin = DateTime.SpecifyKind(user.LastLogin.Value, DateTimeKind.Utc);
+  //     }
 
-      _context.Users.Update(user);
-      await _context.SaveChangesAsync();
+  //     _context.Users.Update(user);
+  //     await _context.SaveChangesAsync();
 
-      return Ok( new { Message = $"Profile image updated successfully for user '{model.Username}'."});
-    }
-    catch (Exception ex)
-    {
-      return StatusCode( 500, new { Message = $"Error updating profile image: {ex.Message}"});
-    }
-  }
+  //     return Ok( new { Message = $"Profile image updated successfully for user '{model.Username}'."});
+  //   }
+  //   catch (Exception ex)
+  //   {
+  //     return StatusCode( 500, new { Message = $"Error updating profile image: {ex.Message}"});
+  //   }
+  // }
 
+  [Authorize]
   [HttpGet("getAvatarImage/{username}")]
   public async Task<IActionResult> GetProfileImage(string username)
   {
@@ -159,6 +162,35 @@ public class AccountController : ControllerBase
     }
   }
 
+  [Authorize]
+  [HttpGet("getUserData/{username}")]
+  public async Task<IActionResult> GetUserData(string username)
+  {
+    try
+    {
+      var user = await _context.Users.FirstOrDefaultAsync(u => u.Name == username);
+      if (user == null)
+      {
+        return NotFound(new {Message = $"{username} not found."});
+      }
+      var userData = new {
+        Nickname = user.Name,
+        Name = user.FullName,
+        Surname = user.Surname,
+        Email = user.Email,
+        PhoneNumber = user.PhoneNumber,
+        Gender = user.Gender,
+        AvatarUrl = user.AvatarImageUrl
+      };
+      return Ok(userData);
+    }
+    catch (Exception ex)
+    {
+      return StatusCode(500, new {Message = $"Error retrieving profile image: {ex.Message}"});
+    }
+  }
+
+  [Authorize]
   [HttpPost("updateUserData")]
   public async Task<IActionResult> UpdateUserData([FromBody] UserDataModel data)
   {
@@ -169,16 +201,17 @@ public class AccountController : ControllerBase
         return BadRequest(new { Message = "Неправильный формат номера телефона. Используйте формат +375XXXXXXXXX." });
       }
 
-      var user = await _context.Users.FirstOrDefaultAsync(u => u.Name == data.Username);
+      var user = await _context.Users.FirstOrDefaultAsync(u => u.Name == data.Nickname);
       if (user == null)
       {
-        return NotFound( new { Message = $"User '{data.Username}' not found."});
+        return NotFound( new { Message = $"User '{data.Nickname}' not found."});
       }
 
       user.FullName = data.Name;
       user.Surname = data.SurName;
       user.PhoneNumber = data.PhoneNumber;
       user.Gender = data.Gender;
+      user.AvatarImageUrl = data.AvatarUrl;
       if (user.RegistrationDate.Kind != DateTimeKind.Utc)
       {
         user.RegistrationDate = DateTime.SpecifyKind(user.RegistrationDate, DateTimeKind.Utc);
@@ -191,38 +224,11 @@ public class AccountController : ControllerBase
       _context.Users.Update(user);
       await _context.SaveChangesAsync();
 
-      var token = GenerateJwtToken(user);
-      return Ok( new { Token = token, Message = $"User data successfully updated for user '{data.Username}'."});
+      return Ok( new { Message = $"User data successfully updated for user '{data.Nickname}'."});
     }
     catch (Exception ex)
     {
       return StatusCode( 500, new { Message = $"Error updating user data: {ex.Message}"});
     }
   }
-
-  private string GenerateJwtToken(User user)
-    {
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("My_super_long_secret_key_here123!@#"));
-        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-        var claims = new List<Claim>
-        {
-            new Claim("nickName", user.Name != null ? user.Name : ""),
-            new Claim("name", user.FullName != null ? user.FullName : ""),
-            new Claim("surname", user.Surname != null ? user.Surname : ""),
-            new Claim("email", user.Email != null ? user.Email : ""),
-            new Claim("phoneNumber", user.PhoneNumber != null ? user.PhoneNumber : ""),
-            new Claim("gender", user.Gender != null ? user.Gender : "")
-        };
-
-        var token = new JwtSecurityToken(
-            "your_issuer",
-            "your_audience",
-            claims,
-            expires: DateTime.Now.AddHours(1),
-            signingCredentials: credentials
-        );
-
-        return new JwtSecurityTokenHandler().WriteToken(token);
-    }
 }

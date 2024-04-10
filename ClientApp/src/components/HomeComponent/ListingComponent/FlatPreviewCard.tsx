@@ -126,7 +126,7 @@ export const FlatPreviewCard = ({
         const decodedToken: any = jwtDecode(token);
         toggleFavourite(
           rentInformation.rentObject.rentObjId,
-          decodedToken.nickName,
+          decodedToken.nickname,
           token
         );
       }
