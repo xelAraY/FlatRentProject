@@ -5,6 +5,7 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import { ProfilePage } from "./Pages/ProfilePage";
 import { HomePage } from "./Pages/HomePage";
 import { useEffect } from "react";
+import { FavouritesListings } from "./Pages/FavouritesListings";
 
 export enum ElementType {
   Home,
@@ -30,7 +31,7 @@ export const AccountPage = () => {
     },
     {
       path: `/favourites`,
-      element: <div>FavouriteListings</div>,
+      element: <FavouritesListings />,
     },
     {
       path: `/myListings`,

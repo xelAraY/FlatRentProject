@@ -231,4 +231,29 @@ public class AccountController : ControllerBase
       return StatusCode( 500, new { Message = $"Error updating user data: {ex.Message}"});
     }
   }
+
+  [Authorize]
+  [HttpGet("getFavouritesListings/{userName}")]
+  public async Task<IActionResult> GetFavouritesListings(string userName, [FromQuery] bool showData, [FromQuery] int? page = 1)
+  {
+    try
+    {
+      var user = await _context.Users.FirstOrDefaultAsync(u => u.Name == userName);
+      if (user == null)
+        return NotFound(new { Message = $"User with username '{userName}' not found."});
+
+      var favourites = await _context.Favourites
+        .Where(f => f.UserId == user.Id)
+        .Select(f => f.RentObjectId)
+        .ToListAsync();
+
+      var rentObjectsQuery = _context.RentObjects.Where(ro => favourites.Contains(ro.RentObjId));
+      var result = await Filter.GetRecentRentObjectsCommonQuery(rentObjectsQuery, _context, showData: showData, page: page);
+      return Ok(result);
+    }
+    catch (Exception ex)
+    {
+      return BadRequest( new { Message = $"Error while retrieving favourites: {ex.Message}"});
+    }
+  }
 }

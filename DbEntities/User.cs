@@ -8,7 +8,7 @@ public class User
   [Key]
   public int Id { get; set; }
 
-  [Column("nickname")]
+  [Column("username")]
   public string? Name { get; set; }
 
   [Column("name")]

@@ -38,7 +38,7 @@ public class RegistrationController : ControllerBase
             {
                 await connection.OpenAsync();
 
-                using (var checkCommand = new NpgsqlCommand("SELECT COUNT(*) FROM users WHERE nickname = @Username OR email = @Email OR phone_number = @PhoneNumber", connection))
+                using (var checkCommand = new NpgsqlCommand("SELECT COUNT(*) FROM users WHERE username = @Username OR email = @Email OR phone_number = @PhoneNumber", connection))
                 {
                     checkCommand.Parameters.AddWithValue("@Username", model.Username);
                     checkCommand.Parameters.AddWithValue("@Email", model.Email);
@@ -53,7 +53,7 @@ public class RegistrationController : ControllerBase
                 }
 
                 string passwordHash =  BCrypt.Net.BCrypt.HashPassword(model.Password);
-                using (var insertCommand = new NpgsqlCommand("INSERT INTO users (nickname, name, email, phone_number, password_hash, avatar_image_url, registration_date, last_login) VALUES (@Username, @Name, @Email, @PhoneNumber, @PasswordHash, @AvatarImageUrl, @RegistrationDate, @LastLogin)", connection))
+                using (var insertCommand = new NpgsqlCommand("INSERT INTO users (username, name, email, phone_number, password_hash, avatar_image_url, registration_date, last_login) VALUES (@Username, @Name, @Email, @PhoneNumber, @PasswordHash, @AvatarImageUrl, @RegistrationDate, @LastLogin)", connection))
                 {
                     insertCommand.Parameters.AddWithValue("@Username", model.Username);
                     insertCommand.Parameters.AddWithValue("@Name", model.Fullname);

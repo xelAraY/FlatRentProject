@@ -27,7 +27,7 @@ interface CardProps {
   rentInformation: RentObjectInformation;
   keyNumber: number;
   isFavourite: boolean;
-  onFavouriteChange: (isChange: boolean) => void;
+  onFavouriteChange: (isChange: boolean, objectId?: number) => void;
   onCardClick: (flatId: number) => void;
 }
 
@@ -130,7 +130,7 @@ export const FlatPreviewCard = ({
           token
         );
       }
-      onFavouriteChange(true);
+      onFavouriteChange(true, rentInformation.rentObject.rentObjId);
       // setFavourite(!favourite);
     } else {
       navigate("/sign-in");

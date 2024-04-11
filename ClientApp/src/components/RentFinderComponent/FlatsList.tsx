@@ -3,13 +3,12 @@ import { RentObjectInformation } from "src/interfaces/RentObj";
 import { SkeletonPreview } from "../HomeComponent/ListingComponent/SkeletonPreview";
 import { FlatPreviewCard } from "../HomeComponent/ListingComponent/FlatPreviewCard";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 
 interface FlatsListProps {
   rentObjects: RentObjectInformation[];
   isLoading: boolean;
   favourites: number[];
-  onFavouritesChanged: (isChanged: boolean) => void;
+  onFavouritesChanged: (isChanged: boolean, objectId?: number) => void;
 }
 
 export const FlatsList = ({
@@ -45,7 +44,7 @@ export const FlatsList = ({
         ) : (
           <>
             {rentObjects?.map((rentObject, index) => (
-              <Grid item xs={6} md={4} xl={3} key={index}>
+              <Grid item xs={4} key={index}>
                 <FlatPreviewCard
                   rentInformation={rentObject}
                   keyNumber={index}
