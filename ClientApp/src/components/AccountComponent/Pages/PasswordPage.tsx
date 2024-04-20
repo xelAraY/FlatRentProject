@@ -71,24 +71,34 @@ export const PasswordPage = () => {
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
-      <Form>
-        <Paper elevation={3} style={{ padding: 20, height: "100%" }}>
-          <Stack spacing={3} width={"30%"}>
-            <FormikControlMui name="oldPassword" label="Старый пароль">
-              <TextField variant="outlined" type="password" size="small" />
-            </FormikControlMui>
-            <FormikControlMui name="newPassword" label="Новый пароль пароль">
-              <TextField variant="outlined" type="password" size="small" />
-            </FormikControlMui>
-            <FormikControlMui name="confirmPassword" label="Подтвердите пароль">
-              <TextField variant="outlined" type="password" size="small" />
-            </FormikControlMui>
-            <Button variant="contained" type="submit">
-              Сменить пароль
-            </Button>
-          </Stack>
-        </Paper>
-      </Form>
+      {() => {
+        return (
+          <Form>
+            <Paper elevation={3} style={{ padding: 20, height: "100%" }}>
+              <Stack spacing={3} width={"30%"}>
+                <FormikControlMui name="oldPassword" label="Старый пароль">
+                  <TextField variant="outlined" type="password" size="small" />
+                </FormikControlMui>
+                <FormikControlMui
+                  name="newPassword"
+                  label="Новый пароль пароль"
+                >
+                  <TextField variant="outlined" type="password" size="small" />
+                </FormikControlMui>
+                <FormikControlMui
+                  name="confirmPassword"
+                  label="Подтвердите пароль"
+                >
+                  <TextField variant="outlined" type="password" size="small" />
+                </FormikControlMui>
+                <Button variant="contained" type="submit">
+                  Сменить пароль
+                </Button>
+              </Stack>
+            </Paper>
+          </Form>
+        );
+      }}
     </Formik>
   );
 };

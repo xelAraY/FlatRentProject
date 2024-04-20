@@ -5,7 +5,7 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import { ProfilePage } from "./Pages/ProfilePage";
 import { HomePage } from "./Pages/HomePage";
 import { useEffect } from "react";
-import { AddListingPage } from "../AddListingPage";
+import { AddFlatPageWrapper } from "../add-flat-page/add-flat-page-wrapper";
 import { FavouritesListings } from "./Pages/FavouritesListings";
 import { isLoggedIn } from "src/helpFunctions/tokenCheck";
 import { PasswordPage } from "./Pages/PasswordPage";
@@ -42,7 +42,7 @@ export const AccountPage = () => {
     },
     {
       path: `/newListing`,
-      element: <AddListingPage />,
+      element: <AddFlatPageWrapper />,
     },
     {
       path: `/password`,
