@@ -1,10 +1,11 @@
-import { Box, Grid, Paper } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import { NavigationBar } from "./NavigationBar";
 import { NavigationTopBar } from "./NavigationTopBar";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import { ProfilePage } from "./Pages/ProfilePage";
 import { HomePage } from "./Pages/HomePage";
 import { useEffect } from "react";
+import { AddListingPage } from "../AddListingPage";
 import { FavouritesListings } from "./Pages/FavouritesListings";
 import { isLoggedIn } from "src/helpFunctions/tokenCheck";
 import { PasswordPage } from "./Pages/PasswordPage";
@@ -41,7 +42,7 @@ export const AccountPage = () => {
     },
     {
       path: `/newListing`,
-      element: <div>AddListing</div>,
+      element: <AddListingPage />,
     },
     {
       path: `/password`,
