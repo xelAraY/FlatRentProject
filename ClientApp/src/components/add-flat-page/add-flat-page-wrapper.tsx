@@ -64,10 +64,14 @@ export const AddFlatPageWrapper = () => {
         >
           <Box>
             <Stepper activeStep={activeStep} orientation="vertical">
-              <GeneralStepWrapper
-                currentStepIndex={1}
-                setActiveStep={setActiveStep}
-              />
+              {[1, 2].map((_, index) => (
+                <GeneralStepWrapper
+                  key={index}
+                  myIndex={index}
+                  currentStepIndex={activeStep}
+                  setActiveStep={setActiveStep}
+                />
+              ))}
               {/* <Box sx={{ mb: 2 }}>
                       <div>
                         <Button

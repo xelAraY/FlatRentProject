@@ -14,6 +14,7 @@ import { GeneralStep } from "./components";
 export const GeneralStepWrapper: React.FC<GeneralStepProps> = ({
   setActiveStep,
   currentStepIndex,
+  myIndex,
   ...other
 }) => {
   return (
@@ -27,29 +28,31 @@ export const GeneralStepWrapper: React.FC<GeneralStepProps> = ({
       validateOnChange
       validateOnBlur
     >
-      {({ isValid }) => {
+      {({ isValid, touched }) => {
         return (
-          <Form onClick={(e) => e.stopPropagation()}>
-            <Step
-              completed={isValid}
-              // onClick={(e) => {
-              //   e.stopPropagation();
-              //   e.preventDefault();
-              //   setActiveStep(currentStepIndex);
-              // }}
-              {...other}
-            >
+          <Form>
+            <Step completed={isValid} {...other}>
               <StepLabel
                 sx={{
                   ":hover": {
                     cursor: "pointer",
                   },
                 }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActiveStep(myIndex);
+                }}
+                error={
+                  currentStepIndex !== myIndex &&
+                  !isValid &&
+                  !!Object.keys(touched).length
+                }
               >
                 {"Общая информация"}
               </StepLabel>
               <StepContent>
                 <GeneralStep
+                  myIndex={myIndex}
                   setActiveStep={setActiveStep}
                   currentStepIndex={currentStepIndex}
                 />
