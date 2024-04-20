@@ -13,7 +13,7 @@ interface Errors {
 
 export const SignUpPage = () => {
   const [username, setUsername] = useState("");
-  const [fullName, setFullName] = useState("");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
@@ -27,7 +27,7 @@ export const SignUpPage = () => {
   };
 
   const handleFullNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFullName(e.target.value);
+    setName(e.target.value);
   };
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,7 +53,7 @@ export const SignUpPage = () => {
 
     const userData = {
       username,
-      fullName,
+      name,
       email,
       phoneNumber,
       password,
@@ -135,7 +135,7 @@ export const SignUpPage = () => {
         <Stack flexDirection="column" height="auto" width="270px">
           <TextField
             id="usr_name"
-            label="Никнейм"
+            label="Имя пользователя"
             variant="outlined"
             name="user_name"
             placeholder="Ivan2002"
@@ -149,12 +149,12 @@ export const SignUpPage = () => {
           />
 
           <TextField
-            id="full_name"
-            label="Полное имя"
+            id="name"
+            label="Настоящее имя"
             variant="outlined"
-            name="full_name"
-            placeholder="Иван Иванов"
-            value={fullName}
+            name="name"
+            placeholder="Иван"
+            value={name}
             onChange={handleFullNameChange}
             size="small"
             style={{ marginTop: "15px" }}

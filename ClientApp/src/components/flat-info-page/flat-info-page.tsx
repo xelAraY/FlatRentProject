@@ -43,6 +43,7 @@ const FlatInfoPage: React.FC = () => {
             throw new Error("Ошибка при выполнении запроса");
           }
           const data = await response.json();
+          console.log(data);
           setIsFavourite(data);
         }
       } else {
@@ -56,7 +57,13 @@ const FlatInfoPage: React.FC = () => {
     if (flatInfo) {
       checkFavourite();
     }
-  }, [favouriteChanged, flatInfo]);
+  }, [favouriteChanged]);
+
+  useEffect(() => {
+    if (flatInfo && isLoggedIn()) {
+      checkFavourite();
+    }
+  }, [flatInfo]);
 
   React.useEffect(() => {
     const fetchData = async () => {

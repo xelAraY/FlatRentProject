@@ -5,6 +5,7 @@ import { NavLink } from "react-router-dom";
 import { SearchParams } from "src/components/HomeComponent/NavMenuComponent/SearchComponent/SearchParams";
 import { useState } from "react";
 import { FilterState } from "src/interfaces/SearchInterfaces";
+import MapIcon from "@mui/icons-material/Map";
 
 export const SearchComponent = () => {
   const [filters, setFilters] = useState<FilterState>({
@@ -84,31 +85,43 @@ export const SearchComponent = () => {
             onFiltersChange: handleFiltersChange,
           }}
         />
-        <Stack flexDirection="row" justifyContent="space-between">
+        <Stack
+          flexDirection="row"
+          justifyContent="space-between"
+          style={{ margin: "8px" }}
+        >
           <NavLink to={"/flats?page=1"}>
             <Button
               variant="outlined"
               style={{
-                marginLeft: "6px",
                 width: "max-content",
                 color: "#0a0f1c",
                 borderColor: "#afafae",
               }}
             >
               <ZoomInIcon />
-              <Typography fontSize="17px" marginLeft="3px">
+              <Typography fontSize="16px" marginLeft="3px">
                 Расширенный поиск
               </Typography>
             </Button>
           </NavLink>
-          <NavLink to={`/flats?page=1${queryParams ? "&" + queryParams : ""}`}>
+          <Stack flexDirection={"row"} spacing={2} useFlexGap>
             <Button
               variant="contained"
-              style={{ marginRight: "6px", fontSize: "17px" }}
+              style={{ fontSize: "16px" }}
+              startIcon={<MapIcon />}
+              href={`/flats/map${queryParams ? "?" + queryParams : ""}`}
+            >
+              На карте
+            </Button>
+            <Button
+              variant="contained"
+              style={{ fontSize: "16px" }}
+              href={`/flats?page=1${queryParams ? "&" + queryParams : ""}`}
             >
               Найти
             </Button>
-          </NavLink>
+          </Stack>
         </Stack>
       </Stack>
     </div>

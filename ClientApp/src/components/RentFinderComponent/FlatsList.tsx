@@ -36,7 +36,7 @@ export const FlatsList = ({
         {isLoading ? (
           <>
             {Array.from({ length: numberOfRentObjects }).map((_, index) => (
-              <Grid item md={4} lg={3} xl={3} flexGrow={1} key={index}>
+              <Grid item xs={12} sm={6} md={3} flexGrow={1} key={index}>
                 <SkeletonPreview />
               </Grid>
             ))}
@@ -44,7 +44,7 @@ export const FlatsList = ({
         ) : (
           <>
             {rentObjects?.map((rentObject, index) => (
-              <Grid item xs={4} key={index}>
+              <Grid item xs={12} sm={6} md={3} key={index}>
                 <FlatPreviewCard
                   rentInformation={rentObject}
                   keyNumber={index}

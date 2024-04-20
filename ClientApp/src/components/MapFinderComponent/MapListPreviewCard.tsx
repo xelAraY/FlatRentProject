@@ -149,7 +149,12 @@ export const MapListPreviewCard = ({
   return (
     <Box padding={"10px 20px"}>
       <Card key={keyNumber} style={{ width: "100%", maxHeight: "300px" }}>
-        <CardActionArea disableTouchRipple>
+        <CardActionArea
+          disableTouchRipple
+          onClick={() =>
+            navigate(`/flats/${rentInformation.rentObject.rentObjId}`)
+          }
+        >
           <Stack flexDirection={"row"} width={"100%"}>
             <Stack width="50%">
               {rentInformation?.photos.length ? (

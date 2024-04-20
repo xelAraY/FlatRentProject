@@ -116,7 +116,7 @@ export const FlatPreviewCard = ({
     }
   };
 
-  const handleFavouriteChange = (
+  const handleFavouriteChange = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     e.stopPropagation();
@@ -124,7 +124,7 @@ export const FlatPreviewCard = ({
       const token = localStorage.getItem("token");
       if (token) {
         const decodedToken: any = jwtDecode(token);
-        toggleFavourite(
+        await toggleFavourite(
           rentInformation.rentObject.rentObjId,
           decodedToken.nickname,
           token

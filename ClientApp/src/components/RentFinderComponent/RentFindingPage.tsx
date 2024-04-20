@@ -17,7 +17,7 @@ export const RentFindingPage = () => {
   const [favouriteChanged, setFavouriteChanged] = useState(true);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pages, setPages] = useState<number>();
-  const [listingsCount, setListingsCount] = useState(0);
+  const [listingsCount, setListingsCount] = useState();
   const [searchParams, setSearchParams] = useSearchParams();
   const LISTINGS_PER_PAGE = 20;
 
@@ -41,34 +41,40 @@ export const RentFindingPage = () => {
   };
 
   const fetchData = async () => {
-    const queryParams = new URLSearchParams(location.search);
+    try {
+      const queryParams = new URLSearchParams(location.search);
+      setLoading(true);
 
-    const response = await fetch(
-      `api/search/filter?${
-        queryParams ? queryParams.toString() + "&" : ""
-      }showData=true`
-    );
-    const data = await response.json();
+      const response = await fetch(
+        `api/search/filter?${
+          queryParams ? queryParams.toString() + "&" : ""
+        }showData=true`
+      );
+      const data = await response.json();
 
-    if (response.ok) {
-      setRentObjects(data);
-    } else {
-      console.error("Ошибка при получении данных", data.message);
-    }
+      if (response.ok) {
+        setRentObjects(data);
+      } else {
+        console.error("Ошибка при получении данных", data.message);
+      }
 
-    const pagesResponse = await fetch(
-      `api/search/filter?${
-        queryParams ? queryParams.toString() + "&" : ""
-      }showData=false`
-    );
-    const pagesData = await pagesResponse.json();
+      const pagesResponse = await fetch(
+        `api/search/filter?${
+          queryParams ? queryParams.toString() + "&" : ""
+        }showData=false`
+      );
+      const pagesData = await pagesResponse.json();
 
-    if (pagesResponse.ok) {
-      setListingsCount(pagesData[0].count);
-      const pagesCount = Math.ceil(pagesData[0].count / LISTINGS_PER_PAGE);
-      setPages(pagesCount);
-    } else {
-      console.error("Ошибка при получении данных", pagesData.message);
+      if (pagesResponse.ok) {
+        setListingsCount(pagesData[0].count);
+        const pagesCount = Math.ceil(pagesData[0].count / LISTINGS_PER_PAGE);
+        setPages(pagesCount);
+      } else {
+        console.error("Ошибка при получении данных", pagesData.message);
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -104,21 +110,22 @@ export const RentFindingPage = () => {
   useEffect(() => {
     const currPage = Number(searchParams.get("page"));
     setCurrentPage(currPage ? currPage : 1);
-    setLoading(true);
     fetchData();
-    setLoading(false);
   }, [location.search]);
 
   useEffect(() => {
     getFavouritesListings();
   }, [favouriteChanged]);
 
-  const ending =
-    listingsCount === 1
-      ? "е"
-      : listingsCount > 1 && listingsCount < 5
-      ? "я"
-      : "й";
+  let ending = "e";
+  if (listingsCount) {
+    ending =
+      listingsCount === 1
+        ? "е"
+        : listingsCount > 1 && listingsCount < 5
+        ? "я"
+        : "й";
+  }
 
   return (
     <Stack
@@ -126,7 +133,7 @@ export const RentFindingPage = () => {
       overflow="auto"
       style={{ backgroundColor: "#f3f5f7" }}
     >
-      <FilterOptions count={listingsCount} path="/flats" />
+      <FilterOptions count={listingsCount ? listingsCount : 0} path="/flats" />
       <Stack
         flexDirection={"column"}
         style={{ padding: "56px 56px 80px 56px" }}
@@ -160,7 +167,7 @@ export const RentFindingPage = () => {
             </NavLink>
           </Stack>
         </Stack>
-        {listingsCount === 0 && !loading && <NoFoundObject />}
+        {listingsCount === 0 && <NoFoundObject />}
         <Stack spacing={5} alignItems={"center"}>
           <FlatsList
             rentObjects={rentObjects}
