@@ -8,6 +8,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import DomainAddIcon from "@mui/icons-material/DomainAdd";
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import LockResetIcon from "@mui/icons-material/LockReset";
 
 export const NavigationTopBar = () => {
   const location = useLocation();
@@ -72,6 +73,18 @@ export const NavigationTopBar = () => {
           >
             <DashboardIcon />
             <Typography>Мои объявления</Typography>
+          </Stack>
+        );
+      case "password":
+        return (
+          <Stack
+            flexDirection={"row"}
+            alignItems={"center"}
+            spacing={"5px"}
+            useFlexGap
+          >
+            <LockResetIcon />
+            <Typography>Смена пароля</Typography>
           </Stack>
         );
     }

@@ -15,6 +15,7 @@ import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import AddIcon from "@mui/icons-material/Add";
+import LockResetIcon from "@mui/icons-material/LockReset";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { Button } from "src/shared";
@@ -103,6 +104,14 @@ export const NavigationBar = () => {
         >
           <FavoriteIcon style={{ marginRight: "10px" }} />
           Избранное
+        </IconButton>
+        <IconButton
+          color="primary"
+          style={commonStyle}
+          onClick={() => navigate("/account/password")}
+        >
+          <LockResetIcon style={{ marginRight: "10px" }} />
+          Сменить пароль
         </IconButton>
         <IconButton
           color="primary"

@@ -12,7 +12,7 @@ public class RentObject
   public string Title { get; set; }
 
   [Column("description")]
-  public string Description { get; set; }
+  public string? Description { get; set; }
 
   [Column("rooms_count")]
   public int RoomsCount { get; set; }
@@ -33,19 +33,19 @@ public class RentObject
   public int KitchenArea { get; set; }
 
   [Column("bathroom")]
-  public string Bathroom { get; set; }
+  public string? Bathroom { get; set; }
 
   [Column("balcony")]
   public string? Balcony { get; set; }
 
   [Column("construction_year")]
-  public int ConstructionYear { get; set; }
+  public int? ConstructionYear { get; set; }
 
   [Column("furniture")]
-  public string Furniture { get; set; }
+  public string? Furniture { get; set; }
 
   [Column("plate")]
-  public string Plate { get; set; }
+  public string? Plate { get; set; }
 
   [Column("address_id")]
   public int AddressId { get; set; }
@@ -57,20 +57,23 @@ public class RentObject
   public int CurrencyId { get; set; } //!!
 
   [Column("prepayment")]
-  public string Prepayment { get; set; }
+  public string? Prepayment { get; set; }
 
   [Column("rent")]
-  public string Rent { get; set; }
+  public string? Rent { get; set; }
 
   [Column("owner_id")]
-  public int? OwnerId { get; set; } //потом убрать знак вопроса
+  public int OwnerId { get; set; }
 
   [Column("created_at")]
   public DateTime CreatedAt { get; set; }
 
   [Column("updated_at")]
-  public DateTime UpdatedAt { get; set; }
+  public DateTime? UpdatedAt { get; set; }
 
   [Column("rental_period")]
-  public string RentalPeriod { get; set; }
+  public string? RentalPeriod { get; set; }
+
+  [Column("preview_image_url")]
+  public string? PreviewImageUrl { get; set; }
 }

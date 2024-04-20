@@ -10,6 +10,7 @@
     "@pbe/react-yandex-maps": "^1.2.5",
     "@yandex/ymaps3-types": "^0.0.22",
     "bootstrap": "^5.2.0",
+    "formik": "^2.4.5",
     "http-proxy-middleware": "^2.0.6",
     "jquery": "^3.7.1",
     "jwt-decode": "^4.0.0",
@@ -39,7 +40,8 @@
     "workbox-streams": "^6.5.4",
     "yandex-maps": "^0.0.1",
     "ymap3-components": "^1.1.3",
-    "ymaps": "^0.2.1"
+    "ymaps": "^0.2.1",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@types/jquery": "^3.5.29",

@@ -106,19 +106,20 @@ const MainPaper: React.FC<MainPaperProps> = ({
     }
   };
 
-  const handleFavouriteChange = (
+  const handleFavouriteChange = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     if (isLoggedIn()) {
       const token = localStorage.getItem("token");
       if (token) {
         const decodedToken: any = jwtDecode(token);
-        toggleFavourite(
+        await toggleFavourite(
           flatInfo?.rentObject?.rentObjId || 0,
           decodedToken.nickname,
           token
         );
       }
+
       onFavouriteChange(true);
     } else {
       navigate("/sign-in");

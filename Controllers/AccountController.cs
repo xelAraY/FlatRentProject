@@ -256,4 +256,54 @@ public class AccountController : ControllerBase
       return BadRequest( new { Message = $"Error while retrieving favourites: {ex.Message}"});
     }
   }
+
+  [HttpPost("addNewListing")]
+  public async Task<IActionResult> AddNewListing()
+  {
+    using (var transaction = _context.Database.BeginTransaction())
+    {
+      try
+      {
+        var rentObject = new RentObject { 
+          Title = "New flat", 
+          RoomsCount = 2, 
+          FloorNumber = 2, 
+          FloorsAmount = 3,
+          TotalArea = 55,
+          KitchenArea = 15,
+          LivingArea = 20,
+          AddressId = 1,
+          RentPrice = 800,
+          CurrencyId = 2,
+          OwnerId = 1,
+          CreatedAt = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc),
+          PreviewImageUrl = "https://static.realt.by/user/82/3/r2001btff382/52351a0109.jpg"
+        };
+        _context.RentObjects.Add(rentObject);
+        await _context.SaveChangesAsync();
+
+        // int rentObjectId = rentObject.RentObjId;
+        // Console.WriteLine("id = ", rentObjectId);
+
+        // var photo = new Photo { RentObjId = rentObjectId, Url = "https://static.realt.by/user/82/3/r2001btff382/52351a0109.jpg"};
+        // _context.Photos.Add(photo);
+        // await _context.SaveChangesAsync();
+
+        await transaction.CommitAsync();
+
+        return Ok(new { Message =  "Данные успешно вставлены"} );
+      }
+      catch (Exception ex)
+      {
+        await transaction.RollbackAsync();
+        Console.WriteLine($"Error updating profile image: {ex.Message}");
+
+        if (ex.InnerException != null)
+        {
+          Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
+        }
+        return StatusCode(500, new { Message = $"Произошла ошибка: {ex.Message}"} );
+      }
+    }
+  }
 }

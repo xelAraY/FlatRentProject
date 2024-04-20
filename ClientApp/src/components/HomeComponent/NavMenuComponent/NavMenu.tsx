@@ -11,7 +11,6 @@ import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import { jwtDecode } from "jwt-decode";
 
 export const NavMenu = () => {
-  const navigate = useNavigate();
   const [isLogged, setIsLogged] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string>("");
 
@@ -46,12 +45,30 @@ export const NavMenu = () => {
             console.error("Error fetching avatar data:", error);
           });
       }
-    } else {
-      navigate("/sign-in");
     }
   }, []);
 
   const addNewPage = isLoggedIn() ? "/account/newListing" : "/sign-in";
+
+  const handleAddListing = async () => {
+    await fetch(`api/account/addNewListing/`, {
+      method: "POST",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `Failed to add: ${response.status} ${response.statusText}`
+          );
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => {
+        console.error("Error adding new data:", error);
+      });
+  };
 
   return (
     <header>
@@ -144,7 +161,11 @@ export const NavMenu = () => {
               startIcon={<AddIcon />}
               // style={{ backgroundColor: "#efcd6c" }}
             >
-              <NavLink to={addNewPage} className="nav-menu-add-link">
+              <NavLink
+                to={addNewPage}
+                className="nav-menu-add-link"
+                onClick={handleAddListing}
+              >
                 Добавить объявление
               </NavLink>
             </Button>

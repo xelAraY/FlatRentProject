@@ -56,7 +56,7 @@ public class RegistrationController : ControllerBase
                 using (var insertCommand = new NpgsqlCommand("INSERT INTO users (username, name, email, phone_number, password_hash, avatar_image_url, registration_date, last_login) VALUES (@Username, @Name, @Email, @PhoneNumber, @PasswordHash, @AvatarImageUrl, @RegistrationDate, @LastLogin)", connection))
                 {
                     insertCommand.Parameters.AddWithValue("@Username", model.Username);
-                    insertCommand.Parameters.AddWithValue("@Name", model.Fullname);
+                    insertCommand.Parameters.AddWithValue("@Name", model.Name);
                     insertCommand.Parameters.AddWithValue("@Email", model.Email);
                     insertCommand.Parameters.AddWithValue("@PhoneNumber", model.PhoneNumber);
                     insertCommand.Parameters.AddWithValue("@PasswordHash", passwordHash);

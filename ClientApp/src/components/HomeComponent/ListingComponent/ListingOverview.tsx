@@ -23,9 +23,7 @@ export const ListingOverview = (props: ListingOverviewProps) => {
     const fetchRecentListings = async () => {
       try {
         setLoading(true);
-
         //await new Promise(resolve => setTimeout(resolve, 10000));
-
         const response = await fetch(props.requestPath);
         const data = await response.json();
 

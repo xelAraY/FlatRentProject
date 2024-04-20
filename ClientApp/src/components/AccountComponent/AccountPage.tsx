@@ -6,6 +6,8 @@ import { ProfilePage } from "./Pages/ProfilePage";
 import { HomePage } from "./Pages/HomePage";
 import { useEffect } from "react";
 import { FavouritesListings } from "./Pages/FavouritesListings";
+import { isLoggedIn } from "src/helpFunctions/tokenCheck";
+import { PasswordPage } from "./Pages/PasswordPage";
 
 export enum ElementType {
   Home,
@@ -41,7 +43,17 @@ export const AccountPage = () => {
       path: `/newListing`,
       element: <div>AddListing</div>,
     },
+    {
+      path: `/password`,
+      element: <PasswordPage />,
+    },
   ];
+
+  useEffect(() => {
+    if (!isLoggedIn()) {
+      navigate("/sign-in");
+    }
+  }, []);
 
   return (
     <Box padding={2}>
@@ -49,7 +61,7 @@ export const AccountPage = () => {
         <Grid item xs={2.5}>
           <NavigationBar />
         </Grid>
-        <Grid item xs={8.5}>
+        <Grid item xs={9.5}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <NavigationTopBar />
