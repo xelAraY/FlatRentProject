@@ -1,9 +1,6 @@
 import {
   Box,
   Paper,
-  Step,
-  StepContent,
-  StepLabel,
   Stepper,
   ThemeProvider,
   Typography,
@@ -11,7 +8,10 @@ import {
 } from "@mui/material";
 import React from "react";
 import { Button } from "src/shared";
-import { GeneralStep } from "./components/general-step";
+import { GeneralStepWrapper } from "./components";
+import { Formik } from "formik";
+import { AddFlatFormikValues } from "./constants";
+import { getInitialValues } from "./utils";
 
 const steps = [
   {
@@ -34,16 +34,6 @@ const steps = [
 export const AddFlatPageWrapper = () => {
   const [activeStep, setActiveStep] = React.useState(0);
 
-  const handleNext = (e: any) => {
-    e?.stopPropagation();
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  };
-
-  const handleBack = (e: any) => {
-    e?.stopPropagation();
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
   const handleReset = () => {
     setActiveStep(0);
   };
@@ -55,7 +45,6 @@ export const AddFlatPageWrapper = () => {
           MuiButton: {
             defaultProps: {
               variant: "outlined",
-              color: "success",
             },
             styleOverrides: {
               root: {
@@ -67,73 +56,52 @@ export const AddFlatPageWrapper = () => {
       })}
     >
       <Paper variant="outlined" sx={{ p: "1rem" }}>
-        <Box>
-          <Stepper activeStep={activeStep} orientation="vertical">
-            {steps.map((step, index) => (
-              <Step
-                key={step.label}
-                sx={
-                  {
-                    // "& .MuiStepIcon-root": {
-                    //   color: "green !important",
-                    // },
-                  }
-                }
-                completed={true}
-                onClick={() => setActiveStep(index)}
+        <Formik<AddFlatFormikValues>
+          initialValues={getInitialValues()}
+          onSubmit={(values) => {
+            console.log(values);
+          }}
+        >
+          <Box>
+            <Stepper activeStep={activeStep} orientation="vertical">
+              <GeneralStepWrapper
+                currentStepIndex={1}
+                setActiveStep={setActiveStep}
+              />
+              {/* <Box sx={{ mb: 2 }}>
+                      <div>
+                        <Button
+                          variant="contained"
+                          onClick={handleNext}
+                          sx={{ mt: 1, mr: 1 }}
+                        >
+                          {index === steps.length - 1 ? "Finish" : "Continue"}
+                        </Button>
+                        <Button
+                          disabled={index === 0}
+                          onClick={handleBack}
+                          sx={{ mt: 1, mr: 1 }}
+                        >
+                          Back
+                        </Button>
+                      </div>
+                    </Box> */}
+            </Stepper>
+            {activeStep === steps.length && (
+              <Paper
+                elevation={2}
+                sx={{ p: 3, background: "rgba(32, 160, 32, 0.238)" }}
               >
-                <StepLabel
-                  optional={
-                    index === 4 ? (
-                      <Typography variant="caption">Last step</Typography>
-                    ) : null
-                  }
-                  sx={{
-                    ":hover": {
-                      cursor: "pointer",
-                    },
-                  }}
-                >
-                  {step.label}
-                </StepLabel>
-                <StepContent>
-                  <GeneralStep />
-                  <Box sx={{ mb: 2 }}>
-                    <div>
-                      <Button
-                        variant="contained"
-                        onClick={handleNext}
-                        sx={{ mt: 1, mr: 1 }}
-                      >
-                        {index === steps.length - 1 ? "Finish" : "Continue"}
-                      </Button>
-                      <Button
-                        disabled={index === 0}
-                        onClick={handleBack}
-                        sx={{ mt: 1, mr: 1 }}
-                      >
-                        Back
-                      </Button>
-                    </div>
-                  </Box>
-                </StepContent>
-              </Step>
-            ))}
-          </Stepper>
-          {activeStep === steps.length && (
-            <Paper
-              elevation={2}
-              sx={{ p: 3, background: "rgba(32, 160, 32, 0.238)" }}
-            >
-              <Typography>
-                All steps completed - you&apos;re finished
-              </Typography>
-              <Button onClick={handleReset} sx={{ mt: 1, mr: 1 }}>
-                Reset
-              </Button>
-            </Paper>
-          )}
-        </Box>
+                <Typography>
+                  All steps completed - you&apos;re finished
+                </Typography>
+                <Button onClick={handleReset} sx={{ mt: 1, mr: 1 }}>
+                  Reset
+                </Button>
+              </Paper>
+            )}
+          </Box>
+        </Formik>
       </Paper>
     </ThemeProvider>
   );

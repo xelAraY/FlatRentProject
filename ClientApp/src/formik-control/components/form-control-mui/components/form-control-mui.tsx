@@ -3,26 +3,25 @@ import { Stack, Typography } from "@mui/material";
 
 export interface FormControlLabelProps {
   label: string;
-  error: boolean;
   required?: boolean;
 }
 
 const FormControlLabel: React.FC<FormControlLabelProps> = ({
   label,
-  error,
   required,
 }) => {
   return (
     <Stack flexDirection="row" pb="0.5rem">
-      <Typography variant="subtitle2">{label}</Typography>
+      <Typography variant="subtitle1">{label}</Typography>
       &nbsp;
       {required && (
         <Typography
           variant="subtitle2"
-          color={`${error ? "error" : "black"}`}
-          sx={{ opacity: `${error ? "1" : "0.5"}` }}
+          color={"error"}
+          fontSize={"1.5rem"}
+          lineHeight="1.45rem"
         >
-          {"(required)"}
+          {"*"}
         </Typography>
       )}
     </Stack>

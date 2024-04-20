@@ -1,8 +1,8 @@
-import React from 'react';
-import { FieldInputProps, useField } from 'formik';
-import { FormControlMui } from './components';
-import { SxProps, Theme } from '@mui/material';
-import { FormControlMuiProps } from './duck';
+import React from "react";
+import { FieldInputProps, useField } from "formik";
+import { FormControlMui } from "./components";
+import { SxProps, Theme } from "@mui/material";
+import { FormControlMuiProps } from "./duck";
 
 export interface FormikControlMuiChildProps extends FieldInputProps<any> {
   error?: boolean;
@@ -26,7 +26,7 @@ const FormikControlMui: React.FC<FormikControlMuiProps> = ({
   name,
   showError = false,
   requiredError: requiredErrorProps,
-  mb = 'initial',
+  mb = "initial",
   children,
   ...other
 }: FormikControlMuiProps) => {
@@ -34,11 +34,12 @@ const FormikControlMui: React.FC<FormikControlMuiProps> = ({
   const [field, meta] = useField(name);
 
   const error = showError ? meta.error : meta.touched ? meta.error : undefined;
-  const reqiredError = requiredErrorProps ?? (other.required ? !!error && !field.value : false);
+  const reqiredError =
+    requiredErrorProps ?? (other.required ? !!error && !field.value : false);
   const isInvalid = !!error;
   const isChecked = field.checked;
 
-  const childrenWithProps = React.Children.map(children, child => {
+  const childrenWithProps = React.Children.map(children, (child) => {
     if (React.isValidElement(child)) {
       const childProps: FormikControlMuiChildProps = { ...field };
       if (isChecked != undefined) {
@@ -55,17 +56,23 @@ const FormikControlMui: React.FC<FormikControlMuiProps> = ({
 
   const sx: SxProps<Theme> | undefined = {
     ...other.style,
-    display: absoluteError ? 'initial' : 'flex',
-    flexDirection: absoluteError ? 'initial' : 'column',
+    ...other.sx,
+    display: absoluteError ? "initial" : "flex",
+    flexDirection: absoluteError ? "initial" : "column",
     marginBottom: mb,
 
-    '& .MuiFormHelperText-root.Mui-error': {
-      position: absoluteError ? 'absolute' : 'initial'
-    }
+    "& .MuiFormHelperText-root.Mui-error": {
+      position: absoluteError ? "absolute" : "initial",
+    },
   };
 
   return (
-    <FormControlMui error={error} {...formProps} requiredError={reqiredError} sx={sx}>
+    <FormControlMui
+      error={error}
+      {...formProps}
+      requiredError={reqiredError}
+      sx={sx}
+    >
       {childrenWithProps}
     </FormControlMui>
   );

@@ -1,7 +1,7 @@
 import { Button, Paper, Stack, Typography } from "@mui/material";
 import React from "react";
 
-export const GeneralStep: React.FC = () => {
+export const PhotoStep: React.FC = () => {
   const [roomsCountButton, setRoomsCountButton] = React.useState<
     number | undefined
   >();
