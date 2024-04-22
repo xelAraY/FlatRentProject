@@ -16,6 +16,12 @@ public class ApplicationDbContext : DbContext
   public DbSet<RentObjectAddInf> RentObjectAddInfs { get; set; }
   public DbSet<Favourite> Favourites { get; set; }
 
+  public DbSet<RentObjectMetroStation> RentObjectsMetroStations { get; set; }
+
+  public DbSet<MetroStation> MetroStations { get; set; }
+
+  public DbSet<MetroLineColor> MetroLinesColors { get; set; }
+
   [DbFunction("converttobyn", "public")]
   public decimal ConvertToBYN(decimal? price, string currencyType)
   {
