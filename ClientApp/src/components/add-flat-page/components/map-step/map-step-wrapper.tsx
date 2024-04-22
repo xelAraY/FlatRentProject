@@ -1,18 +1,15 @@
 import { Form, Formik, useFormikContext } from "formik";
 import React from "react";
+import { MapStepFormikValues, MapStepProps } from "./components/constants";
 import {
-  GeneralStepFormikValues,
-  GeneralStepProps,
-} from "./components/constants";
-import {
-  generalStepValidationSchema,
-  getInitialGeneralStepValues,
+  mapStepValidationSchema,
+  getInitialMapStepValues,
 } from "./components/utils";
 import { Step, StepContent, StepLabel } from "@mui/material";
-import { GeneralStep } from "./components";
+import { MapStep } from "./components";
 import { AddFlatFormikValues } from "../../constants";
 
-export const GeneralStepWrapper: React.FC<GeneralStepProps> = ({
+export const MapStepWrapper: React.FC<MapStepProps> = ({
   setActiveStep,
   currentStepIndex,
   myIndex,
@@ -21,12 +18,12 @@ export const GeneralStepWrapper: React.FC<GeneralStepProps> = ({
   const { setFieldValue } = useFormikContext<AddFlatFormikValues>();
 
   return (
-    <Formik<GeneralStepFormikValues>
-      initialValues={getInitialGeneralStepValues()}
+    <Formik<MapStepFormikValues>
+      initialValues={getInitialMapStepValues()}
       onSubmit={(values) => {
         console.log(values);
       }}
-      validationSchema={generalStepValidationSchema}
+      validationSchema={mapStepValidationSchema}
       validateOnMount
       validateOnChange
       validateOnBlur
@@ -51,15 +48,15 @@ export const GeneralStepWrapper: React.FC<GeneralStepProps> = ({
                   !!Object.keys(touched).length
                 }
               >
-                {"Общая информация"}
+                {"Местоположение"}
               </StepLabel>
               <StepContent>
-                <GeneralStep
+                <MapStep
                   myIndex={myIndex}
                   setActiveStep={setActiveStep}
                   currentStepIndex={currentStepIndex}
-                  setCommonGeneralValues={(newValues) =>
-                    setFieldValue("general", newValues)
+                  setCommonMapValues={(newValues) =>
+                    setFieldValue("map", newValues)
                   }
                 />
               </StepContent>

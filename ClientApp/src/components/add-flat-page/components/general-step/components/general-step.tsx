@@ -8,9 +8,14 @@ import { GeneralStepFormikValues } from "./constants";
 export const GeneralStep: React.FC<GeneralStepProps> = ({
   setActiveStep,
   currentStepIndex,
+  setCommonGeneralValues,
 }) => {
   const { values, setFieldTouched, setFieldValue, isValid } =
     useFormikContext<GeneralStepFormikValues>();
+
+  React.useEffect(() => {
+    setCommonGeneralValues?.(values);
+  }, [values]);
 
   return (
     <Paper

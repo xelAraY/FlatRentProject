@@ -13,9 +13,6 @@ export enum BalconyType {
 }
 
 export interface GeneralStepFormikValues {
-  // phoneNumber: string;
-  // name: string;
-  // email: string;
   roomsCount?: number;
   floor?: number;
   floorAmount?: number;
@@ -28,4 +25,5 @@ export interface GeneralStepProps extends StepProps {
   setActiveStep: (step: number) => void;
   currentStepIndex: number;
   myIndex: number;
+  setCommonGeneralValues?: (values: GeneralStepFormikValues) => void;
 }

@@ -1,3 +1,6 @@
-import { GeneralStepFormikValues } from "./components";
+import { GeneralStepFormikValues, MapStepFormikValues } from "./components";
 
-export type AddFlatFormikValues = GeneralStepFormikValues;
+export interface AddFlatFormikValues {
+  general: GeneralStepFormikValues;
+  map: MapStepFormikValues;
+}
