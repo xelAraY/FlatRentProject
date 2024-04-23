@@ -2,18 +2,24 @@ import {
   Autocomplete,
   Box,
   Button,
+  IconButton,
   Paper,
   Stack,
   StandardTextFieldProps,
   TextField,
 } from "@mui/material";
 import React, { useState } from "react";
-import { MapStepProps } from "./constants";
+import { MapStepProps, MetroStationParams } from "./constants";
 import { FormikControlMui } from "src/formik-control";
 import { useFormikContext } from "formik";
 import { MapStepFormikValues } from "./constants";
 import { Map, Placemark, YMaps, ZoomControl } from "@pbe/react-yandex-maps";
-import { MetroParams, AutocompleteWrapper } from "./components";
+import {
+  MetroStation,
+  AutocompleteWrapper,
+  WayTypeComponent,
+} from "./components";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const regionsTypes = [
   "Брестская область",
@@ -215,14 +221,77 @@ export const MapStep: React.FC<MapStepProps> = ({
           </Map>
         </YMaps>
       </Stack>
-      <FormikControlMui
-        name="metroParams[0].station"
-        label="Улица"
-        sx={{ width: "50%" }}
-        required
+      {values.metroParams?.map((_, index) => {
+        return (
+          <Stack flexDirection="row" gap="1rem" alignItems="center">
+            <Stack flexDirection="row" gap="1rem" width="100%">
+              <FormikControlMui
+                name={`metroParams[${index}].station`}
+                label="f"
+                fullWidth
+                required
+                key={index}
+              >
+                <MetroStation
+                  setFieldValue={(newValue: MetroStationParams) =>
+                    setFieldValue(`metroParams[${index}].station`, newValue)
+                  }
+                />
+              </FormikControlMui>
+              <FormikControlMui
+                name={`metroParams[${index}].wayType`}
+                label="ff"
+                fullWidth
+                required
+                key={index}
+              >
+                <WayTypeComponent
+                  setNewValue={(newValue: string) =>
+                    setFieldValue(`metroParams[${index}].wayType`, newValue)
+                  }
+                />
+              </FormikControlMui>
+              <FormikControlMui
+                name={`metroParams[${index}].minutes`}
+                label="fff"
+                fullWidth
+                required
+                key={index}
+              >
+                <TextField placeholder="Введите " />
+              </FormikControlMui>
+            </Stack>
+            <Box>
+              <IconButton
+                onClick={() => {
+                  const metroParams = values.metroParams
+                    ? [...values.metroParams]
+                    : [];
+                  const newMetroParams = metroParams.filter(
+                    (_, metroIndex) => metroIndex !== index
+                  );
+                  setFieldValue("metroParams", newMetroParams);
+                }}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </Box>
+          </Stack>
+        );
+      })}
+      <Button
+        variant="contained"
+        onClick={() => {
+          const newMetroParams = values.metroParams
+            ? [...values.metroParams]
+            : [];
+          newMetroParams.push({});
+          setFieldValue("metroParams", newMetroParams);
+        }}
+        sx={{ mt: 1, mr: 1 }}
       >
-        <MetroParams />
-      </FormikControlMui>
+        Добавить станцию
+      </Button>
       <Box sx={{ mb: 2 }}>
         <div>
           <Button

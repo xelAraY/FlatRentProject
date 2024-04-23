@@ -7,6 +7,7 @@ export interface RentObjectInformation {
   appliances?: string[];
   preferences?: string[];
   additionalInformations?: string[];
+  metroStations?: MetroStation[];
 }
 
 export interface RentObject {
@@ -52,4 +53,11 @@ export interface Address {
   microdistrict: string;
   latitude: number;
   longitude: number;
+}
+
+interface MetroStation {
+  name: string;
+  color: string;
+  wayType: string;
+  travelTime: number;
 }

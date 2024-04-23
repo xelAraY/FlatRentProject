@@ -5,10 +5,15 @@ export enum WayType {
   ONTRANSPORT = "На транспорте",
 }
 
+export interface MetroStationParams {
+  name: string;
+  color: "error" | "primary" | "success";
+}
+
 export interface MetroParams {
-  station: string;
-  wayType: WayType;
-  minutes: number;
+  station?: MetroStationParams;
+  wayType?: WayType;
+  minutes?: number;
 }
 
 export interface MapStepFormikValues {

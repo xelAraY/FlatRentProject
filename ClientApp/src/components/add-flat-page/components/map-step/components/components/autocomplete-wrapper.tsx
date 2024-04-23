@@ -7,9 +7,9 @@ import {
 
 interface AutocompleteWrapperProps
   extends Omit<AutocompleteProps<any, any, any, any>, "renderInput"> {
-  value?: string;
+  value?: any;
   options: any;
-  setNewValue?: (newValue: string) => void;
+  setNewValue?: (newValue: any) => void;
   name?: string;
   error?: boolean;
   onBlur?: (e: any) => void;

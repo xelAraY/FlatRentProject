@@ -13,7 +13,10 @@ export const mapStepValidationSchema = Yup.object().shape({
   metroParams: Yup.array()
     .of(
       Yup.object().shape({
-        station: Yup.string().required("Выберите станцию метро"),
+        station: Yup.object({
+          name: Yup.string(),
+          color: Yup.string(),
+        }).required("Выберите станцию метро"),
         wayType: Yup.string()
           .oneOf(Object.values(WayType), "Неверное значение")
           .required("Выберите тип пути"),
