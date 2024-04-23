@@ -80,7 +80,7 @@ const FlatInfoPage: React.FC = () => {
 
   return flatInfo ? (
     <Stack p="3rem 5rem" height="100%" width="100%">
-      <Grid container columnGap="2rem">
+      <Grid container spacing="2rem">
         <Grid item xs={8}>
           <Stack gap="1rem">
             <MainPaper
@@ -100,7 +100,7 @@ const FlatInfoPage: React.FC = () => {
         </Grid>
         <Grid
           item
-          xs="auto"
+          xs
           sx={{
             "&.MuiGrid-root": {
               flexGrow: 1,

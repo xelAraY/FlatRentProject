@@ -52,6 +52,13 @@ export const AddFlatPageWrapper = () => {
               },
             },
           },
+          MuiAutocomplete: {
+            styleOverrides: {
+              popper: {
+                maxHeight: "20rem",
+              },
+            },
+          },
         },
       })}
     >

@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { FilterOptions } from "./FilterOptions";
 import {
+  ClickAwayListener,
+  Grow,
   List,
   ListItemButton,
   ListItemText,
   Menu,
   MenuItem,
+  MenuList,
   Pagination,
+  Paper,
   Popover,
+  Popper,
   Stack,
   Typography,
 } from "@mui/material";
@@ -232,39 +237,51 @@ export const RentFindingPage = () => {
                   />
                 </ListItemButton>
               </List>
-              <Menu
-                anchorEl={anchorEl}
+              <Popper
                 open={open}
-                onClose={handleClose}
-                MenuListProps={{
-                  "aria-labelledby": "lock-button",
-                  role: "listbox",
-                }}
-                anchorOrigin={{
-                  vertical: "bottom",
-                  horizontal: "right",
-                }}
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
+                anchorEl={anchorEl}
+                placement="bottom-start"
+                transition
               >
-                {sortTypes.map((option) => (
-                  <MenuItem
-                    key={option.name}
-                    selected={selectedSortType === option.type}
-                    onClick={(event) => handleMenuItemClick(event, option.type)}
+                {({ TransitionProps, placement }) => (
+                  <Grow
+                    {...TransitionProps}
                     style={{
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      minWidth: "250px",
+                      transformOrigin:
+                        placement === "bottom-start"
+                          ? "left top"
+                          : "left bottom",
                     }}
                   >
-                    {option.name}
-                    {selectedSortType === option.type && <CheckIcon />}
-                  </MenuItem>
-                ))}
-              </Menu>
+                    <Paper>
+                      <ClickAwayListener onClickAway={handleClose}>
+                        <MenuList autoFocusItem={open}>
+                          {sortTypes.map((option) => (
+                            <MenuItem
+                              key={option.name}
+                              selected={selectedSortType === option.type}
+                              onClick={(event) =>
+                                handleMenuItemClick(event, option.type)
+                              }
+                              style={{
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                minWidth: "250px",
+                              }}
+                            >
+                              {option.name}
+                              {selectedSortType === option.type && (
+                                <CheckIcon />
+                              )}
+                            </MenuItem>
+                          ))}
+                        </MenuList>
+                      </ClickAwayListener>
+                    </Paper>
+                  </Grow>
+                )}
+              </Popper>
+              {/* </Menu> */}
             </Stack>
           </Stack>
         </Stack>

@@ -38,6 +38,7 @@ export const WayTypeComponent: React.FC<WayTypeProps> = ({
         <TextField
           {...params}
           name={props.name}
+          placeholder="Выберите вид пути"
           error={props.error}
           onBlur={props.onBlur}
           InputProps={{

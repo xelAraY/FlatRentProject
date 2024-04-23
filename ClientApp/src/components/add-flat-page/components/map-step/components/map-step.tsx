@@ -20,6 +20,7 @@ import {
   WayTypeComponent,
 } from "./components";
 import DeleteIcon from "@mui/icons-material/Delete";
+import AddIcon from "@mui/icons-material/Add";
 
 const regionsTypes = [
   "Брестская область",
@@ -45,6 +46,27 @@ export const MapStep: React.FC<MapStepProps> = ({
   const [newCoords, setNewCoords] = useState([53.900487, 27.555324]);
   const [enableFetch, setEnableFetch] = useState(false);
   const [automaticChange, setAutomaticChange] = useState(false);
+
+  const [metroStationsInfo, setMetroStationsInfo] = React.useState<
+    MetroStationParams[]
+  >([]);
+
+  React.useEffect(() => {
+    const getAllMetroStationsInfo = async () => {
+      try {
+        const response = await fetch("api/addNewListing/getAllStationsInfo");
+        const data = await response.json();
+        if (response.ok) {
+          setMetroStationsInfo(data);
+        } else {
+          console.log("Ошибка ", data.message);
+        }
+      } catch (error) {
+        console.error("Ошибка: ", error);
+      }
+    };
+    getAllMetroStationsInfo();
+  }, []);
 
   React.useEffect(() => {
     setMapData((prevState) => {
@@ -223,11 +245,11 @@ export const MapStep: React.FC<MapStepProps> = ({
       </Stack>
       {values.metroParams?.map((_, index) => {
         return (
-          <Stack flexDirection="row" gap="1rem" alignItems="center">
+          <Stack flexDirection="row" gap="1rem" alignItems="flex-start">
             <Stack flexDirection="row" gap="1rem" width="100%">
               <FormikControlMui
                 name={`metroParams[${index}].station`}
-                label="f"
+                label="Ближайшее метро"
                 fullWidth
                 required
                 key={index}
@@ -236,11 +258,12 @@ export const MapStep: React.FC<MapStepProps> = ({
                   setFieldValue={(newValue: MetroStationParams) =>
                     setFieldValue(`metroParams[${index}].station`, newValue)
                   }
+                  stationsInfo={metroStationsInfo}
                 />
               </FormikControlMui>
               <FormikControlMui
                 name={`metroParams[${index}].wayType`}
-                label="ff"
+                label="Пешком / Транспортом"
                 fullWidth
                 required
                 key={index}
@@ -253,15 +276,15 @@ export const MapStep: React.FC<MapStepProps> = ({
               </FormikControlMui>
               <FormikControlMui
                 name={`metroParams[${index}].minutes`}
-                label="fff"
+                label="Минут до метро"
                 fullWidth
                 required
                 key={index}
               >
-                <TextField placeholder="Введите " />
+                <TextField placeholder="Минут в пути" />
               </FormikControlMui>
             </Stack>
-            <Box>
+            <Box pt="2.7rem">
               <IconButton
                 onClick={() => {
                   const metroParams = values.metroParams
@@ -279,19 +302,29 @@ export const MapStep: React.FC<MapStepProps> = ({
           </Stack>
         );
       })}
-      <Button
-        variant="contained"
-        onClick={() => {
-          const newMetroParams = values.metroParams
-            ? [...values.metroParams]
-            : [];
-          newMetroParams.push({});
-          setFieldValue("metroParams", newMetroParams);
-        }}
-        sx={{ mt: 1, mr: 1 }}
-      >
-        Добавить станцию
-      </Button>
+      {(!values.metroParams || values.metroParams?.length <= 2) && (
+        <Box>
+          <Button
+            variant="text"
+            disableTouchRipple
+            onClick={() => {
+              const newMetroParams = values.metroParams
+                ? [...values.metroParams]
+                : [];
+              newMetroParams.push({});
+              setFieldValue("metroParams", newMetroParams);
+            }}
+            sx={{
+              ":hover": {
+                background: "transparent !important",
+              },
+            }}
+            startIcon={<AddIcon />}
+          >
+            Добавить станцию
+          </Button>
+        </Box>
+      )}
       <Box sx={{ mb: 2 }}>
         <div>
           <Button

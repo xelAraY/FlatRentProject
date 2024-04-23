@@ -10,18 +10,14 @@ import { AutocompleteWrapper } from "./autocomplete-wrapper";
 import { MetroSvg } from "src/shared";
 import { MetroStationParams } from "../constants";
 
-const regionsTypes: MetroStationParams[] = [
-  { name: "Каменка", color: "error" },
-  { name: "edwedw", color: "success" },
-  { name: "wedewdwedwed", color: "primary" },
-];
-
 type MetroStationProps = {
   setFieldValue: (newValue: MetroStationParams) => void;
+  stationsInfo: MetroStationParams[];
 } & TextFieldProps;
 
 export const MetroStation: React.FC<MetroStationProps> = ({
   setFieldValue,
+  stationsInfo,
   ...props
 }) => {
   console.log(props.value);
@@ -30,7 +26,8 @@ export const MetroStation: React.FC<MetroStationProps> = ({
     <AutocompleteWrapper
       value={metroParam}
       setNewValue={(newValue: MetroStationParams) => setFieldValue(newValue)}
-      options={regionsTypes}
+      options={stationsInfo}
+      autoHighlight
       renderOption={(props, option: MetroStationParams) => (
         <li {...props}>
           <SvgIcon color={option.color} viewBox="0 0 17 16">
@@ -45,6 +42,7 @@ export const MetroStation: React.FC<MetroStationProps> = ({
         <TextField
           {...params}
           name={props.name}
+          placeholder="Выберите станцию"
           error={props.error}
           onBlur={props.onBlur}
           InputProps={{
