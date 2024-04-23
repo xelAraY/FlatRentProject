@@ -1,13 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { FilterOptions } from "./FilterOptions";
-import { Pagination, Stack, Typography } from "@mui/material";
+import {
+  List,
+  ListItemButton,
+  ListItemText,
+  Menu,
+  MenuItem,
+  Pagination,
+  Popover,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { NavLink, useLocation, useSearchParams } from "react-router-dom";
 import { RentObjectInformation } from "src/interfaces/RentObj";
 import { FlatsList } from "./FlatsList";
 import { NoFoundObject } from "./NoFoundObject";
 import MapIcon from "@mui/icons-material/Map";
+import SwapVertIcon from "@mui/icons-material/SwapVert";
+import CheckIcon from "@mui/icons-material/Check";
 import { isLoggedIn } from "src/helpFunctions/tokenCheck";
 import { jwtDecode } from "jwt-decode";
+import { Button } from "src/shared";
 
 export const RentFindingPage = () => {
   const location = useLocation();
@@ -20,6 +33,37 @@ export const RentFindingPage = () => {
   const [listingsCount, setListingsCount] = useState();
   const [searchParams, setSearchParams] = useSearchParams();
   const LISTINGS_PER_PAGE = 20;
+
+  const sortTypes = [
+    { name: "Сначала новые", type: "createdAt" },
+    { name: "Сначала дорогие", type: "maxPrice" },
+    { name: "Сначала дешевые", type: "minPrice" },
+  ];
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [selectedSortType, setSelectedSortType] = React.useState<string>();
+  const open = Boolean(anchorEl);
+  const handleClickListItem = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuItemClick = (
+    event: React.MouseEvent<HTMLElement>,
+    type: string
+  ) => {
+    setSearchParams(
+      (urlParams) => {
+        urlParams.set("sortType", type);
+        return urlParams;
+      },
+      { replace: true }
+    );
+    //setSelectedSortType(type);
+    setAnchorEl(null);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const handleFavouriteChange = (isChanged: boolean) => {
     setFavouriteChanged(isChanged);
@@ -110,6 +154,8 @@ export const RentFindingPage = () => {
   useEffect(() => {
     const currPage = Number(searchParams.get("page"));
     setCurrentPage(currPage ? currPage : 1);
+    const sortType = searchParams.get("sortType");
+    setSelectedSortType(sortType ? sortType : "createdAt");
     fetchData();
   }, [location.search]);
 
@@ -142,29 +188,84 @@ export const RentFindingPage = () => {
           <Typography variant="h4">
             Аренда квартир на длительный срок в Беларуси
           </Typography>
-          <Stack flexDirection={"row"} alignItems={"center"}>
-            <Typography variant="body1">
-              <b>{listingsCount}</b> объявлени{ending}
-            </Typography>
-            <div
-              style={{
-                height: "1.5rem",
-                width: "1px",
-                backgroundColor: "rgb(210 214 219)",
-                margin: "0 16px",
-              }}
-            />
-            <NavLink
-              to={`/flats/map${location.search}`}
-              style={{ textDecoration: "none" }}
-            >
-              <Stack flexDirection={"row"} alignItems={"center"}>
-                <MapIcon style={{ fontWeight: 100, marginRight: "8px" }} />
-                <Typography fontSize={16} fontWeight={600}>
-                  Посмотреть на карте
-                </Typography>
-              </Stack>
-            </NavLink>
+          <Stack flexDirection={"row"} justifyContent={"space-between"}>
+            <Stack flexDirection={"row"} alignItems={"center"}>
+              <Typography variant="body1">
+                <b>{listingsCount}</b> объявлени{ending}
+              </Typography>
+              <div
+                style={{
+                  height: "1.5rem",
+                  width: "1px",
+                  backgroundColor: "rgb(210 214 219)",
+                  margin: "0 16px",
+                }}
+              />
+              <NavLink
+                to={`/flats/map${location.search}`}
+                style={{ textDecoration: "none" }}
+              >
+                <Stack flexDirection={"row"} alignItems={"center"}>
+                  <MapIcon style={{ fontWeight: 100, marginRight: "8px" }} />
+                  <Typography fontSize={16} fontWeight={600}>
+                    Посмотреть на карте
+                  </Typography>
+                </Stack>
+              </NavLink>
+            </Stack>
+            <Stack flexDirection={"row"} alignItems={"center"}>
+              <List>
+                <ListItemButton
+                  onClick={handleClickListItem}
+                  sx={{
+                    color: "#0366d6",
+                    ":hover": { background: "transparent !important" },
+                  }}
+                >
+                  <SwapVertIcon />
+                  <ListItemText
+                    primary={
+                      sortTypes.find((item) => item.type === selectedSortType)
+                        ?.name
+                    }
+                    sx={{ span: { fontWeight: "600" } }}
+                  />
+                </ListItemButton>
+              </List>
+              <Menu
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                MenuListProps={{
+                  "aria-labelledby": "lock-button",
+                  role: "listbox",
+                }}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "right",
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+              >
+                {sortTypes.map((option) => (
+                  <MenuItem
+                    key={option.name}
+                    selected={selectedSortType === option.type}
+                    onClick={(event) => handleMenuItemClick(event, option.type)}
+                    style={{
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      minWidth: "250px",
+                    }}
+                  >
+                    {option.name}
+                    {selectedSortType === option.type && <CheckIcon />}
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Stack>
           </Stack>
         </Stack>
         {listingsCount === 0 && <NoFoundObject />}

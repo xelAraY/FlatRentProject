@@ -49,7 +49,7 @@ public class SearchController : ControllerBase
       rentObjectsQuery = Filter.ApplyApplianceFilter(rentObjectsQuery, _context, filters.Appliances);
       rentObjectsQuery = Filter.ApplyPhotosFilter(rentObjectsQuery, _context, filters.Photos);
       rentObjectsQuery = Filter.ApplyFurnitureFilter(rentObjectsQuery, filters.Furniture);
-      var result = await Filter.GetRecentRentObjectsCommonQuery(rentObjectsQuery, _context, showData: filters.ShowData, page: filters.Page, mapParams: new MapParams {LeftX = filters.LeftX, RightX = filters.RightX, BottomY = filters.BottomY, TopY = filters.TopY});
+      var result = await Filter.GetRecentRentObjectsCommonQuery(rentObjectsQuery, _context, showData: filters.ShowData, page: filters.Page ?? 1, mapParams: new MapParams {LeftX = filters.LeftX, RightX = filters.RightX, BottomY = filters.BottomY, TopY = filters.TopY}, sortType: filters.SortType);
       return Ok(result);
     }
     catch (Exception ex)

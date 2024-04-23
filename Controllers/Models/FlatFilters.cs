@@ -42,10 +42,16 @@ public class RentObjectFilter
   public bool? Photos { get; set; }
 
   public decimal? LeftX { get; set; }
+
   public decimal? RightX { get; set; }
+
   public decimal? BottomY { get; set; }
+
   public decimal? TopY { get; set; }
 
   public bool ShowData { get; set; }
+
   public int? Page { get; set; }
+
+  public string? SortType { get; set; }
 }

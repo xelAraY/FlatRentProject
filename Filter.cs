@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 public static class Filter
 {
   private static int listingsPerPage = 20;
-  public static async Task<List<object>> GetRecentRentObjectsCommonQuery(IQueryable<RentObject> rentObjectsQuery, ApplicationDbContext _context, bool showData = true, int? page = null, int? takeCount = null, MapParams? mapParams = null)
+  public static async Task<List<object>> GetRecentRentObjectsCommonQuery(IQueryable<RentObject> rentObjectsQuery, ApplicationDbContext _context, bool showData = true, string? sortType = null, int? page = null, int? takeCount = null, MapParams? mapParams = null)
   {
     if (!showData)
     {
@@ -17,20 +17,18 @@ public static class Filter
     }
     else
     {
-
       var query = rentObjectsQuery;
+
+      query = ApplySort(query, sortType);
 
       if (takeCount.HasValue && takeCount.Value > 0)
       {
-        query = query.OrderByDescending(ro => ro.CreatedAt).Take(takeCount.Value);
+        query = query.Take(takeCount.Value);
       }
       else if (page.HasValue && page.Value > 0) {
-        query = query.OrderByDescending(ro => ro.CreatedAt).Skip((page.Value-1)*listingsPerPage).Take(listingsPerPage);  
-      } else {
-        query = query.OrderByDescending(ro => ro.CreatedAt);  
+        query = query.Skip((page.Value-1)*listingsPerPage).Take(listingsPerPage); 
       }
       
-
       var recentRentObjects = await query
           .Join(
               _context.Users,
@@ -391,6 +389,34 @@ public static class Filter
     }).Cast<object>().ToList();
 
     return result;
+  }
+
+  private static IQueryable<RentObject> ApplySort(IQueryable<RentObject> query, string sortType)
+  {
+    Console.WriteLine(sortType);
+    switch (sortType) {
+      case "createdAt":
+        Console.WriteLine("Сортировка по макс дате");
+        query = query.OrderByDescending(ro => ro.CreatedAt);
+      break;
+
+      case "minPrice":
+        Console.WriteLine("Сортировка по мин цене");
+        query = query.OrderBy(ro => ro.RentPrice);
+      break;
+
+      case "maxPrice":
+        Console.WriteLine("Сортировка по макс цене");
+        query = query.OrderByDescending(ro => ro.RentPrice);
+      break;
+
+      default:
+        Console.WriteLine("Сортировка стандартная по дате");
+        query = query.OrderByDescending(ro => ro.CreatedAt); 
+      break;
+    }
+
+    return query;
   }
 
   private static decimal ConvertToBYN(decimal? price, string currencyType)
