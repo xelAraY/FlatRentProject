@@ -274,7 +274,6 @@ public class AccountController : ControllerBase
           LivingArea = 20,
           AddressId = 1,
           RentPrice = 800,
-          CurrencyId = 2,
           OwnerId = 1,
           CreatedAt = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc),
           PreviewImageUrl = "https://static.realt.by/user/82/3/r2001btff382/52351a0109.jpg"

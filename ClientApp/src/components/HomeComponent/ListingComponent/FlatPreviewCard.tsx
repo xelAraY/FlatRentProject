@@ -76,21 +76,13 @@ export const FlatPreviewCard = ({
     setImages(imagess);
   }, [rentInformation.photos, heigth]);
 
-  const currency = rentInformation.currency;
   const price = rentInformation.rentObject.rentPrice;
-  const bynPrice =
-    currency === "USD"
-      ? Math.round(price * DOLLAR_EXCHANGE_RATE)
-      : currency === "EUR"
-      ? Math.round(price * EURO_EXCHANGE_RATE)
-      : price;
-
   let currencyType = searchParams.get("currencyType");
   let anotherPrice = 0;
   if (currencyType === "EUR") {
-    anotherPrice = Math.round(bynPrice / EURO_EXCHANGE_RATE);
+    anotherPrice = Math.round(price / EURO_EXCHANGE_RATE);
   } else {
-    anotherPrice = Math.round(bynPrice / DOLLAR_EXCHANGE_RATE);
+    anotherPrice = Math.round(price / DOLLAR_EXCHANGE_RATE);
     currencyType = "USD";
   }
 
@@ -174,7 +166,7 @@ export const FlatPreviewCard = ({
           >
             <Stack flexDirection="row" alignItems="center">
               <Typography gutterBottom variant="h6" fontWeight="600">
-                {bynPrice} р./мес.&nbsp;
+                {price} р./мес.&nbsp;
               </Typography>
               <Typography gutterBottom variant="body2" fontWeight="400">
                 ≈{anotherPrice} {currencyType}/мес.

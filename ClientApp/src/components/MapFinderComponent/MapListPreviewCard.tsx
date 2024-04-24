@@ -14,14 +14,18 @@ import {
 import React, { useState } from "react";
 import { RentObjectInformation } from "src/interfaces/RentObj";
 import "react-image-gallery/styles/css/image-gallery.css";
-import { ImageGalleryStyled } from "src/shared";
+import {
+  DOLLAR_EXCHANGE_RATE,
+  EURO_EXCHANGE_RATE,
+  ImageGalleryStyled,
+} from "src/shared";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import SyncOutlinedIcon from "@mui/icons-material/SyncOutlined";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import { isLoggedIn } from "src/helpFunctions/tokenCheck";
 import { jwtDecode } from "jwt-decode";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 interface CardProps {
   rentInformation: RentObjectInformation;
@@ -57,6 +61,7 @@ export const MapListPreviewCard = ({
   const [images, setImages] = React.useState<ForPhotos[]>([]);
   const [showContact, setShowContact] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = React.useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -74,14 +79,23 @@ export const MapListPreviewCard = ({
     setImages(imagess);
   }, [rentInformation.photos, heigth]);
 
-  const currency = rentInformation.currency;
+  // const currency = rentInformation.currency;
+  // const price = rentInformation.rentObject.rentPrice;
+  // const bynPrice =
+  //   currency === "USD"
+  //     ? Math.round(price * 3.2063)
+  //     : currency === "EUR"
+  //     ? Math.round(price * 3.5045)
+  //     : price;
   const price = rentInformation.rentObject.rentPrice;
-  const bynPrice =
-    currency === "USD"
-      ? Math.round(price * 3.2063)
-      : currency === "EUR"
-      ? Math.round(price * 3.5045)
-      : price;
+  let currencyType = searchParams.get("currencyType");
+  let anotherPrice = 0;
+  if (currencyType === "EUR") {
+    anotherPrice = Math.round(price / EURO_EXCHANGE_RATE);
+  } else {
+    anotherPrice = Math.round(price / DOLLAR_EXCHANGE_RATE);
+    currencyType = "USD";
+  }
 
   const onCopyPhoneNumber = async () => {
     await navigator.clipboard.writeText(rentInformation.owner.phoneNumber);
@@ -197,11 +211,10 @@ export const MapListPreviewCard = ({
                 >
                   <Stack flexDirection="row" alignItems="center">
                     <Typography gutterBottom variant="h6" fontWeight="600">
-                      {bynPrice} р./мес.&nbsp;
+                      {price} р./мес.&nbsp;
                     </Typography>
                     <Typography gutterBottom variant="body2" fontWeight="400">
-                      ≈{rentInformation.rentObject.rentPrice}{" "}
-                      {rentInformation.currency}
+                      ≈{anotherPrice} {currencyType}
                       /мес.
                     </Typography>
                   </Stack>

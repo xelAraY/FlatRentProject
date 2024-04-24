@@ -39,21 +39,14 @@ public class FlatController : ControllerBase
               (ro, user) => new { RentObject = ro, Owner = user }
           )
           .Join(
-              _context.Currencies,
-              result => result.RentObject.CurrencyId,
-              currency => currency.Id,
-              (result, currency) => new { result.RentObject, result.Owner, Currency = currency }
-          )
-          .Join(
               _context.Addresses,
               result => result.RentObject.AddressId,
               address => address.AddrId,
-              (result, address) => new { result.RentObject, result.Owner, result.Currency, Address = address }
+              (result, address) => new { result.RentObject, result.Owner, Address = address }
           )
           .Select(result => new
           {
             result.RentObject,
-            Currency = result.Currency.Code,
             Owner = new
             {
               result.Owner.Name,
@@ -110,7 +103,6 @@ public class FlatController : ControllerBase
       var result = rentObject.Select(result => new
       {
         result.RentObject,
-        result.Currency,
         result.Owner,
         result.Address,
         Photos = photos.Where(photo => photo.RentObjId == result.RentObject.RentObjId).Select(photo => photo.Url),

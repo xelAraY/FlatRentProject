@@ -1,6 +1,5 @@
 export interface RentObjectInformation {
   rentObject: RentObject;
-  currency: string;
   owner: Owner;
   address: Address;
   photos: string[];
