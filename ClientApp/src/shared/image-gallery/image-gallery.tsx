@@ -15,7 +15,12 @@ export const ImageGalleryStyled = React.forwardRef(
       <StyledImageGalery
         justifyContent="center"
         alignItems="center"
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e: any) => {
+          const isBulletTouched = Array.from((e.target as any).classList).find(
+            (el: any) => el === "image-gallery-bullet"
+          );
+          if (isBulletTouched) e.stopPropagation();
+        }}
         fullscreen={fullscreen}
       >
         <ImageGallery {...other} ref={ref} />
