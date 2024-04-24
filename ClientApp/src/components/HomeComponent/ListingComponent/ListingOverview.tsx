@@ -90,7 +90,7 @@ export const ListingOverview = (props: ListingOverviewProps) => {
           ) : (
             <>
               {rentObjects?.map((rentObject, index) => (
-                <Grid item>
+                <Grid item key={index}>
                   {/* <Grid item xs={6} md={4} xl={3}> */}
                   <FlatPreviewCard
                     rentInformation={rentObject}

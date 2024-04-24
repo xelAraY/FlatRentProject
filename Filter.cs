@@ -37,21 +37,14 @@ public static class Filter
               (ro, user) => new { RentObject = ro, Owner = user }
           )
           .Join(
-              _context.Currencies,
-              result => result.RentObject.CurrencyId,
-              currency => currency.Id,
-              (result, currency) => new { result.RentObject, result.Owner, Currency = currency }
-          )
-          .Join(
               _context.Addresses,
               result => result.RentObject.AddressId,
               address => address.AddrId,
-              (result, address) => new { result.RentObject, result.Owner, result.Currency, Address = address }
+              (result, address) => new { result.RentObject, result.Owner, Address = address }
           )
           .Select(result => new
           {
             result.RentObject,
-            Currency = result.Currency.Code,
             Owner = new
             {
               result.Owner.Name,
@@ -82,7 +75,6 @@ public static class Filter
       var result = recentRentObjects.Select(result => new
       {
         result.RentObject,
-        result.Currency,
         result.Owner,
         result.Address,
         Photos = photos.Where(photo => photo.RentObjId == result.RentObject.RentObjId).Select(photo => photo.Url)
@@ -272,26 +264,18 @@ public static class Filter
       return query;
     }
 
-    var filteredQuery = query
-        .Join(
-            context.Currencies,
-            ro => ro.CurrencyId,
-            currency => currency.Id,
-            (ro, currency) => new { RentObject = ro, Currency = currency.Code }
-        );
-
     if (minPrice.HasValue)
     {
-      decimal convertedMinPrice = ConvertToBYN(minPrice, currencyType);  
-      filteredQuery = filteredQuery.Where(joined => context.ConvertToBYN(joined.RentObject.RentPrice, joined.Currency) >= convertedMinPrice);
+      decimal minPriceInBYN = ConvertToBYN(minPrice, currencyType);  
+      query = query.Where(ro => ro.RentPrice >= minPriceInBYN);
     }
 
     if (maxPrice.HasValue){
-      decimal convertedMaxPrice = ConvertToBYN(maxPrice, currencyType);  
-      filteredQuery = filteredQuery.Where(joined => context.ConvertToBYN(joined.RentObject.RentPrice, joined.Currency) <= convertedMaxPrice);
+      decimal maxPriceInBYN = ConvertToBYN(maxPrice, currencyType);  
+      query = query.Where(ro => ro.RentPrice <= maxPriceInBYN);
     }
     
-    return filteredQuery.Select(joined => joined.RentObject);    
+    return query;    
   }
 
   public static IQueryable<RentObject> ApplyFurnitureFilter(IQueryable<RentObject> query, bool? furniture)
@@ -339,21 +323,14 @@ public static class Filter
             (ro, user) => new { RentObject = ro, Owner = user }
         )
         .Join(
-            _context.Currencies,
-            result => result.RentObject.CurrencyId,
-            currency => currency.Id,
-            (result, currency) => new { result.RentObject, result.Owner, Currency = currency }
-        )
-        .Join(
             _context.Addresses,
             result => result.RentObject.AddressId,
             address => address.AddrId,
-            (result, address) => new { result.RentObject, result.Owner, result.Currency, Address = address }
+            (result, address) => new { result.RentObject, result.Owner, Address = address }
         )
         .Select(result => new
         {
           result.RentObject,
-          Currency = result.Currency.Code,
           Owner = new
           {
             result.Owner.Name,
@@ -382,7 +359,6 @@ public static class Filter
     var result = recentRentObjects.Select(result => new
     {
       result.RentObject,
-      result.Currency,
       result.Owner,
       result.Address,
       Photos = photos.Where(photo => photo.RentObjId == result.RentObject.RentObjId).Select(photo => photo.Url)
@@ -426,8 +402,8 @@ public static class Filter
       return 0;
     }
 
-    decimal usdToByn = 3.2063m;
-    decimal eurToByn = 3.5045m;
+    decimal usdToByn = 3.2063m;//
+    decimal eurToByn = 3.5045m;//
 
     decimal convertedPrice;
     switch (currencyType)

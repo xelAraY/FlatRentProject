@@ -4,20 +4,24 @@ import { RentObjectInformation } from "src/interfaces/RentObj";
 import { Button, DOLLAR_EXCHANGE_RATE, EURO_EXCHANGE_RATE } from "src/shared";
 import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import { useSearchParams } from "react-router-dom";
 
 interface OwnerPaperProps {
-  flatInfo?: RentObjectInformation;
+  flatInfo: RentObjectInformation;
 }
 
 const OwnerPaper: React.FC<OwnerPaperProps> = ({ flatInfo }) => {
-  const currency = flatInfo?.currency;
-  const price = flatInfo?.rentObject.rentPrice ?? 0;
-  const bynPrice =
-    currency === "USD"
-      ? Math.round(price * DOLLAR_EXCHANGE_RATE)
-      : currency === "EUR"
-      ? Math.round(price * EURO_EXCHANGE_RATE)
-      : price;
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const price = flatInfo?.rentObject.rentPrice;
+  let currencyType = searchParams.get("currencyType");
+  let anotherPrice = 0;
+  if (currencyType === "EUR") {
+    anotherPrice = Math.round(price / EURO_EXCHANGE_RATE);
+  } else {
+    anotherPrice = Math.round(price / DOLLAR_EXCHANGE_RATE);
+    currencyType = "USD";
+  }
 
   const [isContactsOpen, setIsOpenContacts] = React.useState(false);
   const onCopyPhoneClick = async () => {
@@ -56,10 +60,10 @@ const OwnerPaper: React.FC<OwnerPaperProps> = ({ flatInfo }) => {
       >
         <Stack flexDirection="row" alignItems="center">
           <Typography variant="h5" fontWeight="600" color="primary">
-            {bynPrice} р./мес.&nbsp;
+            {price} р./мес.&nbsp;
           </Typography>
           <Typography variant="body1" fontWeight="400">
-            ≈&nbsp;{flatInfo?.rentObject.rentPrice} {flatInfo?.currency}
+            ≈&nbsp;{anotherPrice} {currencyType}
             /мес.
           </Typography>
         </Stack>

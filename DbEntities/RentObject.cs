@@ -53,9 +53,6 @@ public class RentObject
   [Column("rent_price")]
   public decimal RentPrice { get; set; }
 
-  [Column("currency_id")]
-  public int CurrencyId { get; set; } //!!
-
   [Column("prepayment")]
   public string? Prepayment { get; set; }
 

@@ -198,17 +198,9 @@ export const MapFindingPage = () => {
 
   useEffect(() => {
     const placemarksArray: PlacemarkInfo[] = rentObjects.map((rentInf) => {
-      const currency = rentInf.currency;
-      const price = rentInf.rentObject.rentPrice;
-      const bynPrice =
-        currency === "USD"
-          ? Math.round(price * 3.2063)
-          : currency === "EUR"
-          ? Math.round(price * 3.5045)
-          : price;
       return {
         coordinates: [rentInf.address.latitude, rentInf.address.longitude],
-        cost: bynPrice.toString(),
+        cost: rentInf.rentObject.rentPrice.toString(),
         id: rentInf.rentObject.rentObjId,
       };
     });
