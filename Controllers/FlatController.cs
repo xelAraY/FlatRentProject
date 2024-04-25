@@ -42,7 +42,7 @@ public class FlatController : ControllerBase
           _context.Addresses,
           result => result.RentObject.AddressId,
           address => address.AddrId,
-          (result, address) => new { result.RentObject, result.Owner, result.Currency, Address = address }
+          (result, address) => new { result.RentObject, result.Owner, Address = address }
         )
         .Select(result => new
         {
@@ -128,7 +128,6 @@ public class FlatController : ControllerBase
       var result = rentObject.Select(result => new
       {
         result.RentObject,
-        result.Currency,
         result.Owner,
         result.Address,
         Photos = photos,

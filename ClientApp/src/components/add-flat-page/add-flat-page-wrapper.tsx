@@ -1,14 +1,11 @@
-import {
-  Box,
-  Paper,
-  Stepper,
-  ThemeProvider,
-  Typography,
-  createTheme,
-} from "@mui/material";
+import { Box, Paper, Stepper, ThemeProvider, createTheme } from "@mui/material";
 import React from "react";
 import { Button } from "src/shared";
-import { GeneralStepWrapper, MapStepWrapper } from "./components";
+import {
+  AreaStepWrapper,
+  GeneralStepWrapper,
+  MapStepWrapper,
+} from "./components";
 import { Form, Formik } from "formik";
 import { AddFlatFormikValues } from "./constants";
 import { addFlatPageValidationSchema, getInitialValues } from "./utils";
@@ -78,7 +75,7 @@ export const AddFlatPageWrapper = () => {
               <Form>
                 <Box>
                   <Stepper activeStep={activeStep} orientation="vertical">
-                    {[1, 2].map((_, index) =>
+                    {[1, 2, 3].map((_, index) =>
                       index === 0 ? (
                         <GeneralStepWrapper
                           key={index}
@@ -88,6 +85,13 @@ export const AddFlatPageWrapper = () => {
                         />
                       ) : index === 1 ? (
                         <MapStepWrapper
+                          key={index}
+                          myIndex={index}
+                          currentStepIndex={activeStep}
+                          setActiveStep={setActiveStep}
+                        />
+                      ) : index === 2 ? (
+                        <AreaStepWrapper
                           key={index}
                           myIndex={index}
                           currentStepIndex={activeStep}
