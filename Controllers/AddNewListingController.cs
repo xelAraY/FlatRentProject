@@ -46,24 +46,37 @@ public class AddNewListingController : ControllerBase
     }
   }
 
-  [Authorize]
-  [HttpGet("isFavourite")]
-  public async Task<IActionResult> IsFavourite([FromQuery] int objectId, [FromQuery] string userName)
+  [HttpGet("getAllAppliances")]
+  public async Task<IActionResult> GetAllAppliances()
   {
     try
     {
-      var user = await _context.Users.FirstOrDefaultAsync(u => u.Name == userName);
-      if (user == null)
-        return NotFound(new { Message = $"User with username '{userName}' not found."});
+      var allAppliances = await _context.Appliances
+        .Select(appliance => new {appliance.Name})
+        .ToListAsync();
 
-      var exists = await _context.Favourites
-        .AnyAsync(f => f.UserId == user.Id && f.RentObjectId == objectId);
-
-      return Ok(exists);
+      return Ok(allAppliances);
     }
     catch (Exception ex)
     {
-      return BadRequest( new { Message = $"Error while retrieving favourites: {ex.Message}"});
+      return BadRequest(new { Message = $"Ошибка при получении информации о бытовой технике: {ex.Message}" });
+    }
+  }
+
+  [HttpGet("getAllFacilities")]
+  public async Task<IActionResult> GetAllFacilities()
+  {
+    try
+    {
+      var allFacilities = await _context.AddtitionalInfs
+        .Select(faciliti => new {faciliti.Name})
+        .ToListAsync();
+
+      return Ok(allFacilities);
+    }
+    catch (Exception ex)
+    {
+      return BadRequest(new { Message = $"Ошибка при получении информации об удобствах: {ex.Message}" });
     }
   }
 }

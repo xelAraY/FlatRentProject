@@ -24,24 +24,25 @@ export const GeneralStep: React.FC<GeneralStepProps> = ({
     >
       <FormikControlMui name="roomsCount" label="Количество комнат" required>
         <Stack flexDirection="row" gap="0.5rem">
-          {[
-            "1к. квартира",
-            "2к. квартира",
-            "3к. квартира",
-            "4к. квартира",
-            "5к. квартира",
-            "6+ комнат",
-          ].map((value, index) => (
+          {["1", "2", "3", "4", "5", "6+"].map((value, index) => (
             <Button
               key={value}
-              variant={
-                values.roomsCount === index + 1 ? "contained" : "outlined"
-              }
               onClick={() => {
                 setFieldValue("roomsCount", index + 1);
                 setTimeout(() => {
                   setFieldTouched("roomsCount", true);
                 }, 500);
+              }}
+              sx={{
+                backgroundColor:
+                  values.roomsCount === index + 1 ? "#1976d2" : "#ffffff",
+                color: values.roomsCount === index + 1 ? "white" : "#2b98e1",
+                padding: "8px 16px",
+                ":hover": {
+                  backgroundColor:
+                    values.roomsCount === index + 1 ? "#1565c0" : "#f6fafd",
+                  transition: "0.5s",
+                },
               }}
               size="large"
             >
@@ -61,11 +62,11 @@ export const GeneralStep: React.FC<GeneralStepProps> = ({
         </FormikControlMui>
         <FormikControlMui
           name="floorAmount"
-          label="Этажность"
+          label="Этажей в доме"
           sx={{ width: "50%" }}
           required
         >
-          <TextField placeholder="Введите этажность дома" />
+          <TextField placeholder="Введите количество этажей в доме" />
         </FormikControlMui>
       </Stack>
       <Stack width="50%">
@@ -82,12 +83,25 @@ export const GeneralStep: React.FC<GeneralStepProps> = ({
           {Object.values(BathroomType).map((value) => (
             <Button
               key={value}
-              variant={values.bathroomType === value ? "contained" : "outlined"}
               onClick={() => {
-                setFieldValue("bathroomType", value);
+                setFieldValue(
+                  "bathroomType",
+                  value === values.bathroomType ? undefined : value
+                );
                 setTimeout(() => {
                   setFieldTouched("bathroomType", true);
                 }, 500);
+              }}
+              sx={{
+                backgroundColor:
+                  values.bathroomType === value ? "#1976d2" : "#ffffff",
+                color: values.bathroomType === value ? "white" : "#2b98e1",
+                padding: "8px 16px",
+                ":hover": {
+                  backgroundColor:
+                    values.bathroomType === value ? "#1565c0" : "#f6fafd",
+                  transition: "0.5s",
+                },
               }}
               size="large"
             >
@@ -101,12 +115,25 @@ export const GeneralStep: React.FC<GeneralStepProps> = ({
           {Object.values(BalconyType).map((value) => (
             <Button
               key={value}
-              variant={values.balconyType === value ? "contained" : "outlined"}
               onClick={() => {
-                setFieldValue("balconyType", value);
+                setFieldValue(
+                  "balconyType",
+                  value === values.balconyType ? undefined : value
+                );
                 setTimeout(() => {
                   setFieldTouched("balconyType", true);
                 }, 500);
+              }}
+              sx={{
+                backgroundColor:
+                  values.balconyType === value ? "#1976d2" : "#ffffff",
+                color: values.balconyType === value ? "white" : "#2b98e1",
+                padding: "8px 16px",
+                ":hover": {
+                  backgroundColor:
+                    values.balconyType === value ? "#1565c0" : "#f6fafd",
+                  transition: "0.5s",
+                },
               }}
               size="large"
             >

@@ -2,7 +2,9 @@ import { Box, Paper, Stepper, ThemeProvider, createTheme } from "@mui/material";
 import React from "react";
 import { Button } from "src/shared";
 import {
+  AdditionalStepWrapper,
   AreaStepWrapper,
+  ConditionsStepWrapper,
   GeneralStepWrapper,
   MapStepWrapper,
 } from "./components";
@@ -75,7 +77,7 @@ export const AddFlatPageWrapper = () => {
               <Form>
                 <Box>
                   <Stepper activeStep={activeStep} orientation="vertical">
-                    {[1, 2, 3].map((_, index) =>
+                    {[1, 2, 3, 4, 5].map((_, index) =>
                       index === 0 ? (
                         <GeneralStepWrapper
                           key={index}
@@ -92,6 +94,20 @@ export const AddFlatPageWrapper = () => {
                         />
                       ) : index === 2 ? (
                         <AreaStepWrapper
+                          key={index}
+                          myIndex={index}
+                          currentStepIndex={activeStep}
+                          setActiveStep={setActiveStep}
+                        />
+                      ) : index === 3 ? (
+                        <AdditionalStepWrapper
+                          key={index}
+                          myIndex={index}
+                          currentStepIndex={activeStep}
+                          setActiveStep={setActiveStep}
+                        />
+                      ) : index === 4 ? (
+                        <ConditionsStepWrapper
                           key={index}
                           myIndex={index}
                           currentStepIndex={activeStep}
