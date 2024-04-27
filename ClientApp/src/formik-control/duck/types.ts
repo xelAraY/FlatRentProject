@@ -8,4 +8,5 @@ export interface FormControlMuiProps
   requiredError?: boolean;
   fullWidth?: boolean;
   additionalError?: React.ReactElement;
+  icon?: React.ReactElement;
 }

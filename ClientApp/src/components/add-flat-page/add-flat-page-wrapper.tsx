@@ -5,6 +5,7 @@ import {
   AdditionalStepWrapper,
   AreaStepWrapper,
   ConditionsStepWrapper,
+  DescriptionStepWrapper,
   GeneralStepWrapper,
   MapStepWrapper,
 } from "./components";
@@ -77,7 +78,7 @@ export const AddFlatPageWrapper = () => {
               <Form>
                 <Box>
                   <Stepper activeStep={activeStep} orientation="vertical">
-                    {[1, 2, 3, 4, 5].map((_, index) =>
+                    {[1, 2, 3, 4, 5, 6].map((_, index) =>
                       index === 0 ? (
                         <GeneralStepWrapper
                           key={index}
@@ -108,6 +109,13 @@ export const AddFlatPageWrapper = () => {
                         />
                       ) : index === 4 ? (
                         <ConditionsStepWrapper
+                          key={index}
+                          myIndex={index}
+                          currentStepIndex={activeStep}
+                          setActiveStep={setActiveStep}
+                        />
+                      ) : index === 5 ? (
+                        <DescriptionStepWrapper
                           key={index}
                           myIndex={index}
                           currentStepIndex={activeStep}

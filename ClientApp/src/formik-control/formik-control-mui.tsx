@@ -20,6 +20,7 @@ export interface FormikControlMuiProps extends FormControlMuiProps {
    * @note Overrides default behaviour
    */
   requiredError?: boolean;
+  icon?: React.ReactElement;
 }
 
 const FormikControlMui: React.FC<FormikControlMuiProps> = ({

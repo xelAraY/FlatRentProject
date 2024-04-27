@@ -1,11 +1,13 @@
 import { AddFlatFormikValues } from "./constants";
 import {
   getInitialGeneralStepValues,
+  getInitialDescriptionStepValues,
   getInitialMapStepValues,
   getInitialAreaStepValues,
   getInitialAdditionalStepValues,
   getInitialConditionsStepValues,
   generalStepValidationSchema,
+  descriptionStepValidationSchema,
   mapStepValidationSchema,
   areaStepValidationSchema,
   additionalStepValidationSchema,
@@ -20,6 +22,7 @@ export const getInitialValues = (): AddFlatFormikValues => {
     area: { ...getInitialAreaStepValues() },
     additional: { ...getInitialAdditionalStepValues() },
     conditions: { ...getInitialConditionsStepValues() },
+    description: { ...getInitialDescriptionStepValues() },
   };
 };
 
@@ -29,4 +32,5 @@ export const addFlatPageValidationSchema = Yup.object().shape({
   area: areaStepValidationSchema,
   additional: additionalStepValidationSchema,
   conditions: conditionsStepValidationSchema,
+  description: descriptionStepValidationSchema,
 });

@@ -1,32 +1,32 @@
 import { Form, Formik, useFormikContext } from "formik";
 import React from "react";
 import {
-  AdditionalStepFormikValues,
-  AdditionalStepProps,
+  DescriptionStepFormikValues,
+  DescriptionStepProps,
 } from "./components/constants";
 import {
-  additionalStepValidationSchema,
-  getInitialAdditionalStepValues,
+  descriptionStepValidationSchema,
+  getInitialDescriptionStepValues,
 } from "./components/utils";
 import { Step, StepContent, StepLabel } from "@mui/material";
-import { AdditionalStep } from "./components";
+import { DescriptionStep } from "./components";
 import { AddFlatFormikValues } from "../../constants";
 
-export const AdditionalStepWrapper: React.FC<AdditionalStepProps> = ({
+export const DescriptionStepWrapper: React.FC<DescriptionStepProps> = ({
   setActiveStep,
   currentStepIndex,
   myIndex,
   ...other
 }) => {
-  const { setFieldValue, values } = useFormikContext<AddFlatFormikValues>();
+  const { setFieldValue } = useFormikContext<AddFlatFormikValues>();
 
   return (
-    <Formik<AdditionalStepFormikValues>
-      initialValues={getInitialAdditionalStepValues()}
+    <Formik<DescriptionStepFormikValues>
+      initialValues={getInitialDescriptionStepValues()}
       onSubmit={(values) => {
         console.log(values);
       }}
-      validationSchema={additionalStepValidationSchema}
+      validationSchema={descriptionStepValidationSchema}
       validateOnMount
       validateOnChange
       validateOnBlur
@@ -34,7 +34,7 @@ export const AdditionalStepWrapper: React.FC<AdditionalStepProps> = ({
       {({ isValid, touched }) => {
         return (
           <Form>
-            <Step completed={isValid && !!touched.appliances} {...other}>
+            <Step completed={isValid} {...other}>
               <StepLabel
                 sx={{
                   ":hover": {
@@ -51,15 +51,15 @@ export const AdditionalStepWrapper: React.FC<AdditionalStepProps> = ({
                   !!Object.keys(touched).length
                 }
               >
-                {"Дополнительная информация"}
+                {"Описание"}
               </StepLabel>
               <StepContent>
-                <AdditionalStep
+                <DescriptionStep
                   myIndex={myIndex}
                   setActiveStep={setActiveStep}
                   currentStepIndex={currentStepIndex}
-                  setCommonAdditionalValues={(newValues) =>
-                    setFieldValue("additional", newValues)
+                  setCommonDescriptionValues={(newValues) =>
+                    setFieldValue("description", newValues)
                   }
                 />
               </StepContent>

@@ -15,11 +15,14 @@ const FormControlMui: React.FC<FormControlMuiProps> = ({
   error,
   children,
   additionalError,
+  icon,
   ...otherProps
 }) => {
   return (
     <FormControl {...otherProps}>
-      {label && <FormControlLabel label={label} required={required} />}
+      {label && (
+        <FormControlLabel label={label} required={required} icon={icon} />
+      )}
       {children}
       {helpText && <FormHelperText helpText={helpText} />}
       {error && (
