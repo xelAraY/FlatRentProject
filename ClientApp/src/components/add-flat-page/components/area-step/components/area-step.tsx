@@ -57,7 +57,6 @@ export const AreaStep: React.FC<AreaStepProps> = ({
               e?.stopPropagation();
               setActiveStep(currentStepIndex + 1);
             }}
-            type="submit"
             sx={{ mt: 1, mr: 1 }}
           >
             Далее

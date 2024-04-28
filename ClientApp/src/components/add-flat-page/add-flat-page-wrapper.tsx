@@ -103,7 +103,7 @@ export const AddFlatPageWrapper = () => {
                           setActiveStep={setActiveStep}
                         />
                       ) : index === 3 ? (
-                        <AdditionalStepWrapper
+                        <MediaStepWrapper
                           key={index}
                           myIndex={index}
                           currentStepIndex={activeStep}
@@ -124,14 +124,14 @@ export const AddFlatPageWrapper = () => {
                           setActiveStep={setActiveStep}
                         />
                       ) : index === 6 ? (
-                        <ContactsStepWrapper
+                        <AdditionalStepWrapper
                           key={index}
                           myIndex={index}
                           currentStepIndex={activeStep}
                           setActiveStep={setActiveStep}
                         />
                       ) : index === 7 ? (
-                        <MediaStepWrapper
+                        <ContactsStepWrapper
                           key={index}
                           myIndex={index}
                           currentStepIndex={activeStep}

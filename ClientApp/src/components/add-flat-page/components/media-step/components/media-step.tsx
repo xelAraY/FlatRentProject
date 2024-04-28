@@ -35,7 +35,7 @@ const photoTooltipText = `Фото размещается в соответст�
 Это же фото будет являться главным и отображаться первым при присмотре 
 объявления в списке поиска, поэтому поставьте на первое место самое яркое 
 и красочное фото, чтобы как можно большее количество людей просмотрели ваше 
-объявление. Файл с фото должен быть в одном из трех форматов: jpg, png, jpeg, gif`;
+объявление. Файлы с фото должны быть в одном из четырех форматов: jpg, png, jpeg, gif`;
 
 export const MediaStep: React.FC<MediaStepProps> = ({
   setActiveStep,
@@ -193,25 +193,28 @@ export const MediaStep: React.FC<MediaStepProps> = ({
       elevation={0}
       sx={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
     >
-      <Stack flexDirection="row" alignItems="center">
-        <Typography>Фото</Typography>
-        <Tooltip
-          title={
-            <>
-              <Typography variant="subtitle2">{photoTooltipText}</Typography>
-            </>
-          }
-          arrow
-        >
-          <HelpIcon
-            fontSize="small"
-            sx={{
-              marginLeft: "10px",
-              cursor: "pointer",
-              color: "#c2c7cf",
-            }}
-          />
-        </Tooltip>
+      <Stack gap={1}>
+        <Stack flexDirection="row" alignItems="center">
+          <Typography>Фото</Typography>
+          <Tooltip
+            title={
+              <>
+                <Typography variant="subtitle2">{photoTooltipText}</Typography>
+              </>
+            }
+            arrow
+          >
+            <HelpIcon
+              fontSize="small"
+              sx={{
+                marginLeft: "10px",
+                cursor: "pointer",
+                color: "#c2c7cf",
+              }}
+            />
+          </Tooltip>
+        </Stack>
+        <Typography>До 20 фото формата JPG, PNG, JPEG и GIF</Typography>
       </Stack>
       {values.photos.length > 0 && (
         <Stack gap={2}>
@@ -304,7 +307,6 @@ export const MediaStep: React.FC<MediaStepProps> = ({
               e?.stopPropagation();
               setActiveStep(currentStepIndex + 1);
             }}
-            type="submit"
             sx={{ mt: 1, mr: 1 }}
           >
             Далее
