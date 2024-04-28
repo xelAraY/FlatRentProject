@@ -32,6 +32,12 @@ export const DescriptionStep: React.FC<DescriptionStepProps> = ({
     setCommonDescriptionValues?.(values);
   }, [values]);
 
+  React.useEffect(() => {
+    return () => {
+      setFieldTouched("title", true);
+    };
+  }, []);
+
   return (
     <Paper
       elevation={0}
@@ -51,7 +57,6 @@ export const DescriptionStep: React.FC<DescriptionStepProps> = ({
                   </Typography>
                 </>
               }
-              placement="top-start"
               arrow
             >
               <HelpIcon
@@ -85,6 +90,7 @@ export const DescriptionStep: React.FC<DescriptionStepProps> = ({
                   fontSize="small"
                   sx={{
                     marginLeft: "10px",
+                    cursor: "pointer",
                     color: "#c2c7cf",
                   }}
                 />
@@ -103,9 +109,6 @@ export const DescriptionStep: React.FC<DescriptionStepProps> = ({
               inputComponent: "textarea",
             }}
           />
-          <div style={{ position: "absolute", right: 20, bottom: 30 }}>
-            Text
-          </div>
         </FormikControlMui>
       </Stack>
       <Box sx={{ mb: 2 }}>

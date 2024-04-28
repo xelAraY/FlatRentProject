@@ -1,18 +1,18 @@
 import { Form, Formik, useFormikContext } from "formik";
 import React from "react";
 import {
-  DescriptionStepFormikValues,
-  DescriptionStepProps,
+  ContactsStepFormikValues,
+  ContactsStepProps,
 } from "./components/constants";
 import {
-  descriptionStepValidationSchema,
-  getInitialDescriptionStepValues,
+  contactsStepValidationSchema,
+  getInitialContactsStepValues,
 } from "./components/utils";
 import { Step, StepContent, StepLabel } from "@mui/material";
-import { DescriptionStep } from "./components";
+import { ContactsStep } from "./components";
 import { AddFlatFormikValues } from "../../constants";
 
-export const DescriptionStepWrapper: React.FC<DescriptionStepProps> = ({
+export const ContactsStepWrapper: React.FC<ContactsStepProps> = ({
   setActiveStep,
   currentStepIndex,
   myIndex,
@@ -21,12 +21,12 @@ export const DescriptionStepWrapper: React.FC<DescriptionStepProps> = ({
   const { setFieldValue } = useFormikContext<AddFlatFormikValues>();
 
   return (
-    <Formik<DescriptionStepFormikValues>
-      initialValues={getInitialDescriptionStepValues()}
+    <Formik<ContactsStepFormikValues>
+      initialValues={getInitialContactsStepValues()}
       onSubmit={(values) => {
         console.log(values);
       }}
-      validationSchema={descriptionStepValidationSchema}
+      validationSchema={contactsStepValidationSchema}
       validateOnMount
       validateOnChange
       validateOnBlur
@@ -34,7 +34,7 @@ export const DescriptionStepWrapper: React.FC<DescriptionStepProps> = ({
       {({ isValid, touched }) => {
         return (
           <Form>
-            <Step completed={isValid && !!touched.title} {...other}>
+            <Step completed={isValid} {...other}>
               <StepLabel
                 sx={{
                   ":hover": {
@@ -51,15 +51,15 @@ export const DescriptionStepWrapper: React.FC<DescriptionStepProps> = ({
                   !!Object.keys(touched).length
                 }
               >
-                {"Описание"}
+                {"Контакты"}
               </StepLabel>
               <StepContent>
-                <DescriptionStep
+                <ContactsStep
                   myIndex={myIndex}
                   setActiveStep={setActiveStep}
                   currentStepIndex={currentStepIndex}
-                  setCommonDescriptionValues={(newValues) =>
-                    setFieldValue("description", newValues)
+                  setCommonContactsValues={(newValues) =>
+                    setFieldValue("contacts", newValues)
                   }
                 />
               </StepContent>

@@ -6,12 +6,16 @@ import {
   getInitialAreaStepValues,
   getInitialAdditionalStepValues,
   getInitialConditionsStepValues,
+  getInitialContactsStepValues,
+  getInitialMediaStepValues,
   generalStepValidationSchema,
   descriptionStepValidationSchema,
   mapStepValidationSchema,
   areaStepValidationSchema,
   additionalStepValidationSchema,
   conditionsStepValidationSchema,
+  contactsStepValidationSchema,
+  mediaStepValidationSchema,
 } from "./components";
 import * as Yup from "yup";
 
@@ -23,6 +27,8 @@ export const getInitialValues = (): AddFlatFormikValues => {
     additional: { ...getInitialAdditionalStepValues() },
     conditions: { ...getInitialConditionsStepValues() },
     description: { ...getInitialDescriptionStepValues() },
+    contacts: { ...getInitialContactsStepValues() },
+    media: { ...getInitialMediaStepValues() },
   };
 };
 
@@ -33,4 +39,6 @@ export const addFlatPageValidationSchema = Yup.object().shape({
   additional: additionalStepValidationSchema,
   conditions: conditionsStepValidationSchema,
   description: descriptionStepValidationSchema,
+  contacts: contactsStepValidationSchema,
+  media: mediaStepValidationSchema,
 });

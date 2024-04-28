@@ -4,3 +4,5 @@ export * from "./area-step";
 export * from "./additional-step";
 export * from "./conditions-step";
 export * from "./description-step";
+export * from "./contacts-step";
+export * from "./media-step";

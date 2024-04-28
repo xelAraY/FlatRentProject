@@ -1,9 +1,11 @@
 import {
   AreaStepFormikValues,
-  GeneralStepFormikValues,
+  MediaStepFormikValues,
   MapStepFormikValues,
   AdditionalStepFormikValues,
   DescriptionStepFormikValues,
+  ContactsStepFormikValues,
+  GeneralStepFormikValues,
 } from "./components";
 import { ConditionsStepFormikValues } from "./components/conditions-step";
 
@@ -14,4 +16,6 @@ export interface AddFlatFormikValues {
   additional: AdditionalStepFormikValues;
   conditions: ConditionsStepFormikValues;
   description: DescriptionStepFormikValues;
+  contacts: ContactsStepFormikValues;
+  media: MediaStepFormikValues;
 }

@@ -1,18 +1,15 @@
 import { Form, Formik, useFormikContext } from "formik";
 import React from "react";
+import { MediaStepFormikValues, MediaStepProps } from "./components/constants";
 import {
-  DescriptionStepFormikValues,
-  DescriptionStepProps,
-} from "./components/constants";
-import {
-  descriptionStepValidationSchema,
-  getInitialDescriptionStepValues,
+  mediaStepValidationSchema,
+  getInitialMediaStepValues,
 } from "./components/utils";
 import { Step, StepContent, StepLabel } from "@mui/material";
-import { DescriptionStep } from "./components";
+import { MediaStep } from "./components";
 import { AddFlatFormikValues } from "../../constants";
 
-export const DescriptionStepWrapper: React.FC<DescriptionStepProps> = ({
+export const MediaStepWrapper: React.FC<MediaStepProps> = ({
   setActiveStep,
   currentStepIndex,
   myIndex,
@@ -21,12 +18,12 @@ export const DescriptionStepWrapper: React.FC<DescriptionStepProps> = ({
   const { setFieldValue } = useFormikContext<AddFlatFormikValues>();
 
   return (
-    <Formik<DescriptionStepFormikValues>
-      initialValues={getInitialDescriptionStepValues()}
+    <Formik<MediaStepFormikValues>
+      initialValues={getInitialMediaStepValues()}
       onSubmit={(values) => {
         console.log(values);
       }}
-      validationSchema={descriptionStepValidationSchema}
+      validationSchema={mediaStepValidationSchema}
       validateOnMount
       validateOnChange
       validateOnBlur
@@ -34,7 +31,7 @@ export const DescriptionStepWrapper: React.FC<DescriptionStepProps> = ({
       {({ isValid, touched }) => {
         return (
           <Form>
-            <Step completed={isValid && !!touched.title} {...other}>
+            <Step completed={isValid && !!touched.photos} {...other}>
               <StepLabel
                 sx={{
                   ":hover": {
@@ -51,15 +48,15 @@ export const DescriptionStepWrapper: React.FC<DescriptionStepProps> = ({
                   !!Object.keys(touched).length
                 }
               >
-                {"Описание"}
+                {"Фотографии"}
               </StepLabel>
               <StepContent>
-                <DescriptionStep
+                <MediaStep
                   myIndex={myIndex}
                   setActiveStep={setActiveStep}
                   currentStepIndex={currentStepIndex}
-                  setCommonDescriptionValues={(newValues) =>
-                    setFieldValue("description", newValues)
+                  setCommonMediaValues={(newValues) =>
+                    setFieldValue("media", newValues)
                   }
                 />
               </StepContent>

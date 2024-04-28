@@ -5,9 +5,11 @@ import {
   AdditionalStepWrapper,
   AreaStepWrapper,
   ConditionsStepWrapper,
+  ContactsStepWrapper,
   DescriptionStepWrapper,
   GeneralStepWrapper,
   MapStepWrapper,
+  MediaStepWrapper,
 } from "./components";
 import { Form, Formik } from "formik";
 import { AddFlatFormikValues } from "./constants";
@@ -78,7 +80,7 @@ export const AddFlatPageWrapper = () => {
               <Form>
                 <Box>
                   <Stepper activeStep={activeStep} orientation="vertical">
-                    {[1, 2, 3, 4, 5, 6].map((_, index) =>
+                    {[1, 2, 3, 4, 5, 6, 7, 8].map((_, index) =>
                       index === 0 ? (
                         <GeneralStepWrapper
                           key={index}
@@ -121,6 +123,20 @@ export const AddFlatPageWrapper = () => {
                           currentStepIndex={activeStep}
                           setActiveStep={setActiveStep}
                         />
+                      ) : index === 6 ? (
+                        <ContactsStepWrapper
+                          key={index}
+                          myIndex={index}
+                          currentStepIndex={activeStep}
+                          setActiveStep={setActiveStep}
+                        />
+                      ) : index === 7 ? (
+                        <MediaStepWrapper
+                          key={index}
+                          myIndex={index}
+                          currentStepIndex={activeStep}
+                          setActiveStep={setActiveStep}
+                        />
                       ) : (
                         <></>
                       )
@@ -157,7 +173,7 @@ export const AddFlatPageWrapper = () => {
                       </Button>
                     </Paper>
                   )} */}
-                  <Button disabled={!isValid}>fkvndlfkv</Button>
+                  <Button disabled={!isValid}>Сохранить и продолжить</Button>
                 </Box>
               </Form>
             );

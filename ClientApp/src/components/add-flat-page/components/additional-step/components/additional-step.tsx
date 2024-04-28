@@ -23,7 +23,6 @@ export const AdditionalStep: React.FC<AdditionalStepProps> = ({
   React.useEffect(() => {
     return () => {
       setFieldTouched("appliances", true);
-      console.log("setTouched");
     };
   }, []);
 
