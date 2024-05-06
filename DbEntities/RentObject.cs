@@ -73,4 +73,7 @@ public class RentObject
 
   [Column("preview_image_url")]
   public string? PreviewImageUrl { get; set; }
+
+  [Column("hidden")]
+  public bool Hidden { get; set; }
 }

@@ -30,9 +30,10 @@ export interface RentObject {
   prepayment: string;
   rent: string;
   rentalPeriod: string;
-  ownerId: number; //
+  ownerId: number;
   createdAt: Date;
   updatedAt: Date;
+  hidden: boolean;
 }
 
 interface Owner {

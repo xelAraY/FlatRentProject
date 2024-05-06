@@ -402,8 +402,8 @@ export const AdditionalFilters = ({
               style={{
                 marginRight: "6px",
                 width: "max-content",
-                color: "#0a0f1c",
-                backgroundColor: "#efcd6c",
+                // color: "#0a0f1c",
+                // backgroundColor: "#efcd6c",
               }}
             >
               <Typography fontSize="17px" marginLeft="3px">

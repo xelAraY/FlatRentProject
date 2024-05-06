@@ -44,7 +44,8 @@ export const FlatsList = ({
         ) : (
           <>
             {rentObjects?.map((rentObject, index) => (
-              <Grid item xs={12} sm={6} md={3} key={index}>
+              // <Grid item xs={12} sm={6} md={3} key={index}>
+              <Grid item xs={12} sm={6} md={4} xl={3} key={index}>
                 <FlatPreviewCard
                   rentInformation={rentObject}
                   keyNumber={index}

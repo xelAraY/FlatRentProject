@@ -21,11 +21,10 @@ public class ApplicationDbContext : DbContext
 
   public DbSet<MetroLineColor> MetroLinesColors { get; set; }
 
-  [DbFunction("converttobyn", "public")]
-  public decimal ConvertToBYN(decimal? price, string currencyType)
-  {
-    throw new NotImplementedException("This method is mapped to a database function and should not be invoked in C# code.");
-  }
+  public DbSet<Contact> Contacts { get; set; }
+
+  public DbSet<Currency> Currencies { get; set; }
+
   public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
   {
   }

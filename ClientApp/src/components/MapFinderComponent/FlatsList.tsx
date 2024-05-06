@@ -4,11 +4,12 @@ import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
-import { Stack, Typography } from "@mui/material";
-import { NavLink } from "react-router-dom";
+import { Pagination, Stack, Typography } from "@mui/material";
+import { NavLink, useSearchParams } from "react-router-dom";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import { RentObjectInformation } from "src/interfaces/RentObj";
 import { MapListPreviewCard } from "./MapListPreviewCard";
+import { NoFoundObject } from "../RentFinderComponent/NoFoundObject";
 
 const drawerWidth = 690;
 
@@ -19,6 +20,9 @@ interface FlatsListProps {
   flatsCount: number;
   isOpen: boolean;
   rentObjects: RentObjectInformation[];
+  currentPage: number;
+  pages: number;
+  updateCurrentPage: (page: number) => void;
 }
 
 export default function FlatsList({
@@ -28,13 +32,35 @@ export default function FlatsList({
   flatsCount,
   isOpen,
   rentObjects,
+  currentPage,
+  pages,
+  updateCurrentPage,
 }: FlatsListProps) {
   const handleDrawerSwitch = () => {
     onListSwitch(!isOpen);
   };
 
+  const [searchParams, setSearchParams] = useSearchParams();
+  const drawerRef = React.createRef<HTMLDivElement>();
+
   const ending =
     flatsCount === 1 ? "е" : flatsCount > 1 && flatsCount < 5 ? "я" : "й";
+
+  const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    updateCurrentPage(value);
+    setSearchParams(
+      (urlParams) => {
+        urlParams.set("page", value.toString());
+        return urlParams;
+      },
+      { replace: true }
+    );
+    console.log(drawerRef.current);
+    drawerRef.current?.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
 
   return (
     <Box
@@ -73,6 +99,8 @@ export default function FlatsList({
         </IconButton>
       </Box>
       <Drawer
+        // ref={drawerRef}
+        PaperProps={{ ref: drawerRef }}
         sx={{
           flexShrink: 0,
           "& .MuiDrawer-paper": {
@@ -119,16 +147,28 @@ export default function FlatsList({
             </NavLink>
           </Stack>
           <Stack>
-            {rentObjects.map((rentObject, index) => (
-              <MapListPreviewCard
-                rentInformation={rentObject}
-                keyNumber={index}
-                isFavourite={favourites.includes(
-                  rentObject.rentObject.rentObjId
-                )}
-                onFavouriteChange={onFavouriteChange}
+            {rentObjects
+              .slice((currentPage - 1) * 20, currentPage * 20 + 1)
+              .map((rentObject, index) => (
+                <MapListPreviewCard
+                  rentInformation={rentObject}
+                  keyNumber={index}
+                  isFavourite={favourites.includes(
+                    rentObject.rentObject.rentObjId
+                  )}
+                  onFavouriteChange={onFavouriteChange}
+                />
+              ))}
+          </Stack>
+          {flatsCount === 0 && <NoFoundObject />}
+          <Stack spacing={5} alignItems={"center"}>
+            {pages !== 0 && flatsCount !== 1 && (
+              <Pagination
+                count={pages}
+                page={currentPage}
+                onChange={handleChange}
               />
-            ))}
+            )}
           </Stack>
         </Stack>
       </Drawer>

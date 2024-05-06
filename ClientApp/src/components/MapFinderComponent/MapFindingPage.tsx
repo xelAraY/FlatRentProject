@@ -32,27 +32,48 @@ interface MapBounds {
 }
 
 export const MapFindingPage = () => {
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  // const initialZoom = parseInt(searchParams.get("zoom") || "12", 10);
+  // const centerX =
+  //   (Number(searchParams.get("rightX")) - Number(searchParams.get("leftX"))) /
+  //     2 +
+  //   Number(searchParams.get("leftX"));
+
+  // const centerY =
+  //   (Number(searchParams.get("topY")) - Number(searchParams.get("bottomY"))) /
+  //     2 +
+  //   Number(searchParams.get("bottomY"));
+
+  // const initialCenter =
+  //   searchParams.get("rightX") &&
+  //   searchParams.get("leftX") &&
+  //   searchParams.get("topY") &&
+  //   searchParams.get("bottomY")
+  //     ? [centerY, centerX]
+  //     : [53.900487, 27.555324];
   const [mapData, _setMapData] = useState({
     center: [53.900487, 27.555324],
     zoom: 12,
   });
-  const [searchParams, setSearchParams] = useSearchParams();
+
   const [placemarks, setPlacemarks] = useState<PlacemarkInfo[]>([]);
   const [map, setMap] = React.useState<ymaps.Map>();
   const [clusterer, setClusterer] = React.useState<ymaps.Clusterer>();
   const [favouriteChanged, setFavouriteChanged] = useState(true);
   const [favListings, setFavListings] = useState<number[]>([]);
-
-  // const [newCoords, setNewCoords] = useState([53.900487, 27.555324]);
+  const LISTINGS_PER_PAGE = 20;
 
   const [showCost, setShowCost] = React.useState(false);
-  const [loading, setLoading] = useState(false);
   const [rentObjects, setRentObjects] = useState<RentObjectInformation[]>([]);
   const [selectedObject, setSelectedObject] =
     useState<RentObjectInformation | null>(null);
   const [mapBounds, setMapBounds] = useState<MapBounds>();
-  const location = useLocation();
+
   const [open, setOpen] = useState(false);
+
+  const [currentPage, setCurrentPage] = React.useState<number>(1);
+  const [pages, setPages] = React.useState<number>(-1);
 
   const navigate = useNavigate();
 
@@ -101,6 +122,7 @@ export const MapFindingPage = () => {
   };
 
   useEffect(() => {
+    console.log("Открытие при нажатии");
     if (selectedObject) {
       setOpen(true);
     } else {
@@ -127,9 +149,10 @@ export const MapFindingPage = () => {
     });
   };
 
-  clusterer?.events.add("click", function (e) {
-    setOpen(!open);
-  });
+  // clusterer?.events.add("click", function (e) {
+  //   console.log("Кластер");
+  //   setOpen(!open);
+  // });
 
   map?.events.add("boundschange", function (e) {
     if (e.get("newBounds") !== e.get("oldBounds")) {
@@ -148,23 +171,25 @@ export const MapFindingPage = () => {
     } else {
       setShowCost(false);
     }
+    // const zoom = e.get("newZoom")?.toString() || "12";
+    // setSearchParams(
+    //   (urlParams) => {
+    //     urlParams.set("zoom", zoom);
+    //     return urlParams;
+    //   },
+    //   { replace: true }
+    // );
   });
 
   const fetchData = async () => {
     const queryParams = new URLSearchParams(location.search);
-
-    setSearchParams(
-      (urlParams) => {
-        urlParams.delete("page");
-        return urlParams;
-      },
-      { replace: true }
-    );
+    const realQueryParams = queryParams;
+    realQueryParams.delete("page");
 
     const response = await fetch(
       `api/search/filter?${
-        queryParams ? queryParams.toString() + "&" : ""
-      }showData=true`
+        realQueryParams ? realQueryParams.toString() + "&" : ""
+      }showData=true&page=-1`
     );
     const data = await response.json();
 
@@ -173,21 +198,55 @@ export const MapFindingPage = () => {
     } else {
       console.error("Ошибка при получении данных", data.message);
     }
+
+    const pagesCount = Math.ceil(data.length / LISTINGS_PER_PAGE);
+    setPages(pagesCount);
   };
 
+  const [lastPage, setLastPage] = useState<number>(-1);
+
   useEffect(() => {
-    setLoading(true);
+    const currPage = Number(searchParams.get("page"));
     fetchData();
-    setLoading(false);
+    setCurrentPage(currPage ? currPage : 1);
+    // console.log(lastPage, currPage);
+    if (lastPage !== currPage) {
+      setSearchParams(
+        (urlParams) => {
+          urlParams.set("page", currPage.toString());
+          return urlParams;
+        },
+        { replace: true }
+      );
+      setLastPage(currPage);
+    }
   }, [location.search]);
+
+  useEffect(() => {
+    const currPage = Number(searchParams.get("page"));
+    if (pages >= 0 && currPage > pages) {
+      setSearchParams(
+        (urlParams) => {
+          urlParams.set("page", "1");
+          return urlParams;
+        },
+        { replace: true }
+      );
+      setCurrentPage(1);
+    }
+  }, [pages]);
 
   useEffect(() => {
     if (mapBounds !== undefined) {
       setSearchParams(
         (urlParams) => {
+          // console.log("leftX ", mapBounds.leftX.toString());
           urlParams.set("leftX", mapBounds.leftX.toString());
+          // console.log("rightX ", mapBounds.rightX.toString());
           urlParams.set("rightX", mapBounds.rightX.toString());
+          // console.log("bottomY ", mapBounds.bottomY.toString());
           urlParams.set("bottomY", mapBounds.bottomY.toString());
+          // console.log("topY ", mapBounds.topY.toString());
           urlParams.set("topY", mapBounds.topY.toString());
           return urlParams;
         },
@@ -211,7 +270,7 @@ export const MapFindingPage = () => {
   const ending =
     flatsCount === 1 ? "е" : flatsCount > 1 && flatsCount < 5 ? "я" : "й";
 
-  map?.controls.add("smallMapDefaultSet");
+  // map?.controls.add("smallMapDefaultSet");
 
   return (
     <Stack
@@ -255,6 +314,9 @@ export const MapFindingPage = () => {
               rentObjects={selectedObject ? [selectedObject] : rentObjects}
               onFavouriteChange={handleFavouriteChange}
               favourites={favListings}
+              pages={pages}
+              currentPage={currentPage}
+              updateCurrentPage={(page: number) => setCurrentPage(page)}
             />
             <div
               style={{
@@ -318,19 +380,6 @@ export const MapFindingPage = () => {
               ))}
             </Clusterer>
             <ZoomControl />
-            {/* <Placemark
-              geometry={newCoords}
-              options={{ draggable: true }}
-              onDragEnd={(event: any) => {
-                setNewCoords(event.get("target").geometry.getCoordinates());
-              }}
-              instanceRef={testRef}
-              properties={{
-                hintContent: newCoords
-                  .map((coord) => coord.toString().substring(0, 9))
-                  .join(","),
-              }}
-            /> */}
           </Map>
         </YMaps>
       </Stack>

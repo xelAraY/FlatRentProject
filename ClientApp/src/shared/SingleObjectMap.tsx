@@ -34,7 +34,7 @@ export const SingleObjectMap = ({ coordinates, houseNumber }: MapInfo) => {
               iconContent: `д. ${houseNumber}`,
             }}
             options={{
-              preset: "islands#violetStretchyIcon",
+              preset: "islands#blueStretchyIcon",
             }}
           />
           <ZoomControl />

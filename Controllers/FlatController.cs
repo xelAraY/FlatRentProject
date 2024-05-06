@@ -59,13 +59,15 @@ public class FlatController : ControllerBase
         })
         .ToListAsync();
 
-      //var rentObjectIds = rentObject.Select(ro => ro.RentObject.RentObjId);
       var photos = await _context.Photos
         .Where(photo => photo.RentObjId == rentObjectId)
         .Select(photo => photo.Url)
         .ToListAsync();
 
-      // Выборка удобств
+      var contacts = await _context.Contacts
+        .Where(contact => contact.RentObjectId == rentObjectId)
+        .ToListAsync();
+
       var rentObjectAppliances = await _context.RentObjectAppliances
         .Where(roa => roa.RentObjId == rentObjectId)
         .ToListAsync();
@@ -77,7 +79,6 @@ public class FlatController : ControllerBase
         .Select(a => a.Name)
         .ToListAsync();
 
-      // Выборка предпочтений
       var rentObjectPreferences = await _context.RentObjectPreferences
         .Where(rop => rop.RentObjId == rentObjectId)
         .ToListAsync();
@@ -89,7 +90,6 @@ public class FlatController : ControllerBase
         .Select(p => p.Name)
         .ToListAsync();
 
-      // Выборка Дополнительной информации
       var rentObjectAddInfs = await _context.RentObjectAddInfs
         .Where(roai => roai.RentObjId == rentObjectId)
         .ToListAsync();
@@ -101,7 +101,6 @@ public class FlatController : ControllerBase
         .Select(ai => ai.Name)
         .ToListAsync();
 
-      // Выборка информации о метро
       var metroStationsInfo = await _context.RentObjectsMetroStations
             .Where(roms => roms.RentObjId == rentObjectId)
             .Join(
@@ -131,6 +130,7 @@ public class FlatController : ControllerBase
         result.Owner,
         result.Address,
         Photos = photos,
+        Contacts = contacts,
         Appliances = appliances,
         Preferences = preferences,
         AdditionalInformations = additionalInformations,

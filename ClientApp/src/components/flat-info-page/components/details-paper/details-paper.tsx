@@ -52,7 +52,10 @@ const DetailsPaper: React.FC<DetailsPaperProps> = ({
           value={`${flatInfo?.roomsCount}`}
         />
         <InfoRow title={"Санузел"} value={`${flatInfo?.bathroom}`} />
-        <InfoRow title={"Балкон"} value={`${flatInfo?.balcony}`} />
+
+        {flatInfo?.balcony && (
+          <InfoRow title={"Балкон"} value={`${flatInfo?.balcony}`} />
+        )}
         <InfoRow title={"Мебель"} value={`${flatInfo?.furniture}`} />
         {preferences && (
           <InfoRow

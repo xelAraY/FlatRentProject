@@ -34,7 +34,7 @@ const steps = [
 ];
 
 export const AddFlatPageWrapper = () => {
-  const [activeStep, setActiveStep] = React.useState(0);
+  const [activeStep, setActiveStep] = React.useState(-1);
 
   const handleReset = () => {
     setActiveStep(0);

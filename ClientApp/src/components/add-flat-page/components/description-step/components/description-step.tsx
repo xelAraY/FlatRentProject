@@ -85,16 +85,14 @@ export const DescriptionStep: React.FC<DescriptionStepProps> = ({
               }
               arrow
             >
-              <span>
-                <HelpIcon
-                  fontSize="small"
-                  sx={{
-                    marginLeft: "10px",
-                    cursor: "pointer",
-                    color: "#c2c7cf",
-                  }}
-                />
-              </span>
+              <HelpIcon
+                fontSize="small"
+                sx={{
+                  marginLeft: "10px",
+                  cursor: "pointer",
+                  color: "#c2c7cf",
+                }}
+              />
             </Tooltip>
           }
         >

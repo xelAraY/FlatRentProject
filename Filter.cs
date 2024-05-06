@@ -8,6 +8,7 @@ public static class Filter
   private static int listingsPerPage = 20;
   public static async Task<List<object>> GetRecentRentObjectsCommonQuery(IQueryable<RentObject> rentObjectsQuery, ApplicationDbContext _context, bool showData = true, string? sortType = null, int? page = null, int? takeCount = null, MapParams? mapParams = null)
   {
+    rentObjectsQuery = rentObjectsQuery.Where(ro => !ro.Hidden);
     if (!showData)
     {
       var count = await rentObjectsQuery.CountAsync();
@@ -72,12 +73,17 @@ public static class Filter
           .Where(photo => rentObjectIds.Contains(photo.RentObjId))
           .ToListAsync();
 
+      var contacts = await _context.Contacts
+          .Where(contact => rentObjectIds.Contains(contact.RentObjectId))
+          .ToListAsync();
+
       var result = recentRentObjects.Select(result => new
       {
         result.RentObject,
         result.Owner,
         result.Address,
-        Photos = photos.Where(photo => photo.RentObjId == result.RentObject.RentObjId).Select(photo => photo.Url)
+        Photos = photos.Where(photo => photo.RentObjId == result.RentObject.RentObjId).Select(photo => photo.Url),
+        Contacts = contacts.Where(contact => contact.RentObjectId == result.RentObject.RentObjId),
       }).Cast<object>().ToList();
 
       return result;
@@ -266,12 +272,12 @@ public static class Filter
 
     if (minPrice.HasValue)
     {
-      decimal minPriceInBYN = ConvertToBYN(minPrice, currencyType);  
+      decimal minPriceInBYN = ConvertToBYN(minPrice, currencyType, context);  
       query = query.Where(ro => ro.RentPrice >= minPriceInBYN);
     }
 
     if (maxPrice.HasValue){
-      decimal maxPriceInBYN = ConvertToBYN(maxPrice, currencyType);  
+      decimal maxPriceInBYN = ConvertToBYN(maxPrice, currencyType, context);  
       query = query.Where(ro => ro.RentPrice <= maxPriceInBYN);
     }
     
@@ -372,22 +378,18 @@ public static class Filter
     Console.WriteLine(sortType);
     switch (sortType) {
       case "createdAt":
-        Console.WriteLine("Сортировка по макс дате");
         query = query.OrderByDescending(ro => ro.CreatedAt);
       break;
 
       case "minPrice":
-        Console.WriteLine("Сортировка по мин цене");
         query = query.OrderBy(ro => ro.RentPrice);
       break;
 
       case "maxPrice":
-        Console.WriteLine("Сортировка по макс цене");
         query = query.OrderByDescending(ro => ro.RentPrice);
       break;
 
       default:
-        Console.WriteLine("Сортировка стандартная по дате");
         query = query.OrderByDescending(ro => ro.CreatedAt); 
       break;
     }
@@ -395,31 +397,19 @@ public static class Filter
     return query;
   }
 
-  private static decimal ConvertToBYN(decimal? price, string currencyType)
+  private static decimal ConvertToBYN(decimal? price, string currencyType, ApplicationDbContext context)
   {
     if (!price.HasValue)
     {
       return 0;
     }
 
-    decimal usdToByn = 3.2063m;//
-    decimal eurToByn = 3.5045m;//
+    decimal exchangeRate = context.Currencies
+      .Where(curr => curr.Code == currencyType)
+      .Select(curr => curr.OfficialRate)
+      .FirstOrDefault();
 
-    decimal convertedPrice;
-    switch (currencyType)
-    {
-      case "USD":
-        convertedPrice = price.Value * usdToByn;
-        break;
-      case "EUR":
-        convertedPrice = price.Value * eurToByn;
-        break;
-      default:
-        convertedPrice = price.Value;
-        break;
-    }
-
-    return convertedPrice;
+    return price.Value*exchangeRate;
   }
 }
 
