@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Net;
 using Microsoft.AspNetCore.Authorization;
 using System.Text.RegularExpressions;
+using Microsoft.VisualBasic;
 
 namespace FlatRent.Controllers;
 
@@ -258,36 +259,160 @@ public class AccountController : ControllerBase
   }
 
   [HttpPost("addNewListing")]
-  public async Task<IActionResult> AddNewListing()
+  public async Task<IActionResult> AddNewListing([FromBody] ListingDataModel listingData)
   {
+    if (!ModelState.IsValid)
+    {
+      return BadRequest(ModelState);
+    }
+
+    var user = await _context.Users.FirstOrDefaultAsync(u => u.Name == listingData.UserName);
+    if (user == null)
+      return NotFound(new { Message = $"User with username '{listingData.UserName}' not found."});
+
     using (var transaction = _context.Database.BeginTransaction())
     {
       try
       {
+        var address = new Address
+        {
+          Region = listingData.Map.Region,
+          City = listingData.Map.City,
+          Street = listingData.Map.Street,
+          HouseNumber = listingData.Map.HouseNumber,
+          District = listingData.Map.District,
+          Microdistrict = listingData.Map.MicroDistrict,
+          Latitude = listingData.Map.Coordinates[0],
+          Longitude = listingData.Map.Coordinates[1]
+        };
+        _context.Addresses.Add(address);
+        await _context.SaveChangesAsync();
+
         var rentObject = new RentObject { 
-          Title = "New flat", 
-          RoomsCount = 2, 
-          FloorNumber = 2, 
-          FloorsAmount = 3,
-          TotalArea = 55,
-          KitchenArea = 15,
-          LivingArea = 20,
-          AddressId = 1,
-          RentPrice = 800,
-          OwnerId = 1,
+          Title = string.IsNullOrEmpty(listingData.Description.Title) ? $"Уютная {listingData.General.RoomsCount}-комнтная квартира" : listingData.Description.Title, 
+          Description = string.IsNullOrEmpty(listingData.Description.Description) ? null : listingData.Description.Description, 
+          RoomsCount = listingData.General.RoomsCount, 
+          FloorNumber = listingData.General.Floor, 
+          FloorsAmount = listingData.General.FloorAmount,
+          TotalArea = listingData.Area.TotalArea,
+          KitchenArea = listingData.Area.KitchenArea,
+          LivingArea = listingData.Area.LivingArea,
+          Bathroom = listingData.General.BathroomType,
+          Balcony = listingData.General.BalconyType,
+          ConstructionYear = listingData.General.ConstructionYear,
+          Furniture = listingData.Additional.FurnitureType,
+          Plate = listingData.Additional.PlateType,
+          RentPrice = listingData.Conditions.RentPrice,
+          Prepayment = listingData.Conditions.Prepayment,
+          Rent = listingData.Conditions.Rent,
+          RentalPeriod = listingData.Conditions.RentalPeriod,
+          Hidden = true,
           CreatedAt = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc),
-          PreviewImageUrl = "https://static.realt.by/user/82/3/r2001btff382/52351a0109.jpg"
+          UpdatedAt = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc),
+          PreviewImageUrl = listingData.Media.Photos.Length > 0 ? listingData.Media.Photos[0] : "https://realt.by/_next/static/media/no-photo.850f218e.svg",
+          OwnerId = user.Id,
+          AddressId = address.AddrId,
         };
         _context.RentObjects.Add(rentObject);
         await _context.SaveChangesAsync();
 
-        // int rentObjectId = rentObject.RentObjId;
-        // Console.WriteLine("id = ", rentObjectId);
+        // photos
+        if (listingData.Media.Photos != null && listingData.Media.Photos.Length > 0) {
+          foreach(var photoUrl in listingData.Media.Photos) {
+            var photo = new Photo { RentObjId = rentObject.RentObjId, Url = photoUrl};
+            _context.Photos.Add(photo);  
+          }
+          await _context.SaveChangesAsync();
+        }
 
-        // var photo = new Photo { RentObjId = rentObjectId, Url = "https://static.realt.by/user/82/3/r2001btff382/52351a0109.jpg"};
-        // _context.Photos.Add(photo);
-        // await _context.SaveChangesAsync();
+        // contacts
+        if (listingData.ContactsInfo.Contacts.Length > 0) {
+          foreach(var contactData in listingData.ContactsInfo.Contacts) {
+            var contact = new Contact { RentObjectId = rentObject.RentObjId, Phone = contactData.Phone, Name = contactData.Name, Email = contactData.Email};
+            _context.Contacts.Add(contact);  
+          }
+          await _context.SaveChangesAsync();
+        }
 
+        // appliances
+        if (listingData.Additional.Appliances != null && listingData.Additional.Appliances.Length > 0) {
+          var applianceIds = await _context.Appliances
+            .Where(a => listingData.Additional.Appliances.Contains(a.Name))
+            .Select(a => a.Id)
+            .ToListAsync();
+
+          foreach(var applianceId in applianceIds) {
+            _context.RentObjectAppliances.Add(new RentObjectAppliance { RentObjId = rentObject.RentObjId, ApplianceId = applianceId}); 
+          }
+          await _context.SaveChangesAsync();
+        }
+        // preferences
+        if (listingData.Conditions.Preferences != null && listingData.Conditions.Preferences.Length > 0) {
+          var preferenceIds = await _context.Preferences
+            .Where(p => listingData.Conditions.Preferences.Contains(p.Name))
+            .Select(p => p.Id)
+            .ToListAsync();
+
+          foreach(var preferenceId in preferenceIds) {
+            _context.RentObjectPreferences.Add(new RentObjectPreference { RentObjId = rentObject.RentObjId, PreferenceId = preferenceId}); 
+          }
+          await _context.SaveChangesAsync();
+        }
+        // additionalInformations
+        if (listingData.Additional.Facilities != null && listingData.Additional.Facilities.Length > 0) {
+          var addInfIds = await _context.AddtitionalInfs
+            .Where(ai => listingData.Additional.Facilities.Contains(ai.Name))
+            .Select(ai => ai.Id)
+            .ToListAsync();
+
+          foreach(var addInfId in addInfIds) {
+            _context.RentObjectAddInfs.Add(new RentObjectAddInf { RentObjId = rentObject.RentObjId, AddInfId = addInfId}); 
+          }
+          await _context.SaveChangesAsync();
+        }
+        
+        // metro
+        if (listingData.Map.MetroParams != null && listingData.Map.MetroParams.Length > 0) {
+          List<string> metroStationNames = listingData.Map.MetroParams
+            .Where(m => m.Station != null)
+            .Select(m => m.Station.Name)
+            .ToList();
+
+          var metroStationsData = await _context.MetroStations
+            .Where(ms => metroStationNames.Contains(ms.Name))
+            .Select(ms => new { ms.Id, ms.Name})
+            .ToListAsync();
+
+          var metroParams = listingData.Map.MetroParams;
+
+          var metroStations = metroStationsData
+            .Join(
+              metroParams,
+              station => station.Name,
+              param => param.Station.Name,
+              (station, param) => new
+              {
+                station.Id,
+                station.Name,
+                param.WayType,
+                param.Minutes
+              }
+            )
+          .ToList();
+
+          foreach(var metroStation in metroStations) {
+            _context.RentObjectsMetroStations.Add(
+            new RentObjectMetroStation { 
+              RentObjId = rentObject.RentObjId, 
+              MetroStationId = metroStation.Id, 
+              WayType = metroStation.WayType, 
+              TravelTime = metroStation.Minutes
+            }); 
+          }
+          await _context.SaveChangesAsync();
+        }
+
+        await _context.SaveChangesAsync();
         await transaction.CommitAsync();
 
         return Ok(new { Message =  "Данные успешно вставлены"} );

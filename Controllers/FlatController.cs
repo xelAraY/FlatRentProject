@@ -1,15 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
-using System.Net;
 using Microsoft.AspNetCore.Authorization;
-using System.Runtime.Serialization;
 
 namespace FlatRent.Controllers;
 

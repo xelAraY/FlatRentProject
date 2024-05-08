@@ -27,7 +27,7 @@ export const getInitialValues = (): AddFlatFormikValues => {
     additional: { ...getInitialAdditionalStepValues() },
     conditions: { ...getInitialConditionsStepValues() },
     description: { ...getInitialDescriptionStepValues() },
-    contacts: { ...getInitialContactsStepValues() },
+    contactsInfo: { ...getInitialContactsStepValues() },
     media: { ...getInitialMediaStepValues() },
   };
 };
@@ -39,6 +39,6 @@ export const addFlatPageValidationSchema = Yup.object().shape({
   additional: additionalStepValidationSchema,
   conditions: conditionsStepValidationSchema,
   description: descriptionStepValidationSchema,
-  contacts: contactsStepValidationSchema,
+  contactsInfo: contactsStepValidationSchema,
   media: mediaStepValidationSchema,
 });

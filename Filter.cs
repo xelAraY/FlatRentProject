@@ -1,7 +1,5 @@
-
 using System.Net;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 
 public static class Filter
 {

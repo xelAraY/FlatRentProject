@@ -131,6 +131,7 @@ export const MapStep: React.FC<MapStepProps> = ({
         .split(" ")
         .reverse();
     console.log(coordinates);
+    setFieldValue("coordinates", coordinates);
     setNewCoords(coordinates.map((el: any) => Number(el)));
     setAutomaticChange(false);
   };
@@ -202,6 +203,19 @@ export const MapStep: React.FC<MapStepProps> = ({
           ddd
         </Button> */}
       </Stack>
+
+      <Stack flexDirection="row" gap="1rem" width="100%">
+        <FormikControlMui name="district" label="Район" sx={{ width: "50%" }}>
+          <TextField placeholder="Введите район" />
+        </FormikControlMui>
+        <FormikControlMui
+          name="microDistrict"
+          label="Микрорайон"
+          sx={{ width: "50%" }}
+        >
+          <TextField placeholder="Введите микрорайон" />
+        </FormikControlMui>
+      </Stack>
       <Button onClick={() => fetchCoordinates()}>ChangeMarker</Button>
       <Stack
         style={{
@@ -229,9 +243,9 @@ export const MapStep: React.FC<MapStepProps> = ({
               geometry={newCoords}
               options={{ draggable: true }}
               onDragEnd={(event: any) => {
-                console.log("set");
                 const newCoords = event.get("target").geometry.getCoordinates();
                 setNewCoords(newCoords);
+                setFieldValue("coordinates", newCoords);
                 fetchAddress(newCoords);
               }}
               properties={{

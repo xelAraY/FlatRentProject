@@ -21,6 +21,8 @@ export interface MapStepFormikValues {
   city?: string;
   street?: string;
   houseNumber?: string;
+  district?: string;
+  microDistrict?: string;
   coordinates?: [number, number];
   metroParams?: MetroParams[];
 }

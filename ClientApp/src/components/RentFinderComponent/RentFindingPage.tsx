@@ -168,14 +168,20 @@ export const RentFindingPage = () => {
     getFavouritesListings();
   }, [favouriteChanged]);
 
-  let ending = "e";
+  let listingsText = "";
   if (listingsCount) {
-    ending =
-      listingsCount === 1
-        ? "е"
-        : listingsCount > 1 && listingsCount < 5
-        ? "я"
-        : "й";
+    const lastDigit = listingsCount % 10;
+    const lastTwoDigits = listingsCount % 100;
+    if (lastTwoDigits >= 11 && lastTwoDigits <= 14) {
+      listingsText = "объявлений";
+    } else {
+      listingsText =
+        lastDigit === 1
+          ? "объявление"
+          : lastDigit >= 2 && lastDigit <= 4
+          ? "объявления"
+          : "объявлений";
+    }
   }
 
   return (
@@ -196,7 +202,7 @@ export const RentFindingPage = () => {
           <Stack flexDirection={"row"} justifyContent={"space-between"}>
             <Stack flexDirection={"row"} alignItems={"center"}>
               <Typography variant="body1">
-                <b>{listingsCount}</b> объявлени{ending}
+                <b>{listingsCount}</b> {listingsText}
               </Typography>
               <div
                 style={{

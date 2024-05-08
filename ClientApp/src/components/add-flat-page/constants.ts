@@ -16,6 +16,6 @@ export interface AddFlatFormikValues {
   additional: AdditionalStepFormikValues;
   conditions: ConditionsStepFormikValues;
   description: DescriptionStepFormikValues;
-  contacts: ContactsStepFormikValues;
+  contactsInfo: ContactsStepFormikValues;
   media: MediaStepFormikValues;
 }

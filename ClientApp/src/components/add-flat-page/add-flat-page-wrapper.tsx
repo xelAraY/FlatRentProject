@@ -11,9 +11,12 @@ import {
   MapStepWrapper,
   MediaStepWrapper,
 } from "./components";
-import { Form, Formik } from "formik";
+import { Form, Formik, useFormikContext } from "formik";
 import { AddFlatFormikValues } from "./constants";
 import { addFlatPageValidationSchema, getInitialValues } from "./utils";
+import { isLoggedIn } from "src/helpFunctions/tokenCheck";
+import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 const steps = [
   {
@@ -34,10 +37,48 @@ const steps = [
 ];
 
 export const AddFlatPageWrapper = () => {
-  const [activeStep, setActiveStep] = React.useState(-1);
+  const [activeStep, setActiveStep] = React.useState(0);
+  const navigate = useNavigate();
 
-  const handleReset = () => {
-    setActiveStep(0);
+  const hadleSaveListingData = async (values: AddFlatFormikValues) => {
+    if (isLoggedIn()) {
+      try {
+        const token = localStorage.getItem("token");
+        let data = {};
+        if (token) {
+          const decodedToken: any = jwtDecode(token);
+          data = { ...values, userName: decodedToken.nickname };
+        }
+        //console.log(data);
+
+        await fetch(`api/account/addNewListing/`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(
+                `Failed to add: ${response.status} ${response.statusText}`
+              );
+            }
+            return response.json();
+          })
+          .then((data) => {
+            console.log(data);
+          })
+          .catch((error) => {
+            console.error("Error adding new data:", error);
+          });
+      } catch (error) {
+        console.error("Ошибка ", error);
+      }
+    } else {
+      navigate("/sign-in");
+    }
   };
 
   return (
@@ -68,7 +109,7 @@ export const AddFlatPageWrapper = () => {
         <Formik<AddFlatFormikValues>
           initialValues={getInitialValues()}
           onSubmit={(values) => {
-            console.log(values);
+            hadleSaveListingData(values);
           }}
           validationSchema={addFlatPageValidationSchema}
           validateOnMount
@@ -173,7 +214,9 @@ export const AddFlatPageWrapper = () => {
                       </Button>
                     </Paper>
                   )} */}
-                  <Button disabled={!isValid}>Сохранить и продолжить</Button>
+                  <Button disabled={!isValid} type="submit">
+                    Сохранить и продолжить
+                  </Button>
                 </Box>
               </Form>
             );

@@ -24,7 +24,6 @@ export const ContactsStep: React.FC<ContactsStepProps> = ({
 
   React.useEffect(() => {
     setCommonContactsValues?.(values);
-    console.log("Контакты ", values);
   }, [values]);
 
   return (

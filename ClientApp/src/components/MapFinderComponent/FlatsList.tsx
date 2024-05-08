@@ -43,8 +43,16 @@ export default function FlatsList({
   const [searchParams, setSearchParams] = useSearchParams();
   const drawerRef = React.createRef<HTMLDivElement>();
 
-  const ending =
-    flatsCount === 1 ? "е" : flatsCount > 1 && flatsCount < 5 ? "я" : "й";
+  const lastDigit = flatsCount % 10;
+  const lastTwoDigits = flatsCount % 100;
+  const listingsText =
+    lastTwoDigits >= 11 && lastTwoDigits <= 14
+      ? "объявлений"
+      : lastDigit === 1
+      ? "объявление"
+      : lastDigit >= 2 && lastDigit <= 4
+      ? "объявления"
+      : "объявлений";
 
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     updateCurrentPage(value);
@@ -124,7 +132,7 @@ export default function FlatsList({
           </Typography>
           <Stack flexDirection={"row"} padding="0 20px">
             <Typography variant="body1">
-              <b>{flatsCount}</b> объявлени{ending}
+              <b>{flatsCount}</b> {listingsText}
             </Typography>
             <div
               style={{

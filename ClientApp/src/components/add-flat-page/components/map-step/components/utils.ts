@@ -10,6 +10,8 @@ export const mapStepValidationSchema = Yup.object().shape({
   city: Yup.string().required("Введите город"),
   street: Yup.string().required("Введите улицу"),
   houseNumber: Yup.string().required("Введите номер дома"),
+  district: Yup.string().nullable(),
+  microDistrict: Yup.string().nullable(),
   metroParams: Yup.array()
     .of(
       Yup.object().shape({

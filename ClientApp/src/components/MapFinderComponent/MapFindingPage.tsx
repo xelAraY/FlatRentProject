@@ -267,8 +267,16 @@ export const MapFindingPage = () => {
   }, [rentObjects]);
 
   const flatsCount = rentObjects.length;
-  const ending =
-    flatsCount === 1 ? "е" : flatsCount > 1 && flatsCount < 5 ? "я" : "й";
+  const lastDigit = flatsCount % 10;
+  const lastTwoDigits = flatsCount % 100;
+  const listingsText =
+    lastTwoDigits >= 11 && lastTwoDigits <= 14
+      ? "объявлений"
+      : lastDigit === 1
+      ? "объявление"
+      : lastDigit >= 2 && lastDigit <= 4
+      ? "объявления"
+      : "объявлений";
 
   // map?.controls.add("smallMapDefaultSet");
 
@@ -331,7 +339,7 @@ export const MapFindingPage = () => {
               }}
             >
               <Typography fontSize={14}>
-                Найдено {flatsCount} объявлени{ending}
+                Найдено {flatsCount} {listingsText}
               </Typography>
             </div>
             <Button

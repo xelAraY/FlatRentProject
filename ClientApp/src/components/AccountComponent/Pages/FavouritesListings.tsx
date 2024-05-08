@@ -205,12 +205,16 @@ export const FavouritesListings = () => {
     });
   };
 
-  const ending =
-    listingsCount === 1
-      ? "е"
-      : listingsCount > 1 && listingsCount < 5
-      ? "я"
-      : "й";
+  const lastDigit = listingsCount % 10;
+  const lastTwoDigits = listingsCount % 100;
+  const listingsText =
+    lastTwoDigits >= 11 && lastTwoDigits <= 14
+      ? "объявлений"
+      : lastDigit === 1
+      ? "объявление"
+      : lastDigit >= 2 && lastDigit <= 4
+      ? "объявления"
+      : "объявлений";
 
   return (
     <Stack
@@ -223,7 +227,7 @@ export const FavouritesListings = () => {
         <Stack spacing={5} alignItems={"center"}>
           <Stack spacing={2}>
             <Typography variant="body1">
-              <b>{listingsCount}</b> объявлени{ending}
+              <b>{listingsCount}</b> {listingsText}
             </Typography>
             <FlatsList
               rentObjects={rentObjects}

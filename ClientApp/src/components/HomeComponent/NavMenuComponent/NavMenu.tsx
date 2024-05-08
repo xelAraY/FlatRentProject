@@ -50,25 +50,25 @@ export const NavMenu = () => {
 
   const addNewPage = isLoggedIn() ? "/account/newListing" : "/sign-in";
 
-  const handleAddListing = async () => {
-    await fetch(`api/account/addNewListing/`, {
-      method: "POST",
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(
-            `Failed to add: ${response.status} ${response.statusText}`
-          );
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((error) => {
-        console.error("Error adding new data:", error);
-      });
-  };
+  // const handleAddListing = async () => {
+  //   await fetch(`api/account/addNewListing/`, {
+  //     method: "POST",
+  //   })
+  //     .then((response) => {
+  //       if (!response.ok) {
+  //         throw new Error(
+  //           `Failed to add: ${response.status} ${response.statusText}`
+  //         );
+  //       }
+  //       return response.json();
+  //     })
+  //     .then((data) => {
+  //       console.log(data);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error adding new data:", error);
+  //     });
+  // };
 
   return (
     <header>
@@ -164,7 +164,7 @@ export const NavMenu = () => {
               <NavLink
                 to={addNewPage}
                 className="nav-menu-add-link"
-                onClick={handleAddListing}
+                // onClick={handleAddListing}
               >
                 Добавить объявление
               </NavLink>

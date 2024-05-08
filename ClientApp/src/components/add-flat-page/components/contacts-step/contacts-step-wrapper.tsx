@@ -59,7 +59,7 @@ export const ContactsStepWrapper: React.FC<ContactsStepProps> = ({
                   setActiveStep={setActiveStep}
                   currentStepIndex={currentStepIndex}
                   setCommonContactsValues={(newValues) =>
-                    setFieldValue("contacts", newValues)
+                    setFieldValue("contactsInfo", newValues)
                   }
                 />
               </StepContent>
