@@ -1,18 +1,21 @@
-import React, { useRef } from "react";
-import { Box, Grid, Paper, Stack, SvgIcon, Typography } from "@mui/material";
-import { Address, RentObject } from "src/interfaces/RentObj";
+import React from "react";
+import { Grid, Paper, Stack, SvgIcon, Typography } from "@mui/material";
+import { Address, MetroStation } from "src/interfaces/RentObj";
 import DirectionsWalkOutlinedIcon from "@mui/icons-material/DirectionsWalkOutlined";
-import { Button, MetroSvg, SingleObjectMap } from "src/shared";
+import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
+import { MetroSvg, SingleObjectMap } from "src/shared";
 import { InfoRow } from "../info-row";
 
 interface LocationPaperProps {
   locationInfo?: Address;
   mapRef: React.RefObject<HTMLDivElement>;
+  metroStations?: MetroStation[];
 }
 
 const LocationPaper: React.FC<LocationPaperProps> = ({
   locationInfo,
   mapRef,
+  metroStations,
 }) => {
   return (
     <Paper
@@ -31,19 +34,30 @@ const LocationPaper: React.FC<LocationPaperProps> = ({
         {"Местоположение"}
       </Typography>
 
-      <Stack flexDirection="row" gap="0.5rem">
-        <Stack flexDirection="row" gap="0.1rem">
-          <SvgIcon color="error" viewBox="0 0 17 16">
-            <MetroSvg />
-          </SvgIcon>
-          <Typography variant="body1">{`Каменная Горка`}</Typography>
-        </Stack>
+      {metroStations && metroStations.length > 0 && (
+        <Stack flexDirection="row" gap="2rem">
+          {metroStations.map((station, index) => (
+            <Stack flexDirection="row" gap="0.5rem">
+              <Stack flexDirection="row" gap="0.1rem" key={index}>
+                <SvgIcon color={station.color as any} viewBox="0 0 17 16">
+                  <MetroSvg />
+                </SvgIcon>
+                <Typography variant="body1">{station.name}</Typography>
+              </Stack>
 
-        <Stack flexDirection="row">
-          <DirectionsWalkOutlinedIcon style={{ height: "1.5rem" }} />
-          <Typography variant="body1">{`10 минут`}</Typography>
+              <Stack flexDirection="row" key={index}>
+                {station.wayType === "Пешком" ? (
+                  <DirectionsWalkOutlinedIcon style={{ height: "1.5rem" }} />
+                ) : (
+                  <DirectionsCarIcon style={{ height: "1.5rem" }} />
+                )}
+
+                <Typography variant="body1">{`${station.travelTime} минут`}</Typography>
+              </Stack>
+            </Stack>
+          ))}
         </Stack>
-      </Stack>
+      )}
 
       <div
         style={{

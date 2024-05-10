@@ -55,7 +55,7 @@ export interface Address {
   longitude: number;
 }
 
-interface MetroStation {
+export interface MetroStation {
   name: string;
   color: string;
   wayType: string;

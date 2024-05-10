@@ -89,13 +89,27 @@ const FlatInfoPage: React.FC = () => {
               onFavouriteChange={handleFavouriteChange}
               isFavourite={isFavourite}
             />
-            <DescriptionPaper flatInfo={flatInfo?.rentObject} />
+            {flatInfo.rentObject.description &&
+              flatInfo.rentObject.description.length > 0 && (
+                <DescriptionPaper flatInfo={flatInfo?.rentObject} />
+              )}
+
             <DetailsPaper
               flatInfo={flatInfo?.rentObject}
               preferences={flatInfo?.preferences}
+              addInf={flatInfo?.additionalInformations}
             />
-            <ApplianciesPaper appliancies={flatInfo.appliances} />
-            <LocationPaper locationInfo={flatInfo.address} mapRef={mapRef} />
+            {flatInfo.appliances && flatInfo.appliances.length > 0 && (
+              <ApplianciesPaper
+                appliancies={flatInfo.appliances}
+                title="Удобства"
+              />
+            )}
+            <LocationPaper
+              locationInfo={flatInfo.address}
+              mapRef={mapRef}
+              metroStations={flatInfo.metroStations}
+            />
           </Stack>
         </Grid>
         <Grid

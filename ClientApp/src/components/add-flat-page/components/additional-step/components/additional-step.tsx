@@ -16,7 +16,6 @@ export const AdditionalStep: React.FC<AdditionalStepProps> = ({
   const [facilities, setFacilities] = useState<string[]>([]);
 
   React.useEffect(() => {
-    console.log(values);
     setCommonAdditionalValues?.(values);
   }, [values]);
 

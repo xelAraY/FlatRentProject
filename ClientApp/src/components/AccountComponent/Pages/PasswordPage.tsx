@@ -58,7 +58,7 @@ export const PasswordPage = () => {
   // };
 
   const handleSubmit = (values: FormikValues) => {
-    console.log(values);
+    //console.log(values);
   };
 
   return (

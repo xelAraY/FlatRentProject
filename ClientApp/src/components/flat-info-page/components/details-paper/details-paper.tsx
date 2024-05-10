@@ -6,11 +6,13 @@ import { InfoRow } from "../info-row";
 interface DetailsPaperProps {
   flatInfo?: RentObject;
   preferences?: string[];
+  addInf?: string[];
 }
 
 const DetailsPaper: React.FC<DetailsPaperProps> = ({
   flatInfo,
   preferences,
+  addInf,
 }) => {
   return (
     <Paper
@@ -33,10 +35,13 @@ const DetailsPaper: React.FC<DetailsPaperProps> = ({
           title={"Количество комнат"}
           value={`${flatInfo?.roomsCount}`}
         />
-        <InfoRow
-          title={"Год постройки"}
-          value={`${flatInfo?.constructionYear}`}
-        />
+        {flatInfo?.constructionYear && (
+          <InfoRow
+            title={"Год постройки"}
+            value={`${flatInfo?.constructionYear}`}
+          />
+        )}
+
         <InfoRow title={"Площадь общая"} value={`${flatInfo?.totalArea} м²`} />
         <InfoRow title={"Площадь жилая"} value={`${flatInfo?.livingArea} м²`} />
         <InfoRow
@@ -47,27 +52,42 @@ const DetailsPaper: React.FC<DetailsPaperProps> = ({
           title={"Этаж / этажность"}
           value={`${flatInfo?.floorNumber} / ${flatInfo?.floorsAmount}`}
         />
-        <InfoRow
-          title={"Количество комнат"}
-          value={`${flatInfo?.roomsCount}`}
-        />
-        <InfoRow title={"Санузел"} value={`${flatInfo?.bathroom}`} />
+
+        {flatInfo?.bathroom && (
+          <InfoRow title={"Санузел"} value={`${flatInfo?.bathroom}`} />
+        )}
 
         {flatInfo?.balcony && (
           <InfoRow title={"Балкон"} value={`${flatInfo?.balcony}`} />
         )}
-        <InfoRow title={"Мебель"} value={`${flatInfo?.furniture}`} />
-        {preferences && (
+
+        {flatInfo?.furniture && (
+          <InfoRow title={"Мебель"} value={`${flatInfo?.furniture}`} />
+        )}
+
+        {flatInfo?.plate && (
+          <InfoRow title={"Плита"} value={`${flatInfo?.plate}`} />
+        )}
+
+        <InfoRow title={"Срок аренды"} value={`${flatInfo?.rentalPeriod}`} />
+        <InfoRow title={"Квартплата"} value={`${flatInfo?.rent}`} />
+
+        {flatInfo?.prepayment && (
+          <InfoRow title={"Предоплата"} value={`${flatInfo?.prepayment}`} />
+        )}
+
+        {preferences && preferences.length > 0 && (
           <InfoRow
             title={"Условия сдачи"}
             value={`${preferences.join(", ")}`}
           />
         )}
-        <InfoRow title={"Предоплата"} value={`${flatInfo?.prepayment}`} />
-        <InfoRow title={"Срок аренды"} value={`${flatInfo?.rentalPeriod}`} />
-        {flatInfo?.rent && (
-          <InfoRow title={"Квартплата"} value={`${flatInfo.rent}`} />
-        )}
+
+        {addInf &&
+          addInf.length > 0 &&
+          addInf.map((inf, index) => (
+            <InfoRow key={index} title={inf} value={`Есть`} />
+          ))}
       </Grid>
     </Paper>
   );

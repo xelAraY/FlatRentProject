@@ -85,7 +85,6 @@ export const FavouritesListings = () => {
                   return response.json();
                 })
                 .then((data) => {
-                  console.log("Избранные объявления: ", data);
                   setRentObjects(data);
                 })
                 .catch((error) => {

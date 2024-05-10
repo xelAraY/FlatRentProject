@@ -7,9 +7,13 @@ import { InfoRow } from "../info-row";
 
 interface ApplianciesPaperProps {
   appliancies?: string[];
+  title: string;
 }
 
-const ApplianciesPaper: React.FC<ApplianciesPaperProps> = ({ appliancies }) => {
+const ApplianciesPaper: React.FC<ApplianciesPaperProps> = ({
+  appliancies,
+  title,
+}) => {
   return appliancies?.length ? (
     <Paper
       variant="outlined"
@@ -23,7 +27,7 @@ const ApplianciesPaper: React.FC<ApplianciesPaperProps> = ({ appliancies }) => {
       }}
     >
       <Typography variant="h6" fontWeight={600}>
-        {"Удобства"}
+        {title}
       </Typography>
 
       <Grid container spacing="0.5rem">

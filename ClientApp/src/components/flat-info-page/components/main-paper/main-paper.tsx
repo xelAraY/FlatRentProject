@@ -13,6 +13,7 @@ import { RentObjectInformation } from "src/interfaces/RentObj";
 import { ImageGalleryStyled, MetroSvg } from "src/shared";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import DirectionsWalkOutlinedIcon from "@mui/icons-material/DirectionsWalkOutlined";
+import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
@@ -156,17 +157,32 @@ const MainPaper: React.FC<MainPaperProps> = ({
             </Typography>
           </Stack>
 
-          <Stack flexDirection="row" gap="0.1rem">
-            <SvgIcon color="error" viewBox="0 0 17 16">
-              <MetroSvg />
-            </SvgIcon>
-            <Typography variant="body1">{`Каменная Горка`}</Typography>
-          </Stack>
+          {flatInfo?.metroStations && flatInfo?.metroStations.length > 0 && (
+            <Stack flexDirection="row" gap="0.5rem">
+              <Stack flexDirection="row" gap="0.1rem">
+                <SvgIcon
+                  color={flatInfo?.metroStations[0].color as any}
+                  viewBox="0 0 17 16"
+                >
+                  <MetroSvg />
+                </SvgIcon>
+                <Typography variant="body1">
+                  {flatInfo?.metroStations[0].name}
+                </Typography>
+              </Stack>
 
-          <Stack flexDirection="row">
-            <DirectionsWalkOutlinedIcon style={{ height: "1.5rem" }} />
-            <Typography variant="body1">{`10 минут`}</Typography>
-          </Stack>
+              <Stack flexDirection="row">
+                {flatInfo?.metroStations[0].wayType === "Пешком" ? (
+                  <DirectionsWalkOutlinedIcon style={{ height: "1.5rem" }} />
+                ) : (
+                  <DirectionsCarIcon style={{ height: "1.5rem" }} />
+                )}
+                <Typography variant="body1">
+                  {`${flatInfo?.metroStations[0].travelTime} минут`}
+                </Typography>
+              </Stack>
+            </Stack>
+          )}
 
           <Link
             underline="hover"
@@ -174,7 +190,7 @@ const MainPaper: React.FC<MainPaperProps> = ({
             onClick={onScrollToMap}
             sx={{ cursor: "pointer" }}
           >
-            На карте
+            {`На карте`}
           </Link>
         </Stack>
 
