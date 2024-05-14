@@ -13,13 +13,14 @@ export const MediaStepWrapper: React.FC<MediaStepProps> = ({
   setActiveStep,
   currentStepIndex,
   myIndex,
+  initValues,
   ...other
 }) => {
   const { setFieldValue } = useFormikContext<AddFlatFormikValues>();
 
   return (
     <Formik<MediaStepFormikValues>
-      initialValues={getInitialMediaStepValues()}
+      initialValues={initValues ? initValues : getInitialMediaStepValues()}
       onSubmit={(values) => {
         console.log(values);
       }}

@@ -16,13 +16,14 @@ export const ContactsStepWrapper: React.FC<ContactsStepProps> = ({
   setActiveStep,
   currentStepIndex,
   myIndex,
+  initValues,
   ...other
 }) => {
   const { setFieldValue } = useFormikContext<AddFlatFormikValues>();
 
   return (
     <Formik<ContactsStepFormikValues>
-      initialValues={getInitialContactsStepValues()}
+      initialValues={initValues ? initValues : getInitialContactsStepValues()}
       onSubmit={(values) => {
         console.log(values);
       }}

@@ -1,8 +1,11 @@
+import { Contact } from "src/components/add-flat-page/components";
+
 export interface RentObjectInformation {
   rentObject: RentObject;
   owner: Owner;
   address: Address;
   photos: string[];
+  contacts: Contact[];
   appliances?: string[];
   preferences?: string[];
   additionalInformations?: string[];

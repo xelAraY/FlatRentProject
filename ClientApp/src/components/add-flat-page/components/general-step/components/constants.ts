@@ -25,5 +25,6 @@ export interface GeneralStepProps extends StepProps {
   setActiveStep: (step: number) => void;
   currentStepIndex: number;
   myIndex: number;
+  initValues?: GeneralStepFormikValues;
   setCommonGeneralValues?: (values: GeneralStepFormikValues) => void;
 }

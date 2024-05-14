@@ -9,5 +9,6 @@ export interface DescriptionStepProps extends StepProps {
   setActiveStep: (step: number) => void;
   currentStepIndex: number;
   myIndex: number;
+  initValues?: DescriptionStepFormikValues;
   setCommonDescriptionValues?: (values: DescriptionStepFormikValues) => void;
 }

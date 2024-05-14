@@ -18,6 +18,7 @@ const FlatInfoPage: React.FC = () => {
   const [flatInfo, setFlatInfo] = React.useState<RentObjectInformation>();
   const [isFavourite, setIsFavourite] = useState(false);
   const [favouriteChanged, setFavouriteChanged] = useState(true);
+  const [isOwner, setIsOwner] = useState(false);
   const navigate = useNavigate();
 
   const handleFavouriteChange = (isChanged: boolean) => {
@@ -30,8 +31,8 @@ const FlatInfoPage: React.FC = () => {
         const token = localStorage.getItem("token");
         if (token) {
           const decodedToken: any = jwtDecode(token);
-          const response = await fetch(
-            `api/flat/isFavourite?objectId=${flatInfo?.rentObject.rentObjId}&userName=${decodedToken.nickname}`,
+          const ownerResponse = await fetch(
+            `api/flat/isUserListing?objectId=${flatInfo?.rentObject.rentObjId}&userName=${decodedToken.nickname}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -39,12 +40,28 @@ const FlatInfoPage: React.FC = () => {
               },
             }
           );
-          if (!response.ok) {
+          if (!ownerResponse.ok) {
             throw new Error("Ошибка при выполнении запроса");
           }
-          const data = await response.json();
-          console.log(data);
-          setIsFavourite(data);
+          const isOwner = await ownerResponse.json();
+          setIsOwner(isOwner);
+          if (!isOwner) {
+            const response = await fetch(
+              `api/flat/isFavourite?objectId=${flatInfo?.rentObject.rentObjId}&userName=${decodedToken.nickname}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+            if (!response.ok) {
+              throw new Error("Ошибка при выполнении запроса");
+            }
+            const data = await response.json();
+            console.log(data);
+            setIsFavourite(data);
+          }
         }
       } else {
         navigate("/sign-in");
@@ -54,13 +71,13 @@ const FlatInfoPage: React.FC = () => {
   };
 
   useEffect(() => {
-    if (flatInfo) {
+    if (flatInfo && !isOwner) {
       checkFavourite();
     }
   }, [favouriteChanged]);
 
   useEffect(() => {
-    if (flatInfo && isLoggedIn()) {
+    if (flatInfo && !isOwner && isLoggedIn()) {
       checkFavourite();
     }
   }, [flatInfo]);
@@ -88,6 +105,7 @@ const FlatInfoPage: React.FC = () => {
               onScrollToMap={scrollToMap}
               onFavouriteChange={handleFavouriteChange}
               isFavourite={isFavourite}
+              isOwner={isOwner}
             />
             {flatInfo.rentObject.description &&
               flatInfo.rentObject.description.length > 0 && (

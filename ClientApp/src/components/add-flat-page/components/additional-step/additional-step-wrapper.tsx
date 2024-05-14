@@ -16,13 +16,14 @@ export const AdditionalStepWrapper: React.FC<AdditionalStepProps> = ({
   setActiveStep,
   currentStepIndex,
   myIndex,
+  initValues,
   ...other
 }) => {
   const { setFieldValue, values } = useFormikContext<AddFlatFormikValues>();
 
   return (
     <Formik<AdditionalStepFormikValues>
-      initialValues={getInitialAdditionalStepValues()}
+      initialValues={initValues ? initValues : getInitialAdditionalStepValues()}
       onSubmit={(values) => {
         console.log(values);
       }}

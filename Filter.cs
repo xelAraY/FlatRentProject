@@ -4,9 +4,12 @@ using Microsoft.EntityFrameworkCore;
 public static class Filter
 {
   private static int listingsPerPage = 20;
-  public static async Task<List<object>> GetRecentRentObjectsCommonQuery(IQueryable<RentObject> rentObjectsQuery, ApplicationDbContext _context, bool showData = true, string? sortType = null, int? page = null, int? takeCount = null, MapParams? mapParams = null)
+  public static async Task<List<object>> GetRecentRentObjectsCommonQuery(IQueryable<RentObject> rentObjectsQuery, ApplicationDbContext _context, bool showData = true, string? sortType = null, int? page = null, int? takeCount = null, MapParams? mapParams = null, bool? userListings = null)
   {
-    rentObjectsQuery = rentObjectsQuery.Where(ro => !ro.Hidden);
+    if (userListings == null) {
+      rentObjectsQuery = rentObjectsQuery.Where(ro => !ro.Hidden);  
+    }
+    
     if (!showData)
     {
       var count = await rentObjectsQuery.CountAsync();
@@ -395,7 +398,7 @@ public static class Filter
     return query;
   }
 
-  private static decimal ConvertToBYN(decimal? price, string currencyType, ApplicationDbContext context)
+  public static decimal ConvertToBYN(decimal? price, string currencyType, ApplicationDbContext context)
   {
     if (!price.HasValue)
     {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Alert,
   IconButton,
@@ -34,11 +34,13 @@ interface MainPaperProps {
   onScrollToMap: () => void;
   isFavourite: boolean;
   onFavouriteChange: (isChange: boolean) => void;
+  isOwner: boolean;
 }
 
 const MainPaper: React.FC<MainPaperProps> = ({
   flatInfo,
   isFavourite,
+  isOwner,
   onScrollToMap,
   onFavouriteChange,
 }) => {
@@ -195,15 +197,20 @@ const MainPaper: React.FC<MainPaperProps> = ({
         </Stack>
 
         <Stack flexDirection="row" gap="1rem">
-          <IconButton
-            color="primary"
-            size="large"
-            onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) =>
-              handleFavouriteChange(e)
-            }
-          >
-            {isFavourite ? <FavoriteIcon /> : <FavoriteBorderOutlinedIcon />}
-          </IconButton>
+          {isOwner ? (
+            <div>Кнопка для редактирования объявления</div>
+          ) : (
+            <IconButton
+              color="primary"
+              size="large"
+              onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) =>
+                handleFavouriteChange(e)
+              }
+            >
+              {isFavourite ? <FavoriteIcon /> : <FavoriteBorderOutlinedIcon />}
+            </IconButton>
+          )}
+
           <IconButton color="default" size="large" onClick={onCopyPathClick}>
             <ContentCopyOutlinedIcon fontSize="inherit" />
           </IconButton>

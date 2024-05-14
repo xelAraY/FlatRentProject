@@ -6,5 +6,5 @@ export const getInitialMediaStepValues = (): MediaStepFormikValues => {
 };
 
 export const mediaStepValidationSchema = Yup.object().shape({
-  preferences: Yup.array().of(Yup.string()).nullable(),
+  photos: Yup.array().of(Yup.string()).nullable(),
 });

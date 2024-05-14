@@ -9,6 +9,7 @@ import { AddFlatPageWrapper } from "../add-flat-page/add-flat-page-wrapper";
 import { FavouritesListings } from "./Pages/FavouritesListings";
 import { isLoggedIn } from "src/helpFunctions/tokenCheck";
 import { PasswordPage } from "./Pages/PasswordPage";
+import { PostedListings } from "./Pages/PostedListings";
 
 export enum ElementType {
   Home,
@@ -38,7 +39,7 @@ export const AccountPage = () => {
     },
     {
       path: `/myListings`,
-      element: <div>MyListings</div>,
+      element: <PostedListings />,
     },
     {
       path: `/newListing`,

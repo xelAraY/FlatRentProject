@@ -31,5 +31,6 @@ export interface MapStepProps extends StepProps {
   setActiveStep: (step: number) => void;
   currentStepIndex: number;
   myIndex: number;
+  initValues?: MapStepFormikValues;
   setCommonMapValues?: (values: MapStepFormikValues) => void;
 }

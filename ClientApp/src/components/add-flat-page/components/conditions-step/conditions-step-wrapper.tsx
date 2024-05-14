@@ -16,13 +16,14 @@ export const ConditionsStepWrapper: React.FC<ConditionsStepProps> = ({
   setActiveStep,
   currentStepIndex,
   myIndex,
+  initValues,
   ...other
 }) => {
   const { setFieldValue, values } = useFormikContext<AddFlatFormikValues>();
 
   return (
     <Formik<ConditionsStepFormikValues>
-      initialValues={getInitialConditionsStepValues()}
+      initialValues={initValues ? initValues : getInitialConditionsStepValues()}
       onSubmit={(values) => {
         console.log(values);
       }}

@@ -49,5 +49,6 @@ export interface ConditionsStepProps extends StepProps {
   setActiveStep: (step: number) => void;
   currentStepIndex: number;
   myIndex: number;
+  initValues?: ConditionsStepFormikValues;
   setCommonConditionsValues?: (values: ConditionsStepFormikValues) => void;
 }

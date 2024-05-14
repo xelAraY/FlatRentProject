@@ -13,13 +13,14 @@ export const AreaStepWrapper: React.FC<AreaStepProps> = ({
   setActiveStep,
   currentStepIndex,
   myIndex,
+  initValues,
   ...other
 }) => {
   const { setFieldValue } = useFormikContext<AddFlatFormikValues>();
 
   return (
     <Formik<AreaStepFormikValues>
-      initialValues={getInitialAreaStepValues()}
+      initialValues={initValues ? initValues : getInitialAreaStepValues()}
       onSubmit={(values) => {
         console.log(values);
       }}

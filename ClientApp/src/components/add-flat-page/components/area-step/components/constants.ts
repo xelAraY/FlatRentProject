@@ -10,5 +10,6 @@ export interface AreaStepProps extends StepProps {
   setActiveStep: (step: number) => void;
   currentStepIndex: number;
   myIndex: number;
+  initValues?: AreaStepFormikValues;
   setCommonAreaValues?: (values: AreaStepFormikValues) => void;
 }

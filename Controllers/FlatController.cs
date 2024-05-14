@@ -156,4 +156,25 @@ public class FlatController : ControllerBase
       return BadRequest( new { Message = $"Error while retrieving favourites: {ex.Message}"});
     }
   }
+
+  [Authorize]
+  [HttpGet("isUserListing")]
+  public async Task<IActionResult> IsUserListing([FromQuery] int objectId, [FromQuery] string userName)
+  {
+    try
+    {
+      var user = await _context.Users.FirstOrDefaultAsync(u => u.Name == userName);
+      if (user == null)
+        return NotFound(new { Message = $"User with username '{userName}' not found."});
+
+      var isOwner = await _context.RentObjects
+        .AnyAsync(ro => ro.OwnerId == user.Id && ro.RentObjId == objectId);
+
+      return Ok(isOwner);
+    }
+    catch (Exception ex)
+    {
+      return BadRequest( new { Message = $"Error while retrieving favourites: {ex.Message}"});
+    }
+  }
 }

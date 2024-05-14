@@ -16,13 +16,16 @@ export const DescriptionStepWrapper: React.FC<DescriptionStepProps> = ({
   setActiveStep,
   currentStepIndex,
   myIndex,
+  initValues,
   ...other
 }) => {
   const { setFieldValue } = useFormikContext<AddFlatFormikValues>();
 
   return (
     <Formik<DescriptionStepFormikValues>
-      initialValues={getInitialDescriptionStepValues()}
+      initialValues={
+        initValues ? initValues : getInitialDescriptionStepValues()
+      }
       onSubmit={(values) => {
         console.log(values);
       }}

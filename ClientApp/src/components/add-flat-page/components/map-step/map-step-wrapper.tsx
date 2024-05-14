@@ -17,13 +17,14 @@ export const MapStepWrapper: React.FC<MapStepProps> = ({
   setActiveStep,
   currentStepIndex,
   myIndex,
+  initValues,
   ...other
 }) => {
   const { setFieldValue } = useFormikContext<AddFlatFormikValues>();
 
   return (
     <Formik<MapStepFormikValues>
-      initialValues={getInitialMapStepValues()}
+      initialValues={initValues ? initValues : getInitialMapStepValues()}
       onSubmit={(values) => {
         console.log(values);
       }}

@@ -21,10 +21,10 @@ public class Address
   public string HouseNumber { get; set; }
 
   [Column("district")]
-  public string District { get; set; }
+  public string? District { get; set; }
 
   [Column("microdistrict")]
-  public string Microdistrict { get; set; }
+  public string? Microdistrict { get; set; }
   [Column("latitude")]
   public decimal Latitude { get; set; }
   [Column("longitude")]
