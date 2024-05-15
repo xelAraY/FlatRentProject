@@ -169,9 +169,7 @@ export const UserFlatPreviewCard = ({
     setOpenDeleteAlert(false);
   };
 
-  const handleDeleteListing = async (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+  const handleDeleteListing = async () => {
     if (isLoggedIn()) {
       try {
         const token = localStorage.getItem("token");
@@ -191,7 +189,6 @@ export const UserFlatPreviewCard = ({
       } catch (error) {
         console.error(error);
       } finally {
-        handleCloseDeleteAlert(e);
         navigate("/account/myListings");
       }
     } else {
@@ -199,15 +196,10 @@ export const UserFlatPreviewCard = ({
     }
   };
 
-  const price = rentInformation.rentObject.rentPrice;
-  let currencyType = searchParams.get("currencyType");
-  let anotherPrice = 0;
-  if (currencyType === "EUR") {
-    anotherPrice = Math.round(price / EURO_EXCHANGE_RATE);
-  } else {
-    anotherPrice = Math.round(price / DOLLAR_EXCHANGE_RATE);
-    currencyType = "USD";
-  }
+  const price = Math.round(
+    rentInformation.rentObject.rentPrice * rentInformation.currency.officialRate
+  );
+  const anotherPrice = Math.round(price / DOLLAR_EXCHANGE_RATE);
 
   return (
     <Card
@@ -342,7 +334,8 @@ export const UserFlatPreviewCard = ({
                       <Button
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleDeleteListing(e);
+                          handleCloseDeleteAlert(e);
+                          handleDeleteListing();
                         }}
                         autoFocus
                       >
@@ -358,7 +351,7 @@ export const UserFlatPreviewCard = ({
                       {price} р./мес.&nbsp;
                     </Typography>
                     <Typography variant="body2" fontWeight="400">
-                      ≈ {anotherPrice} {currencyType}/мес.
+                      {`≈ ${anotherPrice} $/мес.`}
                     </Typography>
                   </Stack>
                 </Stack>
@@ -400,13 +393,13 @@ export const UserFlatPreviewCard = ({
                     <AccessTimeIcon fontSize="small" />
                     <Typography variant="body2" lineHeight="1.25rem" noWrap>
                       {`Подано ${new Date(
-                        rentInformation.rentObject.updatedAt
+                        rentInformation.rentObject.createdAt
                       ).toLocaleDateString("ru-RU", {
                         day: "2-digit",
                         month: "2-digit",
                         year: "numeric",
                       })} в ${new Date(
-                        rentInformation.rentObject.updatedAt
+                        rentInformation.rentObject.createdAt
                       ).toLocaleTimeString("ru-RU", {
                         hour: "2-digit",
                         minute: "2-digit",

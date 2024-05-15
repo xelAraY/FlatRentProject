@@ -62,6 +62,9 @@ public class RentObject
   [Column("owner_id")]
   public int OwnerId { get; set; }
 
+  [Column("currency_id")]
+  public int CurrencyId { get; set; }
+
   [Column("created_at")]
   public DateTime CreatedAt { get; set; }
 

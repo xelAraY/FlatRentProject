@@ -308,6 +308,11 @@ public class AccountController : ControllerBase
         _context.Addresses.Add(address);
         await _context.SaveChangesAsync();
 
+        var currency_id = await _context.Currencies
+          .Where(c => c.Code == listingData.Conditions.Currency)
+          .Select(c => c.Id)
+          .FirstOrDefaultAsync();
+
         var rentObject = new RentObject { 
           Title = string.IsNullOrEmpty(listingData.Description.Title) ? $"Уютная {listingData.General.RoomsCount}-комнтная квартира" : listingData.Description.Title, 
           Description = string.IsNullOrEmpty(listingData.Description.Description) ? null : listingData.Description.Description, 
@@ -322,15 +327,16 @@ public class AccountController : ControllerBase
           ConstructionYear = listingData.General.ConstructionYear,
           Furniture = listingData.Additional.FurnitureType,
           Plate = listingData.Additional.PlateType,
-          RentPrice = Filter.ConvertToBYN(listingData.Conditions.RentPrice, listingData.Conditions.Currency, _context),
+          RentPrice = listingData.Conditions.RentPrice,
           Prepayment = listingData.Conditions.Prepayment,
           Rent = listingData.Conditions.Rent,
           RentalPeriod = listingData.Conditions.RentalPeriod,
           Hidden = true,
-          CreatedAt = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc),
-          UpdatedAt = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc),
+          CreatedAt = DateTime.UtcNow,
+          UpdatedAt = DateTime.UtcNow,
           PreviewImageUrl = listingData.Media.Photos.Length > 0 ? listingData.Media.Photos[0] : "https://realt.by/_next/static/media/no-photo.850f218e.svg",
           OwnerId = user.Id,
+          CurrencyId = currency_id,
           AddressId = address.AddrId,
         };
         _context.RentObjects.Add(rentObject);
@@ -468,11 +474,14 @@ public class AccountController : ControllerBase
 
       if (isOwner) {
         var rentObject = await _context.RentObjects.FirstOrDefaultAsync(ro => ro.RentObjId == rentObjectId);  
-        rentObject.Hidden = !rentObject.Hidden;  
+        rentObject.Hidden = !rentObject.Hidden; 
 
-        rentObject.CreatedAt = DateTime.SpecifyKind(rentObject.CreatedAt, DateTimeKind.Utc);
+        rentObject.CreatedAt = rentObject.CreatedAt.ToUniversalTime(); //DateTime.SpecifyKind(rentObject.CreatedAt, DateTimeKind.Utc);
 
-        rentObject.UpdatedAt = DateTime.SpecifyKind((DateTime)rentObject.UpdatedAt, DateTimeKind.Utc);
+        if (rentObject.UpdatedAt.HasValue)
+        {
+          rentObject.UpdatedAt = rentObject.UpdatedAt.Value.ToUniversalTime();
+        } // DateTime.SpecifyKind((DateTime)rentObject.UpdatedAt, DateTimeKind.Utc);
         
         _context.RentObjects.Update(rentObject);
         await _context.SaveChangesAsync();
@@ -585,31 +594,35 @@ public class AccountController : ControllerBase
         _context.Addresses.Update(address);
         await _context.SaveChangesAsync();
 
+        var currency_id = await _context.Currencies
+          .Where(c => c.Code == listingData.Conditions.Currency)
+          .Select(c => c.Id)
+          .FirstOrDefaultAsync();
 
-          rentObject.Title = string.IsNullOrEmpty(listingData.Description.Title) ? $"Уютная {listingData.General.RoomsCount}-комнтная квартира" : listingData.Description.Title;
-          rentObject.Description = string.IsNullOrEmpty(listingData.Description.Description) ? null : listingData.Description.Description;
-          rentObject.RoomsCount = listingData.General.RoomsCount; 
-          rentObject.FloorNumber = listingData.General.Floor;
-          rentObject.FloorsAmount = listingData.General.FloorAmount;
-          rentObject.TotalArea = listingData.Area.TotalArea;
-          rentObject.KitchenArea = listingData.Area.KitchenArea;
-          rentObject.LivingArea = listingData.Area.LivingArea;
-          rentObject.Bathroom = listingData.General.BathroomType;
-          rentObject.Balcony = listingData.General.BalconyType;
-          rentObject.ConstructionYear = listingData.General.ConstructionYear;
-          rentObject.Furniture = listingData.Additional.FurnitureType;
-          rentObject.Plate = listingData.Additional.PlateType;
-          rentObject.RentPrice = listingData.Conditions.RentPrice;
-          rentObject.Prepayment = listingData.Conditions.Prepayment;
-          rentObject.Rent = listingData.Conditions.Rent;
-          rentObject.RentalPeriod = listingData.Conditions.RentalPeriod;
-          rentObject.Hidden = true;//
-          rentObject.CreatedAt = DateTime.SpecifyKind(rentObject.CreatedAt, DateTimeKind.Utc);
-          rentObject.UpdatedAt = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
-          rentObject.PreviewImageUrl = listingData.Media.Photos.Length > 0 ? listingData.Media.Photos[0] : "https://realt.by/_next/static/media/no-photo.850f218e.svg";
+        rentObject.Title = string.IsNullOrEmpty(listingData.Description.Title) ? $"Уютная {listingData.General.RoomsCount}-комнтная квартира" : listingData.Description.Title;
+        rentObject.Description = string.IsNullOrEmpty(listingData.Description.Description) ? null : listingData.Description.Description;
+        rentObject.RoomsCount = listingData.General.RoomsCount; 
+        rentObject.FloorNumber = listingData.General.Floor;
+        rentObject.FloorsAmount = listingData.General.FloorAmount;
+        rentObject.TotalArea = listingData.Area.TotalArea;
+        rentObject.KitchenArea = listingData.Area.KitchenArea;
+        rentObject.LivingArea = listingData.Area.LivingArea;
+        rentObject.Bathroom = listingData.General.BathroomType;
+        rentObject.Balcony = listingData.General.BalconyType;
+        rentObject.ConstructionYear = listingData.General.ConstructionYear;
+        rentObject.Furniture = listingData.Additional.FurnitureType;
+        rentObject.Plate = listingData.Additional.PlateType;
+        rentObject.RentPrice = listingData.Conditions.RentPrice;
+        rentObject.Prepayment = listingData.Conditions.Prepayment;
+        rentObject.Rent = listingData.Conditions.Rent;
+        rentObject.RentalPeriod = listingData.Conditions.RentalPeriod;
+        rentObject.CreatedAt = rentObject.CreatedAt.ToUniversalTime();
+        rentObject.UpdatedAt = DateTime.UtcNow;
+        rentObject.PreviewImageUrl = listingData.Media.Photos.Length > 0 ? listingData.Media.Photos[0] : "https://realt.by/_next/static/media/no-photo.850f218e.svg";
+        rentObject.CurrencyId = currency_id;
 
-          _context.RentObjects.Update(rentObject);
-          await _context.SaveChangesAsync();
+        _context.RentObjects.Update(rentObject);
+        await _context.SaveChangesAsync();
 
         var photos = await _context.Photos.Where(p => p.RentObjId == rentObject.RentObjId).ToListAsync();
         _context.Photos.RemoveRange(photos);

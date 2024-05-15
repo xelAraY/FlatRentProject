@@ -76,7 +76,9 @@ export const FlatPreviewCard = ({
     setImages(imagess);
   }, [rentInformation.photos, heigth]);
 
-  const price = rentInformation.rentObject.rentPrice;
+  const price = Math.round(
+    rentInformation.rentObject.rentPrice * rentInformation.currency.officialRate
+  );
   let currencyType = searchParams.get("currencyType");
   let anotherPrice = 0;
   if (currencyType === "EUR") {

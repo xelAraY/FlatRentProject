@@ -140,7 +140,7 @@ export const AddFlatPageWrapper = () => {
             appliances: listingData.appliances as string[],
           },
           conditions: {
-            currency: CurrencyType.BYN,
+            currency: listingData.currency.code as any,
             rentPrice: listingData.rentObject.rentPrice,
             rent: listingData.rentObject.rent as any,
             rentalPeriod: listingData.rentObject.rentalPeriod as any,

@@ -87,7 +87,9 @@ export const MapListPreviewCard = ({
   //     : currency === "EUR"
   //     ? Math.round(price * 3.5045)
   //     : price;
-  const price = rentInformation.rentObject.rentPrice;
+  const price = Math.round(
+    rentInformation.rentObject.rentPrice * rentInformation.currency.officialRate
+  );
   let currencyType = searchParams.get("currencyType");
   let anotherPrice = 0;
   if (currencyType === "EUR") {
@@ -214,7 +216,7 @@ export const MapListPreviewCard = ({
                       {price} р./мес.&nbsp;
                     </Typography>
                     <Typography gutterBottom variant="body2" fontWeight="400">
-                      ≈{anotherPrice} {currencyType}
+                      ≈ {anotherPrice} {currencyType}
                       /мес.
                     </Typography>
                   </Stack>

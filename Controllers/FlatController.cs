@@ -35,6 +35,12 @@ public class FlatController : ControllerBase
           address => address.AddrId,
           (result, address) => new { result.RentObject, result.Owner, Address = address }
         )
+        .Join(
+          _context.Currencies,
+          result => result.RentObject.CurrencyId,
+          currency => currency.Id,
+          (result, currency) => new { result.RentObject, result.Owner, result.Address, Currency = currency}
+        )
         .Select(result => new
         {
           result.RentObject,
@@ -46,7 +52,12 @@ public class FlatController : ControllerBase
             result.Owner.RegistrationDate,
             result.Owner.LastLogin
           },
-          result.Address
+          result.Address,
+          Currency = new 
+          {
+            result.Currency.Code,
+            result.Currency.OfficialRate
+          }
         })
         .ToListAsync();
 
@@ -119,6 +130,7 @@ public class FlatController : ControllerBase
       {
         result.RentObject,
         result.Owner,
+        result.Currency,
         result.Address,
         Photos = photos,
         Contacts = contacts,

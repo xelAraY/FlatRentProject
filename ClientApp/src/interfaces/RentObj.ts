@@ -3,6 +3,7 @@ import { Contact } from "src/components/add-flat-page/components";
 export interface RentObjectInformation {
   rentObject: RentObject;
   owner: Owner;
+  currency: Currency;
   address: Address;
   photos: string[];
   contacts: Contact[];
@@ -10,6 +11,11 @@ export interface RentObjectInformation {
   preferences?: string[];
   additionalInformations?: string[];
   metroStations?: MetroStation[];
+}
+
+interface Currency {
+  code: string;
+  officialRate: number;
 }
 
 export interface RentObject {

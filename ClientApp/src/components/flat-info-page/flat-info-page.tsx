@@ -95,6 +95,8 @@ const FlatInfoPage: React.FC = () => {
 
   const scrollToMap = () => mapRef?.current?.scrollIntoView();
 
+  console.log("flatInfo: ", flatInfo);
+
   return flatInfo ? (
     <Stack p="3rem 5rem" height="100%" width="100%">
       <Grid container spacing="2rem">

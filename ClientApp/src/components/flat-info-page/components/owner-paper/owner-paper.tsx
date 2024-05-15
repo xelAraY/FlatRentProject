@@ -13,15 +13,10 @@ interface OwnerPaperProps {
 const OwnerPaper: React.FC<OwnerPaperProps> = ({ flatInfo }) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const price = flatInfo?.rentObject.rentPrice;
-  let currencyType = searchParams.get("currencyType");
-  let anotherPrice = 0;
-  if (currencyType === "EUR") {
-    anotherPrice = Math.round(price / EURO_EXCHANGE_RATE);
-  } else {
-    anotherPrice = Math.round(price / DOLLAR_EXCHANGE_RATE);
-    currencyType = "USD";
-  }
+  const price = Math.round(
+    flatInfo.rentObject.rentPrice * flatInfo.currency.officialRate
+  );
+  const anotherPrice = Math.round(price / DOLLAR_EXCHANGE_RATE);
 
   const [isContactsOpen, setIsOpenContacts] = React.useState(false);
   const onCopyPhoneClick = async () => {
@@ -63,8 +58,7 @@ const OwnerPaper: React.FC<OwnerPaperProps> = ({ flatInfo }) => {
             {price} р./мес.&nbsp;
           </Typography>
           <Typography variant="body1" fontWeight="400">
-            ≈&nbsp;{anotherPrice} {currencyType}
-            /мес.
+            {`≈ ${anotherPrice} $/мес.`}
           </Typography>
         </Stack>
 
