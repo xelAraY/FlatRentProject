@@ -18,10 +18,14 @@ import {
   ImageGalleryStyled,
 } from "src/shared";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import ClearIcon from "@mui/icons-material/Clear";
+import { isLoggedIn } from "src/helpFunctions/tokenCheck";
+import { jwtDecode } from "jwt-decode";
 
 interface CardProps {
   rentInformation: RentObjectInformation;
   onCardClick: (flatId: number) => void;
+  onComparisonDelete: () => void;
 }
 
 interface ForPhotos {
@@ -31,7 +35,11 @@ interface ForPhotos {
   originalWidth?: number;
 }
 
-export const FlatPreview = ({ rentInformation, onCardClick }: CardProps) => {
+export const FlatPreview = ({
+  rentInformation,
+  onCardClick,
+  onComparisonDelete,
+}: CardProps) => {
   const isMedium = useMediaQuery((theme: any) =>
     theme.breakpoints.between("xl", "2000")
   );
@@ -63,6 +71,39 @@ export const FlatPreview = ({ rentInformation, onCardClick }: CardProps) => {
     setImages(imagess);
   }, [rentInformation.photos, heigth]);
 
+  const handleDeleteFromComparison = async () => {
+    try {
+      if (isLoggedIn()) {
+        const token = localStorage.getItem("token");
+        if (token) {
+          const decodedToken: any = jwtDecode(token);
+          const response = await fetch("api/account/toggleComparison", {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              objectId: rentInformation.rentObject.rentObjId,
+              userName: decodedToken.nickname,
+            }),
+          });
+          if (response.ok) {
+            onComparisonDelete();
+          } else {
+            throw new Error("Ошибка при выполнении запроса");
+          }
+        }
+      } else {
+        navigate("/sign-in");
+      }
+    } catch (e) {
+      console.error("Ошибка при выполнении запроса");
+    } finally {
+      navigate("/account/comparisons");
+    }
+  };
+
   const price = Math.round(
     rentInformation.rentObject.rentPrice * rentInformation.currency.officialRate
   );
@@ -77,6 +118,22 @@ export const FlatPreview = ({ rentInformation, onCardClick }: CardProps) => {
 
   return (
     <Card style={{ width: "100%", minWidth: "300px" }}>
+      <IconButton
+        sx={{
+          position: "absolute",
+          top: 15,
+          right: 15,
+          zIndex: 999,
+          "& .MuiIconButton-root": {
+            ":hover": {
+              backGroundColor: "red",
+            },
+          },
+        }}
+        onClick={handleDeleteFromComparison}
+      >
+        <ClearIcon />
+      </IconButton>
       <CardActionArea
         onClick={() => onCardClick(rentInformation.rentObject.rentObjId)}
         disableTouchRipple

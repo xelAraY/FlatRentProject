@@ -53,7 +53,9 @@ const MainPaper: React.FC<MainPaperProps> = ({
   const [inComparison, setInComparison] = React.useState(false);
   const navigate = useNavigate();
 
-  const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleToggleComparison = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     try {
       if (isLoggedIn()) {
         const token = localStorage.getItem("token");
@@ -267,7 +269,10 @@ const MainPaper: React.FC<MainPaperProps> = ({
           {isFavourite && (
             <FormControlLabel
               control={
-                <Checkbox checked={inComparison} onChange={handleChange} />
+                <Checkbox
+                  checked={inComparison}
+                  onChange={handleToggleComparison}
+                />
               }
               label="К сравнению"
             />

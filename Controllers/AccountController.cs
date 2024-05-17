@@ -259,6 +259,31 @@ public class AccountController : ControllerBase
   }
 
   [Authorize]
+  [HttpGet("getComparisonObjects/{userName}")]
+  public async Task<IActionResult> GetComparisonObjects(string userName)
+  {
+    try
+    {
+      var user = await _context.Users.FirstOrDefaultAsync(u => u.Name == userName);
+      if (user == null)
+        return NotFound(new { Message = $"User with username '{userName}' not found."});
+
+      var comparisonsIds = await _context.Comparisons
+        .Where(c => c.UserId == user.Id)
+        .Select(c => c.RentObjectId)
+        .ToListAsync();
+
+      // var rentObjectsQuery = _context.RentObjects.Where(ro => comparisonsIds.Contains(ro.RentObjId));
+      // var result = await Filter.GetRecentRentObjectsCommonQuery(rentObjectsQuery, _context);
+      return Ok(comparisonsIds);
+    }
+    catch (Exception ex)
+    {
+      return BadRequest( new { Message = $"Error while retrieving comparisons objects: {ex.Message}"});
+    }
+  }
+
+  [Authorize]
   [HttpGet("getUserListings/{userName}")]
   public async Task<IActionResult> GetUserListings(string userName, [FromQuery] bool showData, [FromQuery] int? page = 1)
   {
