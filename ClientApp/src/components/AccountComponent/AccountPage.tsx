@@ -10,6 +10,7 @@ import { FavouritesListings } from "./Pages/FavouritesListings";
 import { isLoggedIn } from "src/helpFunctions/tokenCheck";
 import { PasswordPage } from "./Pages/PasswordPage";
 import { PostedListings } from "./Pages/PostedListings";
+import { ComparisonsPage } from "./Pages/Comparisons";
 
 export enum ElementType {
   Home,
@@ -36,6 +37,10 @@ export const AccountPage = () => {
     {
       path: `/favourites`,
       element: <FavouritesListings />,
+    },
+    {
+      path: `/comparisons`,
+      element: <ComparisonsPage />,
     },
     {
       path: `/myListings`,

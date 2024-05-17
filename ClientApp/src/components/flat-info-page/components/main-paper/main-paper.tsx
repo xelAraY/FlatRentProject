@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Alert,
+  Checkbox,
+  FormControlLabel,
   IconButton,
   Link,
   Paper,
   Snackbar,
   Stack,
   SvgIcon,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { RentObjectInformation } from "src/interfaces/RentObj";
@@ -17,6 +20,7 @@ import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
+import EditIcon from "@mui/icons-material/Edit";
 import { isLoggedIn } from "src/helpFunctions/tokenCheck";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
@@ -46,7 +50,39 @@ const MainPaper: React.FC<MainPaperProps> = ({
 }) => {
   const [fullScreen, setFullScreen] = React.useState(false);
   const [images, setImages] = React.useState<ForPhotos[]>([]);
+  const [inComparison, setInComparison] = React.useState(false);
   const navigate = useNavigate();
+
+  const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      if (isLoggedIn()) {
+        const token = localStorage.getItem("token");
+        if (token) {
+          const decodedToken: any = jwtDecode(token);
+          const response = await fetch("api/account/toggleComparison", {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              objectId: flatInfo?.rentObject?.rentObjId,
+              userName: decodedToken.nickname,
+            }),
+          });
+          if (!response.ok) {
+            throw new Error("Ошибка при выполнении запроса");
+          }
+        }
+      } else {
+        navigate("/sign-in");
+      }
+    } catch (e) {
+      console.error("Ошибка при выполнении запроса");
+    } finally {
+      setInComparison(!inComparison);
+    }
+  };
 
   React.useEffect(() => {
     let imagess: ForPhotos[] = [];
@@ -129,6 +165,37 @@ const MainPaper: React.FC<MainPaperProps> = ({
     }
   };
 
+  useEffect(() => {
+    const checkComparison = async () => {
+      if (isFavourite) {
+        if (isLoggedIn()) {
+          const token = localStorage.getItem("token");
+          if (token) {
+            const decodedToken: any = jwtDecode(token);
+            const response = await fetch(
+              `api/flat/checkComparison?objectId=${flatInfo?.rentObject.rentObjId}&userName=${decodedToken.nickname}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+            if (!response.ok) {
+              throw new Error("Ошибка при выполнении запроса");
+            }
+            const data = await response.json();
+            console.log(data);
+            setInComparison(data);
+          }
+        } else {
+          navigate("/sign-in");
+        }
+      }
+    };
+    checkComparison();
+  }, [isFavourite]);
+
   return (
     <Paper
       variant="outlined"
@@ -197,8 +264,28 @@ const MainPaper: React.FC<MainPaperProps> = ({
         </Stack>
 
         <Stack flexDirection="row" gap="1rem">
+          {isFavourite && (
+            <FormControlLabel
+              control={
+                <Checkbox checked={inComparison} onChange={handleChange} />
+              }
+              label="К сравнению"
+            />
+          )}
           {isOwner ? (
-            <div>Кнопка для редактирования объявления</div>
+            <Tooltip arrow title="Редактировать" placement="top">
+              <IconButton
+                color="default"
+                size="large"
+                onClick={() =>
+                  navigate(
+                    `/account/newListing?id=${flatInfo?.rentObject.rentObjId}`
+                  )
+                }
+              >
+                <EditIcon fontSize="inherit" />
+              </IconButton>
+            </Tooltip>
           ) : (
             <IconButton
               color="primary"

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { RentObjectInformation } from "src/interfaces/RentObj";
-import { Grid, Stack } from "@mui/material";
+import { Alert, AlertTitle, Grid, Stack, Typography } from "@mui/material";
 import {
   DescriptionPaper,
   DetailsPaper,
@@ -19,6 +19,7 @@ const FlatInfoPage: React.FC = () => {
   const [isFavourite, setIsFavourite] = useState(false);
   const [favouriteChanged, setFavouriteChanged] = useState(true);
   const [isOwner, setIsOwner] = useState(false);
+
   const navigate = useNavigate();
 
   const handleFavouriteChange = (isChanged: boolean) => {
@@ -95,13 +96,43 @@ const FlatInfoPage: React.FC = () => {
 
   const scrollToMap = () => mapRef?.current?.scrollIntoView();
 
-  console.log("flatInfo: ", flatInfo);
-
   return flatInfo ? (
     <Stack p="3rem 5rem" height="100%" width="100%">
       <Grid container spacing="2rem">
         <Grid item xs={8}>
           <Stack gap="1rem">
+            {isOwner && (
+              <>
+                {flatInfo.rentObject.hidden ? (
+                  <Alert
+                    severity="info"
+                    variant="outlined"
+                    sx={{ backgroundColor: "white" }}
+                  >
+                    <AlertTitle sx={{ color: "#1976d2" }}>
+                      <b>Не опубликовано</b>
+                    </AlertTitle>
+                    <Typography fontSize={16}>
+                      Объявление сохранено, но не доступно в поиске.
+                    </Typography>
+                  </Alert>
+                ) : (
+                  <Alert
+                    severity="success"
+                    variant="outlined"
+                    sx={{ backgroundColor: "white" }}
+                  >
+                    <AlertTitle sx={{ color: "#438b47" }}>
+                      <b>Опубликовано</b>
+                    </AlertTitle>
+                    <Typography fontSize={16}>
+                      Объявление сохранено и доступно в поиске.
+                    </Typography>
+                  </Alert>
+                )}
+              </>
+            )}
+
             <MainPaper
               flatInfo={flatInfo}
               onScrollToMap={scrollToMap}

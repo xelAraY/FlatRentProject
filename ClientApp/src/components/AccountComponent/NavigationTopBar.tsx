@@ -9,6 +9,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import DomainAddIcon from "@mui/icons-material/DomainAdd";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import LockResetIcon from "@mui/icons-material/LockReset";
+import CompareIcon from "@mui/icons-material/Compare";
 
 export const NavigationTopBar = () => {
   const location = useLocation();
@@ -49,6 +50,18 @@ export const NavigationTopBar = () => {
           >
             <FavoriteIcon />
             <Typography>Избранное</Typography>
+          </Stack>
+        );
+      case "comparisons":
+        return (
+          <Stack
+            flexDirection={"row"}
+            alignItems={"center"}
+            spacing={"5px"}
+            useFlexGap
+          >
+            <CompareIcon />
+            <Typography>Сравнения</Typography>
           </Stack>
         );
       case "newListing":

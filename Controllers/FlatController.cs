@@ -189,4 +189,25 @@ public class FlatController : ControllerBase
       return BadRequest( new { Message = $"Error while retrieving favourites: {ex.Message}"});
     }
   }
+
+  [Authorize]
+  [HttpGet("checkComparison")]
+  public async Task<IActionResult> CheckComparison([FromQuery] int objectId, [FromQuery] string userName)
+  {
+    try
+    {
+      var user = await _context.Users.FirstOrDefaultAsync(u => u.Name == userName);
+      if (user == null)
+        return NotFound(new { Message = $"User with username '{userName}' not found."});
+
+      var exists = await _context.Comparisons
+        .AnyAsync(f => f.UserId == user.Id && f.RentObjectId == objectId);
+
+      return Ok(exists);
+    }
+    catch (Exception ex)
+    {
+      return BadRequest( new { Message = $"Error while retrieving favourites: {ex.Message}"});
+    }
+  }
 }

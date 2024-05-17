@@ -25,6 +25,8 @@ public class ApplicationDbContext : DbContext
 
   public DbSet<Currency> Currencies { get; set; }
 
+  public DbSet<Comparison> Comparisons { get; set; }
+
   public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
   {
   }

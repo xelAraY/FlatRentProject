@@ -16,6 +16,7 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import AddIcon from "@mui/icons-material/Add";
 import LockResetIcon from "@mui/icons-material/LockReset";
+import BalanceIcon from "@mui/icons-material/Balance";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { Button } from "src/shared";
@@ -104,6 +105,14 @@ export const NavigationBar = () => {
         >
           <FavoriteIcon style={{ marginRight: "10px" }} />
           Избранное
+        </IconButton>
+        <IconButton
+          color="primary"
+          style={commonStyle}
+          onClick={() => navigate("/account/comparisons")}
+        >
+          <BalanceIcon style={{ marginRight: "10px" }} />
+          Сравнения
         </IconButton>
         <IconButton
           color="primary"

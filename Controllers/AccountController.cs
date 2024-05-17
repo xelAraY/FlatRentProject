@@ -78,7 +78,7 @@ public class AccountController : ControllerBase
 
   [Authorize]
   [HttpPost("toggleFavourite")]
-  public async Task<IActionResult> ToggleFavourite([FromBody] FavouriteToggleModel model)
+  public async Task<IActionResult> ToggleFavourite([FromBody] ToggleModel model)
   {
     try
     {
@@ -562,7 +562,7 @@ public class AccountController : ControllerBase
 
   [HttpPost("updateListing/{rentObjectId}")]
   public async Task<IActionResult> UpdateListing(int rentObjectId, [FromBody] ListingDataModel listingData)
-{
+  {
     if (!ModelState.IsValid)
     {
       return BadRequest(ModelState);
@@ -751,6 +751,42 @@ public class AccountController : ControllerBase
         return StatusCode(500, new { Message = $"Произошла ошибка: {ex.Message}"} );
       }
     }
-}
+  }
 
+  [Authorize]
+  [HttpPost("toggleComparison")]
+  public async Task<IActionResult> ToggleComparison([FromBody] ToggleModel model)
+  {
+    try
+    {
+      var user = await _context.Users.FirstOrDefaultAsync(u => u.Name == model.Username);
+      if (user == null)
+      {
+        return BadRequest(new { Message = "Пользователь не найден"});
+      }
+
+      var comparison = await _context.Comparisons.FirstOrDefaultAsync(f => f.UserId == user.Id && f.RentObjectId == model.ObjectId);
+
+      if (comparison != null)
+      {
+        _context.Comparisons.Remove(comparison);
+      }
+      else
+      {
+        _context.Comparisons.Add(new Comparison { UserId = user.Id, RentObjectId = model.ObjectId });
+      }
+
+      await _context.SaveChangesAsync();
+
+      return Ok(new { Message = "Операция выполнена успешно"});
+    }
+    catch (Exception ex)
+    {
+      if (ex.InnerException != null)
+      {
+        Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
+      }
+      return BadRequest(new { Message = $"Ошибка: {ex.Message}"});
+    }
+  }
 }
