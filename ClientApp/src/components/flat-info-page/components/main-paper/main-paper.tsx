@@ -278,19 +278,22 @@ const MainPaper: React.FC<MainPaperProps> = ({
             />
           )}
           {isOwner ? (
-            <Tooltip arrow title="Редактировать" placement="top">
-              <IconButton
-                color="default"
-                size="large"
-                onClick={() =>
-                  navigate(
-                    `/account/newListing?id=${flatInfo?.rentObject.rentObjId}`
-                  )
-                }
-              >
-                <EditIcon fontSize="inherit" />
-              </IconButton>
-            </Tooltip>
+            <div>
+              <Tooltip arrow title="eqweq" placement="top">
+                <IconButton
+                  color="default"
+                  size="large"
+                  component="div"
+                  onClick={() =>
+                    navigate(
+                      `/account/newListing?id=${flatInfo?.rentObject.rentObjId}`
+                    )
+                  }
+                >
+                  <EditIcon fontSize="inherit" />
+                </IconButton>
+              </Tooltip>
+            </div>
           ) : (
             <IconButton
               color="primary"

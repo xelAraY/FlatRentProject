@@ -143,7 +143,7 @@ export const ComparisonsPage = () => {
                         <TableCell
                           sx={{
                             borderLeft: "1px solid rgba(224, 224, 224, 1)",
-                            minWidth: "15rem",
+                            width: "30%",
                           }}
                           align="left"
                           key={index}

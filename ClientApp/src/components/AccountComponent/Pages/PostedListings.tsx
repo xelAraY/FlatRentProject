@@ -160,14 +160,14 @@ export const PostedListings = () => {
 
   return (
     <Stack style={{ backgroundColor: "#f3f5f7", paddingTop: "10px" }}>
-      <Stack alignItems={"center"}>
+      <Stack px="12rem">
         {rentObjects.length === 0 && !loading ? (
           <NoFoundObject
             headerText="На данный момент у вас нет размещенных объявлений"
             descriptionText="Для размещения нового объявления перейдите на странциу добавления объявления"
           />
         ) : (
-          <Stack spacing={5} alignItems="center">
+          <Stack spacing={5}>
             <Stack spacing={2}>
               <Typography variant="body1">
                 <b>{listingsCount}</b> {listingsText}
