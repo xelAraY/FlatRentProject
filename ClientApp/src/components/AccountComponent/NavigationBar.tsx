@@ -70,7 +70,7 @@ export const NavigationBar = () => {
   };
 
   return (
-    <Paper elevation={3} style={{ height: "100%" }}>
+    <Paper elevation={3} sx={{ position: "sticky", top: "1rem" }}>
       <Stack padding={2} spacing={2}>
         <IconButton
           color="primary"

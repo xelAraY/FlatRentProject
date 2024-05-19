@@ -19,7 +19,7 @@ export const ContactsStep: React.FC<ContactsStepProps> = ({
   currentStepIndex,
   setCommonContactsValues,
 }) => {
-  const { values, setFieldTouched, setFieldValue, isValid } =
+  const { values, setFieldValue, isValid } =
     useFormikContext<ContactsStepFormikValues>();
 
   React.useEffect(() => {

@@ -39,7 +39,7 @@ export const RoomsSelect = ({ rooms, onFiltersChange }: RoomsProps) => {
   const roomsAmount = ["1", "2", "3", "4", "5", "6+"];
 
   return (
-    <FormControl sx={{ m: 1, minWidth: 300 }} variant="outlined">
+    <FormControl sx={{ m: 1, minWidth: 300, zIndex: 9999 }} variant="outlined">
       <InputLabel style={{ fontWeight: "600", color: "black" }}>
         Комнат
       </InputLabel>

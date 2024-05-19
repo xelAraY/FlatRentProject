@@ -8,6 +8,7 @@ interface FlatsListProps {
   rentObjects: RentObjectInformation[];
   isLoading: boolean;
   favourites: number[];
+  xl?: number;
   onFavouritesChanged: (isChanged: boolean, objectId?: number) => void;
 }
 
@@ -15,6 +16,7 @@ export const FlatsList = ({
   rentObjects,
   isLoading,
   favourites,
+  xl = 3,
   onFavouritesChanged,
 }: FlatsListProps) => {
   const numberOfRentObjects = 4;
@@ -45,7 +47,7 @@ export const FlatsList = ({
           <>
             {rentObjects?.map((rentObject, index) => (
               // <Grid item xs={12} sm={6} md={3} key={index}>
-              <Grid item xs={12} sm={6} md={4} xl={3} key={index}>
+              <Grid item xs={12} sm={6} md={4} xl={xl} key={index}>
                 <FlatPreviewCard
                   rentInformation={rentObject}
                   keyNumber={index}

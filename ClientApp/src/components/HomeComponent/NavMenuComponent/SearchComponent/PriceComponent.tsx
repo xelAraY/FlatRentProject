@@ -1,6 +1,4 @@
-import {
-  FormControl
-} from "@mui/material";
+import { FormControl } from "@mui/material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import Popover from "@mui/material/Popover";
@@ -9,7 +7,12 @@ import { PopoverComponent } from "./PopoverComponent";
 import { Button } from "src/shared";
 import { PriceProps } from "src/interfaces/SearchInterfaces";
 
-export const PriceComponent = ({ price, currentCurrency, onFiltersChange, isHome }: PriceProps) => {
+export const PriceComponent = ({
+  price,
+  currentCurrency,
+  onFiltersChange,
+  isHome,
+}: PriceProps) => {
   const [anchorEl, setAnchorEl] = React.useState<
     HTMLDivElement | HTMLButtonElement | null
   >(null);
@@ -30,7 +33,7 @@ export const PriceComponent = ({ price, currentCurrency, onFiltersChange, isHome
   return (
     <div>
       <FormControl
-        sx={{ m: 1, width: "25ch" }}
+        sx={{ m: 1, width: "25ch", zIndex: 9999 }}
         variant="filled"
         aria-describedby={id}
       >
@@ -46,8 +49,29 @@ export const PriceComponent = ({ price, currentCurrency, onFiltersChange, isHome
             </InputAdornment>
           }
         /> */}
-        <Button variant="outlined" size="large" color='info' onClick={handleClick} style={{ fontWeight: "600", color: "black", border: '1px solid rgba(0, 0, 0, 0.23)', justifyContent: "space-between", height: "56px" }} endIcon={open ? <ArrowDropUpIcon style={{ color: "#747473" }} /> : <ArrowDropDownIcon style={{ color: "#747473" }} />}>Цена</Button>
-      </FormControl >
+        <Button
+          variant="outlined"
+          size="large"
+          color="info"
+          onClick={handleClick}
+          style={{
+            fontWeight: "600",
+            color: "black",
+            border: "1px solid rgba(0, 0, 0, 0.23)",
+            justifyContent: "space-between",
+            height: "56px",
+          }}
+          endIcon={
+            open ? (
+              <ArrowDropUpIcon style={{ color: "#747473" }} />
+            ) : (
+              <ArrowDropDownIcon style={{ color: "#747473" }} />
+            )
+          }
+        >
+          Цена
+        </Button>
+      </FormControl>
       <Popover
         id={id}
         open={open}
@@ -66,6 +90,6 @@ export const PriceComponent = ({ price, currentCurrency, onFiltersChange, isHome
           isHome={isHome}
         />
       </Popover>
-    </div >
+    </div>
   );
 };

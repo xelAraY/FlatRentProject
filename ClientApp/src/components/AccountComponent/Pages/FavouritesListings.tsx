@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Pagination, Stack, Typography } from "@mui/material";
 import {
-  NavLink,
-  useLocation,
-  useNavigate,
-  useSearchParams,
-} from "react-router-dom";
+  Box,
+  CircularProgress,
+  Pagination,
+  Stack,
+  Typography,
+} from "@mui/material";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { RentObjectInformation } from "src/interfaces/RentObj";
-import MapIcon from "@mui/icons-material/Map";
 import { isLoggedIn } from "src/helpFunctions/tokenCheck";
 import { jwtDecode } from "jwt-decode";
 import { FlatsList } from "src/components/RentFinderComponent/FlatsList";
-import { NoFoundObject } from "src/components/RentFinderComponent/NoFoundObject";
+import { NoFoundObject } from "./Components/NoFoundObject";
 
 export const FavouritesListings = () => {
   const location = useLocation();
@@ -89,9 +89,6 @@ export const FavouritesListings = () => {
                 })
                 .catch((error) => {
                   console.error("Error fetching user data:", error);
-                })
-                .finally(() => {
-                  setLoading(false);
                 });
             } else {
               throw new Error(
@@ -130,6 +127,8 @@ export const FavouritesListings = () => {
           }
         } catch (error) {
           console.error(error);
+        } finally {
+          setLoading(false);
         }
       } else {
         navigate("/sign-in");
@@ -216,34 +215,47 @@ export const FavouritesListings = () => {
       : "объявлений";
 
   return (
-    <Stack
-      flexDirection={"column"}
-      overflow="auto"
-      style={{ backgroundColor: "#f3f5f7", paddingTop: "10px" }}
-    >
-      <Stack>
-        {rentObjects.length === 0 && !loading && <NoFoundObject />}
-        <Stack spacing={5} alignItems={"center"}>
-          <Stack spacing={2}>
-            <Typography variant="body1">
-              <b>{listingsCount}</b> {listingsText}
-            </Typography>
-            <FlatsList
-              rentObjects={rentObjects}
-              isLoading={loading}
-              favourites={favListings}
-              onFavouritesChanged={handleFavouriteChange}
-            />
-          </Stack>
-          {pages > 1 && (
-            <Pagination
-              count={pages}
-              page={currentPage}
-              onChange={handlePageChange}
-            />
+    <Stack style={{ backgroundColor: "#f3f5f7" }}>
+      {loading ? (
+        <Stack alignItems={"center"} height={"100%"}>
+          <CircularProgress />
+        </Stack>
+      ) : (
+        <Stack>
+          {rentObjects.length === 0 ? (
+            <Stack alignItems="center" pt={"30px"}>
+              <NoFoundObject
+                headerText="На данный момент у вас нет избранных объявлений"
+                descriptionText="Для добавления объявления в список избранных перейдите на страницу объявления и нажмите на сердечко"
+              />
+            </Stack>
+          ) : (
+            <Stack spacing={5}>
+              <Stack spacing={2}>
+                <Typography variant="body1">
+                  <b>{listingsCount}</b> {listingsText}
+                </Typography>
+                <FlatsList
+                  rentObjects={rentObjects}
+                  isLoading={loading}
+                  favourites={favListings}
+                  onFavouritesChanged={handleFavouriteChange}
+                  xl={4}
+                />
+              </Stack>
+              {pages > 1 && (
+                <Stack alignItems="center">
+                  <Pagination
+                    count={pages}
+                    page={currentPage}
+                    onChange={handlePageChange}
+                  />
+                </Stack>
+              )}
+            </Stack>
           )}
         </Stack>
-      </Stack>
+      )}
     </Stack>
   );
 };

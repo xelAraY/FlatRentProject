@@ -16,11 +16,11 @@ export const contactsStepValidationSchema = Yup.object().shape({
       name: Yup.string().required("Введите имя"),
       email: Yup.string()
         .test("emailCheck", "Email адрес некорректный", (value) => {
-          return value?.match(
-            /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-          )
-            ? true
-            : false;
+          return value
+            ? value.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
+              ? true
+              : false
+            : true;
         })
         .nullable(),
     })

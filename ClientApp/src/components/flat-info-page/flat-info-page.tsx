@@ -8,7 +8,7 @@ import {
   MainPaper,
   LocationPaper,
   ApplianciesPaper,
-  OwnerPaper,
+  ContactPaper,
 } from "./components";
 import { isLoggedIn } from "src/helpFunctions/tokenCheck";
 import { jwtDecode } from "jwt-decode";
@@ -172,7 +172,7 @@ const FlatInfoPage: React.FC = () => {
             },
           }}
         >
-          <OwnerPaper flatInfo={flatInfo} />
+          <ContactPaper flatInfo={flatInfo} />
         </Grid>
       </Grid>
     </Stack>

@@ -53,7 +53,7 @@ public class AuthController : ControllerBase
             "your_issuer",
             "your_audience",
             claims,
-            expires: DateTime.Now.AddHours(1),
+            expires: DateTime.Now.AddDays(1),
             signingCredentials: credentials
         );
 

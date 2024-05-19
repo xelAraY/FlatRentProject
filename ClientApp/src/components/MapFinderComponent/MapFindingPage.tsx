@@ -240,13 +240,9 @@ export const MapFindingPage = () => {
     if (mapBounds !== undefined) {
       setSearchParams(
         (urlParams) => {
-          // console.log("leftX ", mapBounds.leftX.toString());
           urlParams.set("leftX", mapBounds.leftX.toString());
-          // console.log("rightX ", mapBounds.rightX.toString());
           urlParams.set("rightX", mapBounds.rightX.toString());
-          // console.log("bottomY ", mapBounds.bottomY.toString());
           urlParams.set("bottomY", mapBounds.bottomY.toString());
-          // console.log("topY ", mapBounds.topY.toString());
           urlParams.set("topY", mapBounds.topY.toString());
           return urlParams;
         },
@@ -330,7 +326,7 @@ export const MapFindingPage = () => {
               style={{
                 position: "absolute",
                 backgroundColor: "#1d2126b3",
-                zIndex: 9999,
+                zIndex: 900,
                 left: open ? "67%" : "45%",
                 top: "30%",
                 padding: "8px 16px",

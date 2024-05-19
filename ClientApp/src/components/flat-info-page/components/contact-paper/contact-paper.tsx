@@ -5,12 +5,13 @@ import { Button, DOLLAR_EXCHANGE_RATE, EURO_EXCHANGE_RATE } from "src/shared";
 import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { useSearchParams } from "react-router-dom";
+import EmailIcon from "@mui/icons-material/Email";
 
-interface OwnerPaperProps {
+interface ContactPaperProps {
   flatInfo: RentObjectInformation;
 }
 
-const OwnerPaper: React.FC<OwnerPaperProps> = ({ flatInfo }) => {
+const ContactPaper: React.FC<ContactPaperProps> = ({ flatInfo }) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const price = Math.round(
@@ -19,8 +20,8 @@ const OwnerPaper: React.FC<OwnerPaperProps> = ({ flatInfo }) => {
   const anotherPrice = Math.round(price / DOLLAR_EXCHANGE_RATE);
 
   const [isContactsOpen, setIsOpenContacts] = React.useState(false);
-  const onCopyPhoneClick = async () => {
-    await navigator.clipboard.writeText(flatInfo?.owner.phoneNumber ?? "");
+  const onCopyClick = async (value: string) => {
+    await navigator.clipboard.writeText(value ?? "");
     openAlert();
   };
 
@@ -68,13 +69,46 @@ const OwnerPaper: React.FC<OwnerPaperProps> = ({ flatInfo }) => {
           </Typography>
         )}
 
-        <Typography variant="body1" color="black" mt="1rem">
-          {flatInfo?.owner.fullName}
-        </Typography>
-        <Typography variant="body1">{"Контактное лицо"}</Typography>
+        {flatInfo.contacts.map((contact, index) => (
+          <Stack gap={1} key={index}>
+            <Stack>
+              <Typography variant="h6" color="black" mt="1rem">
+                {contact.name}
+              </Typography>
+              <Typography variant="body2">{"Контактное лицо"}</Typography>
+            </Stack>
 
-        <Box mt="1.25rem" width="100%">
-          {!isContactsOpen ? (
+            {isContactsOpen && (
+              <Stack gap={1}>
+                <Stack flexDirection="row">
+                  <LocalPhoneIcon />
+                  <Typography variant="body1" ml="0.25rem">
+                    {contact.phone}
+                  </Typography>
+                  <ContentCopyIcon
+                    sx={{ cursor: "pointer", height: "0.875rem" }}
+                    onClick={() => onCopyClick(contact.phone)}
+                  />
+                </Stack>
+
+                {contact.email && (
+                  <Stack flexDirection="row">
+                    <EmailIcon />
+                    <Typography variant="body1" ml="0.25rem">
+                      {contact.email}
+                    </Typography>
+                    <ContentCopyIcon
+                      sx={{ cursor: "pointer", height: "0.875rem" }}
+                      onClick={() => onCopyClick(contact.email)}
+                    />
+                  </Stack>
+                )}
+              </Stack>
+            )}
+          </Stack>
+        ))}
+        {!isContactsOpen && (
+          <Box mt="1.25rem" width="100%">
             <Button
               variant="contained"
               fullWidth
@@ -85,21 +119,8 @@ const OwnerPaper: React.FC<OwnerPaperProps> = ({ flatInfo }) => {
             >
               {"Показать контакты"}
             </Button>
-          ) : (
-            <>
-              <Stack flexDirection="row">
-                <LocalPhoneIcon />
-                <Typography variant="body1" ml="0.25rem">
-                  {flatInfo?.owner.phoneNumber}
-                </Typography>
-                <ContentCopyIcon
-                  sx={{ cursor: "pointer", height: "0.875rem" }}
-                  onClick={() => onCopyPhoneClick()}
-                />
-              </Stack>
-            </>
-          )}
-        </Box>
+          </Box>
+        )}
       </Paper>
       <Snackbar
         open={isAlertOpen}
@@ -115,4 +136,4 @@ const OwnerPaper: React.FC<OwnerPaperProps> = ({ flatInfo }) => {
   );
 };
 
-export default OwnerPaper;
+export default ContactPaper;

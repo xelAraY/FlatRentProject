@@ -83,9 +83,6 @@ export const PostedListings = () => {
                 })
                 .catch((error) => {
                   console.error("Error fetching user data:", error);
-                })
-                .finally(() => {
-                  setLoading(false);
                 });
             } else {
               throw new Error(
@@ -95,6 +92,8 @@ export const PostedListings = () => {
           }
         } catch (error) {
           console.error(error);
+        } finally {
+          setLoading(false);
         }
       } else {
         navigate("/sign-in");
@@ -161,42 +160,41 @@ export const PostedListings = () => {
   return (
     <Stack style={{ backgroundColor: "#f3f5f7", paddingTop: "10px" }}>
       <Stack px="12rem">
-        {rentObjects.length === 0 && !loading ? (
-          <NoFoundObject
-            headerText="На данный момент у вас нет размещенных объявлений"
-            descriptionText="Для размещения нового объявления перейдите на странциу добавления объявления"
-          />
+        {loading ? (
+          <SkeletonPreview />
         ) : (
-          <Stack spacing={5}>
-            <Stack spacing={2}>
-              <Typography variant="body1">
-                <b>{listingsCount}</b> {listingsText}
-              </Typography>
-              {loading ? (
-                <>
-                  <SkeletonPreview />
-                </>
-              ) : (
-                <>
+          <>
+            {rentObjects.length === 0 ? (
+              <NoFoundObject
+                headerText="На данный момент у вас нет размещенных объявлений"
+                descriptionText="Для размещения нового объявления перейдите на странциу добавления объявления"
+              />
+            ) : (
+              <Stack spacing={5}>
+                <Stack spacing={2}>
+                  <Typography variant="body1">
+                    <b>{listingsCount}</b> {listingsText}
+                  </Typography>
                   {rentObjects?.map((rentObject, index) => (
                     <UserFlatPreviewCard
                       rentInformation={rentObject}
                       onCardClick={(flatId: number) =>
                         navigate(`/flats/${flatId}`)
                       }
+                      key={index}
                     />
                   ))}
-                </>
-              )}
-            </Stack>
-            {pages > 1 && (
-              <Pagination
-                count={pages}
-                page={currentPage}
-                onChange={handlePageChange}
-              />
+                </Stack>
+                {pages > 1 && (
+                  <Pagination
+                    count={pages}
+                    page={currentPage}
+                    onChange={handlePageChange}
+                  />
+                )}
+              </Stack>
             )}
-          </Stack>
+          </>
         )}
       </Stack>
     </Stack>

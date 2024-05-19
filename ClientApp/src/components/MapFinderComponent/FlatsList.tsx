@@ -73,7 +73,7 @@ export default function FlatsList({
   return (
     <Box
       sx={{
-        zIndex: 9999,
+        zIndex: 900,
         position: "absolute",
         height: "-webkit-fill-available",
       }}

@@ -36,8 +36,14 @@ export const MapStep: React.FC<MapStepProps> = ({
   currentStepIndex,
   setCommonMapValues,
 }) => {
-  const { values, setFieldValue, isValid, errors, validateForm } =
-    useFormikContext<MapStepFormikValues>();
+  const {
+    values,
+    setFieldValue,
+    isValid,
+    setFieldTouched,
+    errors,
+    validateForm,
+  } = useFormikContext<MapStepFormikValues>();
 
   const [mapData, setMapData] = useState({
     center: [53.900487, 27.555324],
@@ -90,33 +96,54 @@ export const MapStep: React.FC<MapStepProps> = ({
     );
     const data = await res.json();
     setAutomaticChange(true);
-    console.log("data", data);
-    const addresInfo =
-      data.response?.GeoObjectCollection?.featureMember?.[0]?.GeoObject
-        ?.metaDataProperty?.GeocoderMetaData?.Address?.Components;
-    console.log(addresInfo);
+    console.log("data ", data);
 
-    const newRegion =
-      addresInfo.find((el: any) => el.kind === "province")?.name || "";
-    const newCity =
-      addresInfo.find((el: any) => el.kind === "locality")?.name || "";
-    const newStreet =
-      addresInfo.find((el: any) => el.kind === "street")?.name || "";
-    const newHouse =
-      addresInfo.find((el: any) => el.kind === "house")?.name || "";
+    let region = "";
+    let city = "";
+    let street = "";
+    let house = "";
+    let district = "";
+    let microdistrict = "";
 
-    setFieldValue(
-      "region",
-      newRegion === "Минск" ? "Минская область" : newRegion
-    );
-    setFieldValue("city", newCity);
-    setFieldValue("street", newStreet);
-    setFieldValue("houseNumber", newHouse);
+    data.response.GeoObjectCollection.featureMember.forEach((feature: any) => {
+      const addressComponents =
+        feature.GeoObject.metaDataProperty.GeocoderMetaData.Address.Components;
+
+      addressComponents.forEach((component: any) => {
+        if (component.kind === "province" && region === "") {
+          region = component.name;
+        }
+        if (component.kind === "locality" && city === "") {
+          city = component.name;
+        }
+        if (component.kind === "street" && street === "") {
+          street = component.name;
+        }
+        if (component.kind === "house" && house === "") {
+          house = component.name;
+        }
+        if (component.kind === "district") {
+          component.name.startsWith("микрорайон")
+            ? (microdistrict = component.name)
+            : (district = component.name);
+        }
+      });
+    });
+
+    setFieldValue("region", region === "Минск" ? "Минская область" : region);
+    setFieldValue("city", city);
+    setFieldValue("street", street);
+    setFieldValue("houseNumber", house);
+    setFieldValue("district", district);
+    setFieldValue("microDistrict", microdistrict);
     const newValues: MapStepFormikValues = {
       ...values,
-      city: newCity,
-      street: newStreet,
-      houseNumber: newHouse,
+      region: region === "Минск" ? "Минская область" : region,
+      city: city,
+      street: street,
+      houseNumber: house,
+      district: district,
+      microDistrict: microdistrict,
     };
     validateForm(newValues);
   };

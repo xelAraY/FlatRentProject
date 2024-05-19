@@ -132,7 +132,10 @@ export const FlatPreviewCard = ({
   };
 
   return (
-    <Card key={keyNumber} style={{ width: "100%", minWidth: "300px" }}>
+    <Card
+      key={keyNumber}
+      style={{ width: "100%", minWidth: "300px", borderRadius: "1rem" }}
+    >
       <CardActionArea
         onClick={() => onCardClick(rentInformation.rentObject.rentObjId)}
         disableTouchRipple

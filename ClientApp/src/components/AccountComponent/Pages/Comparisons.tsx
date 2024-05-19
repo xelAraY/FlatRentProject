@@ -113,7 +113,7 @@ export const ComparisonsPage = () => {
   console.log(comparisonObjects);
 
   return (
-    <>
+    <Stack>
       {/* <Stack flexDirection="row" justifyContent="space-evenly">
         {Array.from({ length: 4 }).map((_, index) => (
           <Button key={index}>{`Добавить объект`}</Button>
@@ -121,14 +121,14 @@ export const ComparisonsPage = () => {
       </Stack> */}
       {loading ? (
         <Stack alignItems={"center"} height={"100%"}>
-          <CircularProgress />
+          <CircularProgress />1
         </Stack>
       ) : (
         <>
           {comparisonObjects.length === 0 ? (
             <Stack alignItems={"center"} height={"100%"}>
               <NoFoundObject
-                headerText="На данный момент ваш список сравненйи пуст"
+                headerText="На данный момент ваш список сравнений пуст"
                 descriptionText="Для добавления объявления к сравнению перейдите на страницу объявления. Объявление так же должно быть в вашем спсике избранных объявлений"
               />
             </Stack>
@@ -138,7 +138,9 @@ export const ComparisonsPage = () => {
                 <Table stickyHeader>
                   <TableHead>
                     <TableRow>
-                      <TableCell align="center">Параметр</TableCell>
+                      <TableCell align="center" width="10%">
+                        Параметр
+                      </TableCell>
                       {comparisonObjects.map((rentObject, index) => (
                         <TableCell
                           sx={{
@@ -384,6 +386,6 @@ export const ComparisonsPage = () => {
           )}
         </>
       )}
-    </>
+    </Stack>
   );
 };

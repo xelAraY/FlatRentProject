@@ -45,7 +45,7 @@ export const MediaStep: React.FC<MediaStepProps> = ({
   const { values, setFieldValue, setFieldTouched, isValid } =
     useFormikContext<MediaStepFormikValues>();
   const [dragging, setDragging] = useState(false);
-  const maxPhotos = 5;
+  const maxPhotos = 20;
 
   React.useEffect(() => {
     setCommonMediaValues?.(values);

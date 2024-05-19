@@ -52,7 +52,7 @@ export const LocationsSelect = ({
   ];
 
   return (
-    <FormControl sx={{ m: 1, width: 300 }} variant="outlined">
+    <FormControl sx={{ m: 1, width: 300, zIndex: 9999 }} variant="outlined">
       <InputLabel style={{ fontWeight: "600", color: "black" }}>
         Город, район...
       </InputLabel>

@@ -121,14 +121,10 @@ export const FlatPreview = ({
       <IconButton
         sx={{
           position: "absolute",
-          top: 15,
-          right: 15,
+          top: 16,
+          right: 16,
           zIndex: 999,
-          "& .MuiIconButton-root": {
-            ":hover": {
-              backGroundColor: "red",
-            },
-          },
+          color: "white",
         }}
         onClick={handleDeleteFromComparison}
       >

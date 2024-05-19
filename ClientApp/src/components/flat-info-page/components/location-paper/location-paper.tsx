@@ -85,7 +85,9 @@ const LocationPaper: React.FC<LocationPaperProps> = ({
         />
         <InfoRow title={"Улица"} value={`${locationInfo?.street}`} />
         <InfoRow title={"Номер дома"} value={`${locationInfo?.houseNumber}`} />
-        <InfoRow title={"Район города"} value={`${locationInfo?.district}`} />
+        {locationInfo?.district && (
+          <InfoRow title={"Район города"} value={`${locationInfo?.district}`} />
+        )}
         {locationInfo?.microdistrict && (
           <InfoRow
             title={"Микрорайон"}

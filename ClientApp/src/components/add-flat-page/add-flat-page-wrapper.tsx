@@ -1,4 +1,12 @@
-import { Box, Paper, Stepper, ThemeProvider, createTheme } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  Paper,
+  Stack,
+  Stepper,
+  ThemeProvider,
+  createTheme,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Button } from "src/shared";
 import {
@@ -95,78 +103,82 @@ export const AddFlatPageWrapper = () => {
 
   useEffect(() => {
     const getFlatInfo = async () => {
-      const flatId = Number(searchParams.get("id"));
-      if (flatId) {
-        const response = await fetch(`api/flat/${flatId}`);
-        const data = await response.json();
-        const listingData: RentObjectInformation = data[0];
-        const initialValues: AddFlatFormikValues = {
-          general: {
-            roomsCount: listingData.rentObject.roomsCount,
-            floor: listingData.rentObject.floorNumber,
-            floorAmount: listingData.rentObject.floorsAmount,
-            constructionYear: listingData.rentObject.constructionYear,
-            bathroomType: listingData.rentObject.bathroom as any,
-            balconyType: listingData.rentObject.balcony as any,
-          },
-          map: {
-            region: listingData.address.region,
-            city: listingData.address.city,
-            street: listingData.address.street,
-            houseNumber: listingData.address.houseNumber,
-            district: listingData.address.district,
-            microDistrict: listingData.address.microdistrict,
-            coordinates: [
-              listingData.address.latitude,
-              listingData.address.longitude,
-            ],
-            metroParams: listingData.metroStations?.map((station) => {
-              return {
-                station: { name: station.name, color: station.color },
-                wayType: station.wayType,
-                minutes: station.travelTime,
-              } as any;
-            }),
-          },
-          area: {
-            totalArea: listingData.rentObject.totalArea,
-            livingArea: listingData.rentObject.livingArea,
-            kitchenArea: listingData.rentObject.kitchenArea,
-          },
-          additional: {
-            furnitureType: listingData.rentObject.furniture as any,
-            plateType: listingData.rentObject.plate as any,
-            facilities: listingData.additionalInformations as string[],
-            appliances: listingData.appliances as string[],
-          },
-          conditions: {
-            currency: listingData.currency.code as any,
-            rentPrice: listingData.rentObject.rentPrice,
-            rent: listingData.rentObject.rent as any,
-            rentalPeriod: listingData.rentObject.rentalPeriod as any,
-            prepayment: listingData.rentObject.prepayment as any,
-            preferences: listingData.preferences as any,
-          },
-          description: {
-            title: listingData.rentObject.title,
-            description: listingData.rentObject.description,
-          },
-          contactsInfo: {
-            contacts: listingData.contacts.map((contact) => {
-              return {
-                name: contact.name,
-                phone: contact.phone,
-                email: contact.email,
-              };
-            }),
-          },
-          media: { photos: listingData.photos },
-        };
-        setInitValues(initialValues);
-        setAction("edit");
-      } else {
-        setInitValues(getInitialValues());
-        setAction("add");
+      try {
+        const flatId = Number(searchParams.get("id"));
+        if (flatId) {
+          const response = await fetch(`api/flat/${flatId}`);
+          const data = await response.json();
+          const listingData: RentObjectInformation = data[0];
+          const initialValues: AddFlatFormikValues = {
+            general: {
+              roomsCount: listingData.rentObject.roomsCount,
+              floor: listingData.rentObject.floorNumber,
+              floorAmount: listingData.rentObject.floorsAmount,
+              constructionYear: listingData.rentObject.constructionYear,
+              bathroomType: listingData.rentObject.bathroom as any,
+              balconyType: listingData.rentObject.balcony as any,
+            },
+            map: {
+              region: listingData.address.region,
+              city: listingData.address.city,
+              street: listingData.address.street,
+              houseNumber: listingData.address.houseNumber,
+              district: listingData.address.district,
+              microDistrict: listingData.address.microdistrict,
+              coordinates: [
+                listingData.address.latitude,
+                listingData.address.longitude,
+              ],
+              metroParams: listingData.metroStations?.map((station) => {
+                return {
+                  station: { name: station.name, color: station.color },
+                  wayType: station.wayType,
+                  minutes: station.travelTime,
+                } as any;
+              }),
+            },
+            area: {
+              totalArea: listingData.rentObject.totalArea,
+              livingArea: listingData.rentObject.livingArea,
+              kitchenArea: listingData.rentObject.kitchenArea,
+            },
+            additional: {
+              furnitureType: listingData.rentObject.furniture as any,
+              plateType: listingData.rentObject.plate as any,
+              facilities: listingData.additionalInformations as string[],
+              appliances: listingData.appliances as string[],
+            },
+            conditions: {
+              currency: listingData.currency.code as any,
+              rentPrice: listingData.rentObject.rentPrice,
+              rent: listingData.rentObject.rent as any,
+              rentalPeriod: listingData.rentObject.rentalPeriod as any,
+              prepayment: listingData.rentObject.prepayment as any,
+              preferences: listingData.preferences as any,
+            },
+            description: {
+              title: listingData.rentObject.title,
+              description: listingData.rentObject.description,
+            },
+            contactsInfo: {
+              contacts: listingData.contacts.map((contact) => {
+                return {
+                  name: contact.name,
+                  phone: contact.phone,
+                  email: contact.email,
+                };
+              }),
+            },
+            media: { photos: listingData.photos },
+          };
+          setInitValues(initialValues);
+          setAction("edit");
+        } else {
+          setInitValues(getInitialValues());
+          setAction("add");
+        }
+      } catch (error) {
+        console.error("Ошибка ", error);
       }
     };
     getFlatInfo();
@@ -283,38 +295,7 @@ export const AddFlatPageWrapper = () => {
                           <></>
                         )
                       )}
-                      {/* <Box sx={{ mb: 2 }}>
-                      <div>
-                        <Button
-                          variant="contained"
-                          onClick={handleNext}
-                          sx={{ mt: 1, mr: 1 }}
-                        >
-                          {index === steps.length - 1 ? "Finish" : "Continue"}
-                        </Button>
-                        <Button
-                          disabled={index === 0}
-                          onClick={handleBack}
-                          sx={{ mt: 1, mr: 1 }}
-                        >
-                          Back
-                        </Button>
-                      </div>
-                    </Box> */}
                     </Stepper>
-                    {/* {activeStep === steps.length && (
-                    <Paper
-                      elevation={2}
-                      sx={{ p: 3, background: "rgba(32, 160, 32, 0.238)" }}
-                    >
-                      <Typography>
-                        All steps completed - you&apos;re finished
-                      </Typography>
-                      <Button onClick={handleReset} sx={{ mt: 1, mr: 1 }}>
-                        Reset
-                      </Button>
-                    </Paper>
-                  )} */}
                     <Button disabled={!isValid} type="submit">
                       Сохранить и продолжить
                     </Button>
@@ -325,7 +306,9 @@ export const AddFlatPageWrapper = () => {
           </Formik>
         </Paper>
       ) : (
-        <div>Загрузка</div>
+        <Stack alignItems={"center"} height={"100%"}>
+          <CircularProgress />
+        </Stack>
       )}
     </ThemeProvider>
   );
