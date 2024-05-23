@@ -85,7 +85,7 @@ public class AccountController : ControllerBase
       var user = await _context.Users.FirstOrDefaultAsync(u => u.Name == model.Username);
       if (user == null)
       {
-          return BadRequest(new { Message = "Пользователь не найден"});
+        return BadRequest(new { Message = "Пользователь не найден"});
       }
 
       var favourite = await _context.Favourites.FirstOrDefaultAsync(f => f.UserId == user.Id && f.RentObjectId == model.ObjectId);
@@ -93,6 +93,12 @@ public class AccountController : ControllerBase
       if (favourite != null)
       {
         _context.Favourites.Remove(favourite);
+        var comparison = await _context.Comparisons.FirstOrDefaultAsync(c => c.UserId == user.Id && c.RentObjectId == model.ObjectId);
+
+        if (comparison != null)
+        {
+          _context.Comparisons.Remove(comparison);
+        }
       }
       else
       {
@@ -359,7 +365,8 @@ public class AccountController : ControllerBase
           Hidden = true,
           CreatedAt = DateTime.UtcNow,
           UpdatedAt = DateTime.UtcNow,
-          PreviewImageUrl = listingData.Media.Photos.Length > 0 ? listingData.Media.Photos[0] : "https://realt.by/_next/static/media/no-photo.850f218e.svg",
+          // PreviewImageUrl = listingData.Media.Photos.Length > 0 ? listingData.Media.Photos[0] : "https://realt.by/_next/static/media/no-photo.850f218e.svg",
+          PreviewImageUrl = "https://realt.by/_next/static/media/no-photo.850f218e.svg",
           OwnerId = user.Id,
           CurrencyId = currency_id,
           AddressId = address.AddrId,
@@ -536,6 +543,9 @@ public class AccountController : ControllerBase
       return NotFound(new { Message = $"Listing with ID '{rentObjectId}' not found for user '{userName}'." });
 
     var address = await _context.Addresses.FirstOrDefaultAsync(a => a.AddrId == rentObject.AddressId);
+
+    var favourites = await _context.Favourites.Where(f => f.RentObjectId == rentObject.RentObjId).ToListAsync();
+    _context.Favourites.RemoveRange(favourites);
 
     using (var transaction = _context.Database.BeginTransaction())
     {
@@ -790,7 +800,7 @@ public class AccountController : ControllerBase
         return BadRequest(new { Message = "Пользователь не найден"});
       }
 
-      var comparison = await _context.Comparisons.FirstOrDefaultAsync(f => f.UserId == user.Id && f.RentObjectId == model.ObjectId);
+      var comparison = await _context.Comparisons.FirstOrDefaultAsync(c => c.UserId == user.Id && c.RentObjectId == model.ObjectId);
 
       if (comparison != null)
       {

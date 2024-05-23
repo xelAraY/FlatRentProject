@@ -58,12 +58,12 @@ public class HomeController : ControllerBase
   }
 
   [HttpGet("get-by-total-area")]
-  public async Task<IActionResult> GetRecentRentObjectsByLivingArea([FromQuery] string field, int minArea, int maxArea)
+  public async Task<IActionResult> GetRecentRentObjectsByLivingArea([FromQuery] string field, int areaFrom)
   {
     try
     {
       var rentObjectsQuery = _context.RentObjects.AsQueryable();
-      rentObjectsQuery = Filter.ApplyRangeFilter(rentObjectsQuery, field, minArea, maxArea);
+      rentObjectsQuery = Filter.ApplyRangeFilter(rentObjectsQuery, field, valueFrom: areaFrom);
       var result = await Filter.GetRecentRentObjectsCommonQuery(rentObjectsQuery, _context, takeCount: 4);
       return Ok(result);
     }

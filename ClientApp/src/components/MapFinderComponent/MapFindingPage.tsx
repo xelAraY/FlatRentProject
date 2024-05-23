@@ -255,7 +255,9 @@ export const MapFindingPage = () => {
     const placemarksArray: PlacemarkInfo[] = rentObjects.map((rentInf) => {
       return {
         coordinates: [rentInf.address.latitude, rentInf.address.longitude],
-        cost: rentInf.rentObject.rentPrice.toString(),
+        cost: Math.round(
+          rentInf.rentObject.rentPrice * rentInf.currency.officialRate
+        ).toString(),
         id: rentInf.rentObject.rentObjId,
       };
     });

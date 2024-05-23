@@ -19,87 +19,87 @@ export const PostedListings = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const LISTINGS_PER_PAGE = 20;
 
-  useEffect(() => {
-    const getUserListings = async () => {
-      if (isLoggedIn()) {
-        try {
-          const token = localStorage.getItem("token");
-          if (token) {
-            const decodedToken: any = jwtDecode(token);
-            setLoading(true);
+  const getUserListings = async () => {
+    if (isLoggedIn()) {
+      try {
+        const token = localStorage.getItem("token");
+        if (token) {
+          const decodedToken: any = jwtDecode(token);
+          setLoading(true);
 
-            const response = await fetch(
-              `api/account/getUserListings/${decodedToken.nickname}?showData=false`,
+          const response = await fetch(
+            `api/account/getUserListings/${decodedToken.nickname}?showData=false`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          const data = await response.json();
+          if (response.ok) {
+            setListingsCount(data[0].count);
+            const pagesCount = Math.ceil(data[0].count / LISTINGS_PER_PAGE);
+            setPages(pagesCount);
+
+            let page = Number(searchParams.get("page"));
+            if (page) {
+              if (page > pagesCount) {
+                page = 1;
+                setSearchParams(
+                  (urlParams) => {
+                    urlParams.set("page", "1");
+                    return urlParams;
+                  },
+                  { replace: true }
+                );
+              }
+            } else {
+              page = 1;
+            }
+            setCurrentPage(page);
+
+            await fetch(
+              `api/account/getUserListings/${decodedToken.nickname}?page=${page}&showData=true`,
               {
                 headers: {
                   Authorization: `Bearer ${token}`,
                   "Content-Type": "application/json",
                 },
               }
-            );
-
-            const data = await response.json();
-            if (response.ok) {
-              setListingsCount(data[0].count);
-              const pagesCount = Math.ceil(data[0].count / LISTINGS_PER_PAGE);
-              setPages(pagesCount);
-
-              let page = Number(searchParams.get("page"));
-              if (page) {
-                if (page > pagesCount) {
-                  page = 1;
-                  setSearchParams(
-                    (urlParams) => {
-                      urlParams.set("page", "1");
-                      return urlParams;
-                    },
-                    { replace: true }
+            )
+              .then((response) => {
+                if (!response.ok) {
+                  throw new Error(
+                    `Failed to fetch user data: ${response.status} ${response.statusText}`
                   );
                 }
-              } else {
-                page = 1;
-              }
-              setCurrentPage(page);
-
-              await fetch(
-                `api/account/getUserListings/${decodedToken.nickname}?page=${page}&showData=true`,
-                {
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                  },
-                }
-              )
-                .then((response) => {
-                  if (!response.ok) {
-                    throw new Error(
-                      `Failed to fetch user data: ${response.status} ${response.statusText}`
-                    );
-                  }
-                  return response.json();
-                })
-                .then((data) => {
-                  setRentObjects(data);
-                })
-                .catch((error) => {
-                  console.error("Error fetching user data:", error);
-                });
-            } else {
-              throw new Error(
-                `Failed to fetch user data: ${response.status} ${response.statusText}`
-              );
-            }
+                return response.json();
+              })
+              .then((data) => {
+                setRentObjects(data);
+              })
+              .catch((error) => {
+                console.error("Error fetching user data:", error);
+              });
+          } else {
+            throw new Error(
+              `Failed to fetch user data: ${response.status} ${response.statusText}`
+            );
           }
-        } catch (error) {
-          console.error(error);
-        } finally {
-          setLoading(false);
         }
-      } else {
-        navigate("/sign-in");
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
       }
-    };
+    } else {
+      navigate("/sign-in");
+    }
+  };
 
+  useEffect(() => {
     getUserListings();
   }, []);
 
@@ -158,17 +158,19 @@ export const PostedListings = () => {
       : "объявлений";
 
   return (
-    <Stack style={{ backgroundColor: "#f3f5f7", paddingTop: "10px" }}>
+    <Stack style={{ backgroundColor: "#f3f5f7" }}>
       <Stack px="12rem">
         {loading ? (
           <SkeletonPreview />
         ) : (
           <>
             {rentObjects.length === 0 ? (
-              <NoFoundObject
-                headerText="На данный момент у вас нет размещенных объявлений"
-                descriptionText="Для размещения нового объявления перейдите на странциу добавления объявления"
-              />
+              <Stack alignItems="center" pt={"30px"}>
+                <NoFoundObject
+                  headerText="На данный момент у вас нет размещенных объявлений"
+                  descriptionText="Для размещения нового объявления перейдите на странциу добавления объявления"
+                />
+              </Stack>
             ) : (
               <Stack spacing={5}>
                 <Stack spacing={2}>
@@ -181,6 +183,7 @@ export const PostedListings = () => {
                       onCardClick={(flatId: number) =>
                         navigate(`/flats/${flatId}`)
                       }
+                      onListingDelete={getUserListings}
                       key={index}
                     />
                   ))}

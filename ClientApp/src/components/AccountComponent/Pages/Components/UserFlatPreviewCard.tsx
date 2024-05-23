@@ -41,6 +41,7 @@ import { jwtDecode } from "jwt-decode";
 interface CardProps {
   rentInformation: RentObjectInformation;
   onCardClick: (flatId: number) => void;
+  onListingDelete: () => void;
 }
 
 interface ForPhotos {
@@ -53,6 +54,7 @@ interface ForPhotos {
 export const UserFlatPreviewCard = ({
   rentInformation,
   onCardClick,
+  onListingDelete,
 }: CardProps) => {
   const isMedium = useMediaQuery((theme: any) =>
     theme.breakpoints.between("xl", "2000")
@@ -189,7 +191,8 @@ export const UserFlatPreviewCard = ({
       } catch (error) {
         console.error(error);
       } finally {
-        navigate("/account/myListings");
+        await onListingDelete();
+        //navigate("/account/myListings");
       }
     } else {
       navigate("/sign-in");
@@ -303,7 +306,10 @@ export const UserFlatPreviewCard = ({
                                 {`Редактировать`}
                               </MenuItem>
                               <MenuItem
-                                onClick={(e) => handleOpenDeleteAlert(e)}
+                                onClick={(e) => {
+                                  setOpen(false);
+                                  handleOpenDeleteAlert(e);
+                                }}
                               >
                                 {`Удалить`}
                               </MenuItem>

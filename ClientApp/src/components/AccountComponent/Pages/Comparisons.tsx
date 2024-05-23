@@ -121,12 +121,12 @@ export const ComparisonsPage = () => {
       </Stack> */}
       {loading ? (
         <Stack alignItems={"center"} height={"100%"}>
-          <CircularProgress />1
+          <CircularProgress />
         </Stack>
       ) : (
         <>
           {comparisonObjects.length === 0 ? (
-            <Stack alignItems={"center"} height={"100%"}>
+            <Stack alignItems={"center"} pt={"30px"}>
               <NoFoundObject
                 headerText="На данный момент ваш список сравнений пуст"
                 descriptionText="Для добавления объявления к сравнению перейдите на страницу объявления. Объявление так же должно быть в вашем спсике избранных объявлений"

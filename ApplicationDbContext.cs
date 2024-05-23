@@ -27,6 +27,12 @@ public class ApplicationDbContext : DbContext
 
   public DbSet<Comparison> Comparisons { get; set; }
 
+  [DbFunction("converttobyn", "public")]
+  public decimal ConvertToBYN(decimal? price, int currencyType)
+  {
+    throw new NotImplementedException("This method is mapped to a database function and should not be invoked in C# code.");
+  }
+
   public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
   {
   }

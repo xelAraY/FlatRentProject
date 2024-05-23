@@ -21,7 +21,12 @@ public static class Filter
     {
       var query = rentObjectsQuery;
 
-      query = ApplySort(query, sortType);
+      query = ApplySort(query, sortType, _context);
+
+      if (string.IsNullOrEmpty(sortType))
+      {
+        query = query.OrderByDescending(ro => ro.CreatedAt);
+      }
 
       if (takeCount.HasValue && takeCount.Value > 0)
       {
@@ -32,43 +37,43 @@ public static class Filter
       }
       
       var recentRentObjects = await query
-          .Join(
-              _context.Users,
-              ro => ro.OwnerId,
-              user => user.Id,
-              (ro, user) => new { RentObject = ro, Owner = user }
-          )
-          .Join(
-              _context.Addresses,
-              result => result.RentObject.AddressId,
-              address => address.AddrId,
-              (result, address) => new { result.RentObject, result.Owner, Address = address }
-          )
-          .Join(
-            _context.Currencies,
-            result => result.RentObject.CurrencyId,
-            currency => currency.Id,
-            (result, currency) => new { result.RentObject, result.Owner, result.Address, Currency = currency}
-          )
-          .Select(result => new
+        .Join(
+            _context.Users,
+            ro => ro.OwnerId,
+            user => user.Id,
+            (ro, user) => new { RentObject = ro, Owner = user }
+        )
+        .Join(
+            _context.Addresses,
+            result => result.RentObject.AddressId,
+            address => address.AddrId,
+            (result, address) => new { result.RentObject, result.Owner, Address = address }
+        )
+        .Join(
+          _context.Currencies,
+          result => result.RentObject.CurrencyId,
+          currency => currency.Id,
+          (result, currency) => new { result.RentObject, result.Owner, result.Address, Currency = currency}
+        )
+        .Select(result => new
+        {
+          result.RentObject,
+          Owner = new
           {
-            result.RentObject,
-            Owner = new
-            {
-              result.Owner.Name,
-              result.Owner.FullName,
-              result.Owner.PhoneNumber,
-              result.Owner.RegistrationDate,
-              result.Owner.LastLogin
-            },
-            result.Address,
-            Currency = new 
-            {
-              result.Currency.Code,
-              result.Currency.OfficialRate
-            }
-          })
-          .ToListAsync();
+            result.Owner.Name,
+            result.Owner.FullName,
+            result.Owner.PhoneNumber,
+            result.Owner.RegistrationDate,
+            result.Owner.LastLogin
+          },
+          result.Address,
+          Currency = new 
+          {
+            result.Currency.Code,
+            result.Currency.OfficialRate
+          }
+        })
+        .ToListAsync();
 
       if (mapParams != null && mapParams.LeftX != null && mapParams.RightX != null && mapParams.BottomY != null && mapParams.TopY != null ) {
         recentRentObjects = recentRentObjects
@@ -82,12 +87,12 @@ public static class Filter
 
       var rentObjectIds = recentRentObjects.Select(ro => ro.RentObject.RentObjId);
       var photos = await _context.Photos
-          .Where(photo => rentObjectIds.Contains(photo.RentObjId))
-          .ToListAsync();
+        .Where(photo => rentObjectIds.Contains(photo.RentObjId))
+        .ToListAsync();
 
       var contacts = await _context.Contacts
-          .Where(contact => rentObjectIds.Contains(contact.RentObjectId))
-          .ToListAsync();
+        .Where(contact => rentObjectIds.Contains(contact.RentObjectId))
+        .ToListAsync();
 
       var result = recentRentObjects.Select(result => new
       {
@@ -103,11 +108,29 @@ public static class Filter
     }
   }
 
+  private static IQueryable<RentObject> ApplySort(IQueryable<RentObject> query, string sortType, ApplicationDbContext context)
+  {
+    switch (sortType)
+    {
+      case "createdAt":
+        return query.OrderByDescending(ro => ro.CreatedAt);
+
+      case "minPrice":
+        return query.OrderBy(ro => context.ConvertToBYN(ro.RentPrice, ro.CurrencyId));
+
+      case "maxPrice":
+        return query.OrderByDescending(ro => context.ConvertToBYN(ro.RentPrice, ro.CurrencyId));
+
+      default:
+        return query.OrderByDescending(ro => ro.CreatedAt);
+    }
+  }
+
   public static IQueryable<RentObject> ApplyRangeFilter(
     IQueryable<RentObject> rentObjectsQuery,
     string propertyName,
     int? valueFrom,
-    int? valueTo)
+    int? valueTo = null)
   {
     if (valueFrom.HasValue)
     {
@@ -286,12 +309,12 @@ public static class Filter
     if (minPrice.HasValue)
     {
       decimal minPriceInBYN = ConvertToBYN(minPrice, currencyType, context);  
-      query = query.Where(ro => ro.RentPrice >= minPriceInBYN);
+      query = query.Where(ro => context.ConvertToBYN(ro.RentPrice, ro.CurrencyId) >= minPriceInBYN);
     }
 
     if (maxPrice.HasValue){
       decimal maxPriceInBYN = ConvertToBYN(maxPrice, currencyType, context);  
-      query = query.Where(ro => ro.RentPrice <= maxPriceInBYN);
+      query = query.Where(ro => context.ConvertToBYN(ro.RentPrice, ro.CurrencyId) <= maxPriceInBYN);
     }
     
     return query;    
@@ -384,30 +407,6 @@ public static class Filter
     }).Cast<object>().ToList();
 
     return result;
-  }
-
-  private static IQueryable<RentObject> ApplySort(IQueryable<RentObject> query, string sortType)
-  {
-    Console.WriteLine(sortType);
-    switch (sortType) {
-      case "createdAt":
-        query = query.OrderByDescending(ro => ro.CreatedAt);
-      break;
-
-      case "minPrice":
-        query = query.OrderBy(ro => ro.RentPrice);
-      break;
-
-      case "maxPrice":
-        query = query.OrderByDescending(ro => ro.RentPrice);
-      break;
-
-      default:
-        query = query.OrderByDescending(ro => ro.CreatedAt); 
-      break;
-    }
-
-    return query;
   }
 
   public static decimal ConvertToBYN(decimal? price, string currencyType, ApplicationDbContext context)

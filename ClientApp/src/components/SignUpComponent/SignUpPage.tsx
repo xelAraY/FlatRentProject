@@ -77,7 +77,7 @@ export const SignUpPage = () => {
       setResponceMsg(data.message);
       if (response.ok) {
         setIsError(false);
-        navigate("/");
+        navigate("/sign-in");
       } else {
         setIsError(true);
         console.error("Ошибка регистрации: ", responceMsg);

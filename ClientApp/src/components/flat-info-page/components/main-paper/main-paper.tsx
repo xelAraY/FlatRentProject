@@ -274,6 +274,7 @@ const MainPaper: React.FC<MainPaperProps> = ({
                   onChange={handleToggleComparison}
                 />
               }
+              sx={{ whiteSpace: "nowrap" }}
               label="К сравнению"
             />
           )}

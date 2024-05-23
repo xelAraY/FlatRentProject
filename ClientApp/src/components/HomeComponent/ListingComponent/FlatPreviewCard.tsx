@@ -174,7 +174,7 @@ export const FlatPreviewCard = ({
                 {price} р./мес.&nbsp;
               </Typography>
               <Typography gutterBottom variant="body2" fontWeight="400">
-                ≈{anotherPrice} {currencyType}/мес.
+                ≈ {anotherPrice} {currencyType}/мес.
               </Typography>
             </Stack>
             <IconButton

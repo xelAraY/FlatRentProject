@@ -34,8 +34,8 @@ export const Home = () => {
         "Загляните в самые свежие предложения по аренде с возможностью проживания с питомцами!",
     },
     {
-      path: `api/home/get-by-total-area?field=TotalArea&minArea=40&maxArea=70`,
-      title: "Просторные жилые решения: Квартиры от 50м² и более!",
+      path: `api/home/get-by-total-area?field=TotalArea&areaFrom=100`,
+      title: "Просторные жилые решения: Квартиры от 100м² и более!",
       subTitle:
         "Выбирайте простор и уют в каждом уголке! Покорите новые горизонты комфорта!",
     },
