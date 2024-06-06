@@ -47,6 +47,10 @@ export const HomePage = () => {
       icon: <ThumbUpIcon />,
     },
     {
+      text: "Сравнение объявлений из списка избранных по параметрам ",
+      icon: <BalanceIcon />,
+    },
+    {
       text: "Выход из аккаунта и авторизация в другом",
       icon: <ExitToAppIcon />,
     },

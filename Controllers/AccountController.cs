@@ -366,7 +366,7 @@ public class AccountController : ControllerBase
           CreatedAt = DateTime.UtcNow,
           UpdatedAt = DateTime.UtcNow,
           // PreviewImageUrl = listingData.Media.Photos.Length > 0 ? listingData.Media.Photos[0] : "https://realt.by/_next/static/media/no-photo.850f218e.svg",
-          PreviewImageUrl = "https://realt.by/_next/static/media/no-photo.850f218e.svg",
+          PreviewImageUrl = "https://static.realt.by/user/82/3/r2001btff382/52351a0109.jpg",
           OwnerId = user.Id,
           CurrencyId = currency_id,
           AddressId = address.AddrId,
@@ -653,7 +653,7 @@ public class AccountController : ControllerBase
         rentObject.RentalPeriod = listingData.Conditions.RentalPeriod;
         rentObject.CreatedAt = rentObject.CreatedAt.ToUniversalTime();
         rentObject.UpdatedAt = DateTime.UtcNow;
-        rentObject.PreviewImageUrl = listingData.Media.Photos.Length > 0 ? listingData.Media.Photos[0] : "https://realt.by/_next/static/media/no-photo.850f218e.svg";
+        rentObject.PreviewImageUrl = "https://realt.by/_next/static/media/no-photo.850f218e.svg";
         rentObject.CurrencyId = currency_id;
 
         _context.RentObjects.Update(rentObject);

@@ -243,7 +243,7 @@ export const MapStep: React.FC<MapStepProps> = ({
           <TextField placeholder="Введите микрорайон" />
         </FormikControlMui>
       </Stack>
-      <Button onClick={() => fetchCoordinates()}>ChangeMarker</Button>
+      <Button onClick={() => fetchCoordinates()}>Изменить на карте</Button>
       <Stack
         style={{
           height: "40rem",

@@ -102,6 +102,7 @@ export const ListingOverview = (props: ListingOverviewProps) => {
                       rentObject.rentObject.rentObjId
                     )}
                     onFavouriteChange={props.onFavouriteChange}
+                    customWidth="346px"
                   />
                 </Grid>
               ))}

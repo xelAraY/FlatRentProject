@@ -1,10 +1,12 @@
 import {
+  Alert,
   Box,
   Button,
   Card,
   CardActionArea,
   CardContent,
   IconButton,
+  Snackbar,
   Stack,
   Typography,
   useMediaQuery,
@@ -18,6 +20,9 @@ import {
   ImageGalleryStyled,
 } from "src/shared";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import EmailIcon from "@mui/icons-material/Email";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import { isLoggedIn } from "src/helpFunctions/tokenCheck";
 import { jwtDecode } from "jwt-decode";
@@ -29,6 +34,7 @@ interface CardProps {
   isFavourite: boolean;
   onFavouriteChange: (isChange: boolean, objectId?: number) => void;
   onCardClick: (flatId: number) => void;
+  customWidth?: string;
 }
 
 interface ForPhotos {
@@ -44,6 +50,7 @@ export const FlatPreviewCard = ({
   isFavourite,
   onCardClick,
   onFavouriteChange,
+  customWidth,
 }: CardProps) => {
   const isMedium = useMediaQuery((theme: any) =>
     theme.breakpoints.between("xl", "2000")
@@ -58,6 +65,7 @@ export const FlatPreviewCard = ({
 
   const [images, setImages] = useState<ForPhotos[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [contactOpen, setContactOpen] = useState(false);
 
   const navigate = useNavigate();
 
@@ -131,10 +139,32 @@ export const FlatPreviewCard = ({
     }
   };
 
+  const onCopyClick = async (value: string) => {
+    await navigator.clipboard.writeText(value ?? "");
+    openAlert();
+  };
+
+  const [isAlertOpen, setIsAlertOpen] = React.useState(false);
+
+  const openAlert = () => {
+    setIsAlertOpen(true);
+  };
+
+  const closeAlert = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setIsAlertOpen(false);
+  };
+
   return (
     <Card
       key={keyNumber}
-      style={{ width: "100%", minWidth: "300px", borderRadius: "1rem" }}
+      style={{ width: customWidth || "100%", borderRadius: "1rem" }}
     >
       <CardActionArea
         onClick={() => onCardClick(rentInformation.rentObject.rentObjId)}
@@ -206,7 +236,7 @@ export const FlatPreviewCard = ({
           <Stack
             mt="1rem"
             flexDirection="row"
-            alignItems="end"
+            alignItems="start"
             gap="0.5rem"
             justifyContent="space-between"
           >
@@ -218,22 +248,55 @@ export const FlatPreviewCard = ({
                 {`${rentInformation.address.street} ${rentInformation.address.houseNumber}`}
               </Typography>
             </Stack>
-            <Box>
-              <Button
-                variant="contained"
-                color="info"
-                style={{ textTransform: "none" }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-              >
-                {/* не удаляй e.stopPropagation(); а то будет вызываться onClick у Card */}
-                Контакт
-              </Button>
-            </Box>
+
+            {contactOpen ? (
+              <Stack>
+                <Stack flexDirection="row">
+                  <LocalPhoneIcon fontSize="small" />
+                  <Typography variant="body2" ml="0.25rem">
+                    {rentInformation.contacts[0].phone}
+                  </Typography>
+                  <ContentCopyIcon
+                    sx={{ cursor: "pointer", height: "0.875rem" }}
+                    fontSize="small"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onCopyClick(rentInformation.contacts[0].phone);
+                    }}
+                  />
+                </Stack>
+                <Typography variant="body2" textAlign="end" mr="6px">
+                  {rentInformation.contacts[0].name}
+                </Typography>
+              </Stack>
+            ) : (
+              <Box>
+                <Button
+                  variant="contained"
+                  color="info"
+                  style={{ textTransform: "none" }}
+                  onClick={(e) => {
+                    setContactOpen(true);
+                    e.stopPropagation();
+                  }}
+                >
+                  Контакт
+                </Button>
+              </Box>
+            )}
           </Stack>
         </CardContent>
       </CardActionArea>
+      <Snackbar
+        open={isAlertOpen}
+        autoHideDuration={2000}
+        onClose={closeAlert}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert onClose={closeAlert} severity="success">
+          Скопировано в буфер обмена
+        </Alert>
+      </Snackbar>
     </Card>
   );
 };

@@ -114,14 +114,14 @@ export const NavigationBar = () => {
           <BalanceIcon style={{ marginRight: "10px" }} />
           Сравнения
         </IconButton>
-        <IconButton
+        {/* <IconButton
           color="primary"
           style={commonStyle}
           onClick={() => navigate("/account/password")}
         >
           <LockResetIcon style={{ marginRight: "10px" }} />
           Сменить пароль
-        </IconButton>
+        </IconButton> */}
         <IconButton
           color="primary"
           style={commonStyle}

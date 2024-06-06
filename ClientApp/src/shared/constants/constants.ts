@@ -1,2 +1,2 @@
-export const DOLLAR_EXCHANGE_RATE = 3.2543;
-export const EURO_EXCHANGE_RATE = 3.4694;
+export const DOLLAR_EXCHANGE_RATE = 3.1934;
+export const EURO_EXCHANGE_RATE = 3.4598;
