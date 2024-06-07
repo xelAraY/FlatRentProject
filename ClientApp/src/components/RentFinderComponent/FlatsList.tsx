@@ -10,6 +10,7 @@ interface FlatsListProps {
   favourites: number[];
   xl?: number;
   onFavouritesChanged: (isChanged: boolean, objectId?: number) => void;
+  onUpdate?: () => void;
 }
 
 export const FlatsList = ({
@@ -18,6 +19,7 @@ export const FlatsList = ({
   favourites,
   xl = 3,
   onFavouritesChanged,
+  onUpdate,
 }: FlatsListProps) => {
   const numberOfRentObjects = 4;
   const navigate = useNavigate();
@@ -56,6 +58,7 @@ export const FlatsList = ({
                     rentObject.rentObject.rentObjId
                   )}
                   onFavouriteChange={onFavouritesChanged}
+                  onUpdate={onUpdate}
                 />
               </Grid>
             ))}

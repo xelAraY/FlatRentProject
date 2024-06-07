@@ -538,61 +538,72 @@ public class AccountController : ControllerBase
     if (user == null)
       return NotFound(new { Message = $"User with username '{userName}' not found."});
 
-    var rentObject = await _context.RentObjects.FirstOrDefaultAsync(ro => ro.RentObjId == rentObjectId && ro.OwnerId == user.Id);
+    RentObject? rentObject;
+    if (userName != "admin") {
+      rentObject = await _context.RentObjects.FirstOrDefaultAsync(ro => ro.RentObjId == rentObjectId && ro.OwnerId == user.Id);  
+    } else {
+      rentObject = await _context.RentObjects.FirstOrDefaultAsync(ro => ro.RentObjId == rentObjectId);
+    }
+    
     if (rentObject == null)
       return NotFound(new { Message = $"Listing with ID '{rentObjectId}' not found for user '{userName}'." });
 
     var address = await _context.Addresses.FirstOrDefaultAsync(a => a.AddrId == rentObject.AddressId);
 
-    var favourites = await _context.Favourites.Where(f => f.RentObjectId == rentObject.RentObjId).ToListAsync();
-    _context.Favourites.RemoveRange(favourites);
+    _context.RentObjects.Remove(rentObject);
+    await _context.SaveChangesAsync();
 
-    using (var transaction = _context.Database.BeginTransaction())
-    {
-      try
-      {
-        var photos = await _context.Photos.Where(p => p.RentObjId == rentObject.RentObjId).ToListAsync();
-        _context.Photos.RemoveRange(photos);
+    return Ok(new { Message = "Listing deleted successfully." });
 
-        var contacts = await _context.Contacts.Where(c => c.RentObjectId == rentObject.RentObjId).ToListAsync();
-        _context.Contacts.RemoveRange(contacts);
+    // var favourites = await _context.Favourites.Where(f => f.RentObjectId == rentObject.RentObjId).ToListAsync();
+    // _context.Favourites.RemoveRange(favourites);
 
-        var rentObjectAppliances = await _context.RentObjectAppliances.Where(roa => roa.RentObjId == rentObject.RentObjId).ToListAsync();
-        _context.RentObjectAppliances.RemoveRange(rentObjectAppliances);
+    // using (var transaction = _context.Database.BeginTransaction())
+    // {
+    //   try
+    //   {
+    //     var photos = await _context.Photos.Where(p => p.RentObjId == rentObject.RentObjId).ToListAsync();
+    //     _context.Photos.RemoveRange(photos);
 
-        var rentObjectPreferences = await _context.RentObjectPreferences.Where(rop => rop.RentObjId == rentObject.RentObjId).ToListAsync();
-        _context.RentObjectPreferences.RemoveRange(rentObjectPreferences);
+    //     var contacts = await _context.Contacts.Where(c => c.RentObjectId == rentObject.RentObjId).ToListAsync();
+    //     _context.Contacts.RemoveRange(contacts);
 
-        var rentObjectAddInfs = await _context.RentObjectAddInfs.Where(roai => roai.RentObjId == rentObject.RentObjId).ToListAsync();
-        _context.RentObjectAddInfs.RemoveRange(rentObjectAddInfs);
+    //     var rentObjectAppliances = await _context.RentObjectAppliances.Where(roa => roa.RentObjId == rentObject.RentObjId).ToListAsync();
+    //     _context.RentObjectAppliances.RemoveRange(rentObjectAppliances);
 
-        var rentObjectMetroStations = await _context.RentObjectsMetroStations.Where(roms => roms.RentObjId == rentObject.RentObjId).ToListAsync();
-        _context.RentObjectsMetroStations.RemoveRange(rentObjectMetroStations);
-        await _context.SaveChangesAsync();
+    //     var rentObjectPreferences = await _context.RentObjectPreferences.Where(rop => rop.RentObjId == rentObject.RentObjId).ToListAsync();
+    //     _context.RentObjectPreferences.RemoveRange(rentObjectPreferences);
 
-        _context.RentObjects.Remove(rentObject);
-        await _context.SaveChangesAsync();
+    //     var rentObjectAddInfs = await _context.RentObjectAddInfs.Where(roai => roai.RentObjId == rentObject.RentObjId).ToListAsync();
+    //     _context.RentObjectAddInfs.RemoveRange(rentObjectAddInfs);
 
-        if (address != null)
-          _context.Addresses.Remove(address);
+    //     var rentObjectMetroStations = await _context.RentObjectsMetroStations.Where(roms => roms.RentObjId == rentObject.RentObjId).ToListAsync();
+    //     _context.RentObjectsMetroStations.RemoveRange(rentObjectMetroStations);
+    //     await _context.SaveChangesAsync();
 
-        await _context.SaveChangesAsync();
-        await transaction.CommitAsync();
+    //     _context.RentObjects.Remove(rentObject);
+    //     await _context.SaveChangesAsync();
 
-        return Ok(new { Message = "Listing deleted successfully." });
-      }
-      catch (Exception ex)
-      {
-        await transaction.RollbackAsync();
-        Console.WriteLine($"Error deleting listing: {ex.Message}");
+    //     if (address != null)
+    //       _context.Addresses.Remove(address);
 
-        if (ex.InnerException != null)
-        {
-          Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
-        }
-        return StatusCode(500, new { Message = $"An error occurred while deleting the listing: {ex.Message}" });
-      }
-    }
+    //     await _context.SaveChangesAsync();
+    //     await transaction.CommitAsync();
+
+    //     return Ok(new { Message = "Listing deleted successfully." });
+    //   }
+    //   catch (Exception ex)
+    //   {
+    //     await transaction.RollbackAsync();
+    //     Console.WriteLine($"Error deleting listing: {ex.Message}");
+
+    //     if (ex.InnerException != null)
+    //     {
+    //       Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
+    //     }
+    //     return StatusCode(500, new { Message = $"An error occurred while deleting the listing: {ex.Message}" });
+    //   }
+    // }
   }
 
   [HttpPost("updateListing/{rentObjectId}")]
@@ -607,7 +618,14 @@ public class AccountController : ControllerBase
     if (user == null)
       return NotFound(new { Message = $"User with username '{listingData.UserName}' not found."});
 
-    var rentObject = await _context.RentObjects.FirstOrDefaultAsync(ro => ro.RentObjId == rentObjectId && ro.OwnerId == user.Id);
+    RentObject? rentObject;
+    if (listingData.UserName == "admin") {
+      rentObject = await _context.RentObjects.FirstOrDefaultAsync(ro => ro.RentObjId == rentObjectId);  
+    } else 
+    {
+      rentObject = await _context.RentObjects.FirstOrDefaultAsync(ro => ro.RentObjId == rentObjectId && ro.OwnerId == user.Id);  
+    }
+    
     if (rentObject == null)
       return NotFound(new { Message = $"Listing with ID '{rentObjectId}' not found for user '{listingData.UserName}'." });
 
@@ -822,6 +840,24 @@ public class AccountController : ControllerBase
         Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
       }
       return BadRequest(new { Message = $"Ошибка: {ex.Message}"});
+    }
+  }
+
+  [Authorize]
+  [HttpGet("getUsers")]
+  public async Task<IActionResult> GetUsers()
+  {
+    try
+    {
+      var users = await _context.Users.Select(u => u.Name).ToListAsync();
+      if (users == null)
+        return NotFound(new { Message = $"Can not find any users"});
+
+      return Ok(users);
+    }
+    catch (Exception ex)
+    {
+      return BadRequest( new { Message = $"Error while retrieving comparisons objects: {ex.Message}"});
     }
   }
 }

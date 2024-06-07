@@ -2,7 +2,13 @@ import {
   Avatar,
   Box,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Grid,
+  IconButton,
   InputAdornment,
   MenuItem,
   Paper,
@@ -23,6 +29,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import UpdateIcon from "@mui/icons-material/Update";
 import { stringAvatar } from "src/helpFunctions/avatarColor";
 import { UserData } from "src/interfaces/UserData";
+import ClearIcon from "@mui/icons-material/Clear";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -36,8 +43,14 @@ const VisuallyHiddenInput = styled("input")({
   width: 1,
 });
 
-export const ProfilePage = () => {
+interface ProfilePageProps {
+  userName?: string;
+  onUserDelete?: () => void;
+}
+
+export const ProfilePage = ({ userName, onUserDelete }: ProfilePageProps) => {
   const navigate = useNavigate();
+  const [openDeleteAlert, setOpenDeleteAlert] = useState(false);
   const [userData, setUserData] = useState<UserData>({
     nickname: "",
     name: "",
@@ -79,7 +92,13 @@ export const ProfilePage = () => {
             const decodedToken: any = jwtDecode(token);
 
             setLoading(true);
-            await fetch(`api/account/getUserData/${decodedToken.nickname}`, {
+            let user;
+            if (decodedToken.nickname === "admin") {
+              user = userName !== undefined ? userName : decodedToken.nickname;
+            } else {
+              user = decodedToken.nickname;
+            }
+            await fetch(`api/account/getUserData/${user}`, {
               headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",
@@ -114,6 +133,35 @@ export const ProfilePage = () => {
 
     getUserData();
   }, []);
+
+  const handleDeleteAccount = async () => {
+    handleCloseDeleteAlert();
+    const token = localStorage.getItem("token");
+    if (token) {
+      const response = await fetch(
+        `api/account/deleteUser/${userData.nickname}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.ok) {
+        onUserDelete && onUserDelete();
+      }
+    }
+  };
+
+  const handleOpenDeleteAlert = () => {
+    setOpenDeleteAlert(true);
+  };
+
+  const handleCloseDeleteAlert = () => {
+    setOpenDeleteAlert(false);
+  };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -204,166 +252,209 @@ export const ProfilePage = () => {
           <CircularProgress />
         </Stack>
       ) : (
-        <Grid container spacing={2}>
-          <Grid item xs={4}>
-            <Paper elevation={3}>
-              <Stack spacing={2} alignItems={"center"} padding={2}>
-                {userData.avatarUrl !== "" ? (
-                  <Avatar
-                    src={userData.avatarUrl}
-                    sx={{ width: 160, height: 160, fontSize: "50px" }}
-                  />
-                ) : (
-                  <Avatar
-                    {...stringAvatar(userData ? userData.nickname : "User")}
-                    style={{ width: 160, height: 160, fontSize: "50px" }}
-                  />
-                )}
-                <Button
-                  component="label"
-                  role={undefined}
-                  variant="contained"
-                  tabIndex={-1}
-                  startIcon={<UploadFileIcon />}
-                  style={{ fontSize: "16px" }}
-                >
-                  Изменить аватар
-                  <VisuallyHiddenInput
-                    type="file"
-                    onChange={handleFileChange}
-                  />
-                </Button>
-                <Button
-                  startIcon={<DeleteIcon />}
-                  onClick={() => {
-                    setUserData((prevUserData) => ({
-                      ...prevUserData,
-                      avatarUrl: "",
-                    }));
-                  }}
-                  color="error"
-                  style={{ fontSize: "16px" }}
-                >
-                  Удалить
-                </Button>
-                <Stack alignItems={"center"}>
-                  <Typography variant="h4" fontWeight={600}>
-                    {userData.nickname}
-                  </Typography>
-                  <Typography variant="h6">Собственник</Typography>
+        <>
+          <Grid container spacing={2}>
+            <Grid item xs={4}>
+              <Paper elevation={3}>
+                <Stack spacing={2} alignItems={"center"} padding={2}>
+                  {userData.avatarUrl !== "" ? (
+                    <Avatar
+                      src={userData.avatarUrl}
+                      sx={{ width: 160, height: 160, fontSize: "50px" }}
+                    />
+                  ) : (
+                    <Avatar
+                      {...stringAvatar(userData ? userData.nickname : "User")}
+                      style={{ width: 160, height: 160, fontSize: "50px" }}
+                    />
+                  )}
+                  <Button
+                    component="label"
+                    role={undefined}
+                    variant="contained"
+                    tabIndex={-1}
+                    startIcon={<UploadFileIcon />}
+                    style={{ fontSize: "16px" }}
+                  >
+                    Изменить аватар
+                    <VisuallyHiddenInput
+                      type="file"
+                      onChange={handleFileChange}
+                    />
+                  </Button>
+                  <Button
+                    startIcon={<DeleteIcon />}
+                    onClick={() => {
+                      setUserData((prevUserData) => ({
+                        ...prevUserData,
+                        avatarUrl: "",
+                      }));
+                    }}
+                    color="error"
+                    style={{ fontSize: "16px" }}
+                  >
+                    Удалить
+                  </Button>
+                  <Stack alignItems={"center"}>
+                    <Typography variant="h4" fontWeight={600}>
+                      {userData.nickname}
+                    </Typography>
+                    <Typography variant="h6">
+                      {userData.nickname === "admin"
+                        ? "Администратор"
+                        : "Собственник"}
+                    </Typography>
+                  </Stack>
                 </Stack>
-              </Stack>
-            </Paper>
-          </Grid>
-          <Grid item xs={8}>
-            <Paper elevation={3} style={{ padding: 20, height: "100%" }}>
-              <Stack spacing={3} useFlexGap>
-                <Grid container rowSpacing={5} columnSpacing={10}>
-                  <Grid item sm={6} xs={12}>
-                    <Stack spacing={"5px"}>
-                      <Typography>Имя</Typography>
-                      <TextField
-                        variant="outlined"
-                        placeholder="Не указано"
-                        value={userData.name}
-                        onChange={handleNameChange}
-                        size="small"
-                      />
-                    </Stack>
-                  </Grid>
-                  <Grid item sm={6} xs={12}>
-                    <Stack spacing={"5px"}>
-                      <Typography>Фамилия</Typography>
-                      <TextField
-                        variant="outlined"
-                        placeholder="Не указано"
-                        value={userData.surname}
-                        onChange={handleSurNameChange}
-                        size="small"
-                      />
-                    </Stack>
-                  </Grid>
-                  <Grid item sm={6} xs={12}>
-                    <Stack spacing={"5px"}>
-                      <Typography>Email</Typography>
-                      <TextField
-                        variant="outlined"
-                        value={userData.email}
-                        disabled
-                        size="small"
-                      />
-                    </Stack>
-                  </Grid>
-                  <Grid item sm={6} xs={12}>
-                    <Stack spacing={"5px"}>
-                      <Typography>Номер телефона</Typography>
-                      <TextField
-                        variant="outlined"
-                        placeholder="Не указано"
-                        value={
-                          userData.phoneNumber.length > 4
-                            ? userData?.phoneNumber.substring(4)
-                            : ""
-                        }
-                        onChange={handlePhoneChange}
-                        size="small"
-                        error={error}
-                        helperText={
-                          error ? "Номер телефона должен содержать 13 цифр" : ""
-                        }
-                        sx={{
-                          ".MuiFormHelperText-root": {
-                            top: "2.5rem",
-                            position: "absolute",
-                          },
-                        }}
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              +375
-                            </InputAdornment>
-                          ),
-                        }}
-                      />
-                    </Stack>
-                  </Grid>
-                  <Grid item sm={6} xs={12}>
-                    <Stack spacing={"5px"}>
-                      <Typography>Пол</Typography>
-                      <Select
-                        value={userData.gender}
-                        onChange={handleGenderChange}
-                        size="small"
-                        placeholder="Не указано"
-                        displayEmpty
-                        renderValue={(selected) => {
-                          if (selected === "") {
-                            return (
-                              <div style={{ color: "#b0b0b0" }}>Не указано</div>
-                            );
-                          }
-
-                          return selected;
-                        }}
-                      >
-                        <MenuItem value={"Мужской"}>Мужской</MenuItem>
-                        <MenuItem value={"Женский"}>Женский</MenuItem>
-                      </Select>
-                    </Stack>
-                  </Grid>
-                </Grid>
-                <Button
-                  disabled={dataChanged && !error ? false : true}
-                  startIcon={<UpdateIcon />}
-                  variant="contained"
-                  onClick={handleUpdateUserData}
+              </Paper>
+            </Grid>
+            <Grid item xs={8}>
+              <Paper
+                elevation={3}
+                style={{ padding: 20, height: "100%", position: "relative" }}
+              >
+                <IconButton
+                  sx={{
+                    color: "black",
+                    position: "absolute",
+                    top: 0,
+                    right: 0,
+                    zIndex: 999,
+                  }}
+                  onClick={handleOpenDeleteAlert}
                 >
-                  Обновить
-                </Button>
-              </Stack>
-            </Paper>
+                  <ClearIcon />
+                </IconButton>
+                <Stack spacing={3} useFlexGap>
+                  <Grid container rowSpacing={5} columnSpacing={10}>
+                    <Grid item sm={6} xs={12}>
+                      <Stack spacing={"5px"}>
+                        <Typography>Имя</Typography>
+                        <TextField
+                          variant="outlined"
+                          placeholder="Не указано"
+                          value={userData.name}
+                          onChange={handleNameChange}
+                          size="small"
+                        />
+                      </Stack>
+                    </Grid>
+                    <Grid item sm={6} xs={12}>
+                      <Stack spacing={"5px"}>
+                        <Typography>Фамилия</Typography>
+                        <TextField
+                          variant="outlined"
+                          placeholder="Не указано"
+                          value={userData.surname}
+                          onChange={handleSurNameChange}
+                          size="small"
+                        />
+                      </Stack>
+                    </Grid>
+                    <Grid item sm={6} xs={12}>
+                      <Stack spacing={"5px"}>
+                        <Typography>Email</Typography>
+                        <TextField
+                          variant="outlined"
+                          value={userData.email}
+                          disabled
+                          size="small"
+                        />
+                      </Stack>
+                    </Grid>
+                    <Grid item sm={6} xs={12}>
+                      <Stack spacing={"5px"}>
+                        <Typography>Номер телефона</Typography>
+                        <TextField
+                          variant="outlined"
+                          placeholder="Не указано"
+                          value={
+                            userData.phoneNumber.length > 4
+                              ? userData?.phoneNumber.substring(4)
+                              : ""
+                          }
+                          onChange={handlePhoneChange}
+                          size="small"
+                          error={error}
+                          helperText={
+                            error
+                              ? "Номер телефона должен содержать 13 цифр"
+                              : ""
+                          }
+                          sx={{
+                            ".MuiFormHelperText-root": {
+                              top: "2.5rem",
+                              position: "absolute",
+                            },
+                          }}
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                +375
+                              </InputAdornment>
+                            ),
+                          }}
+                        />
+                      </Stack>
+                    </Grid>
+                    <Grid item sm={6} xs={12}>
+                      <Stack spacing={"5px"}>
+                        <Typography>Пол</Typography>
+                        <Select
+                          value={userData.gender}
+                          onChange={handleGenderChange}
+                          size="small"
+                          placeholder="Не указано"
+                          displayEmpty
+                          renderValue={(selected) => {
+                            if (selected === "") {
+                              return (
+                                <div style={{ color: "#b0b0b0" }}>
+                                  Не указано
+                                </div>
+                              );
+                            }
+
+                            return selected;
+                          }}
+                        >
+                          <MenuItem value={"Мужской"}>Мужской</MenuItem>
+                          <MenuItem value={"Женский"}>Женский</MenuItem>
+                        </Select>
+                      </Stack>
+                    </Grid>
+                  </Grid>
+                  <Button
+                    disabled={dataChanged && !error ? false : true}
+                    startIcon={<UpdateIcon />}
+                    variant="contained"
+                    onClick={handleUpdateUserData}
+                  >
+                    Обновить
+                  </Button>
+                </Stack>
+              </Paper>
+            </Grid>
           </Grid>
-        </Grid>
+          <Dialog open={openDeleteAlert} onClose={handleCloseDeleteAlert}>
+            <DialogTitle>
+              {"Вы действительно хотите удалить данный аккаунт?"}
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Полное удаление аккаунта приведет к безвозвратной потере всех
+                связанных с ним данных, включая все объявления, размещенные на
+                сайте через этот аккаунт.
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCloseDeleteAlert}>Отмена</Button>
+              <Button onClick={handleDeleteAccount} autoFocus>
+                Продолжить
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </>
       )}
     </>
   );

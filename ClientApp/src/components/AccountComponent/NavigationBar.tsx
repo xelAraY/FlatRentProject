@@ -8,7 +8,7 @@ import {
   Paper,
   Stack,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ApartmentIcon from "@mui/icons-material/Apartment";
 import PersonIcon from "@mui/icons-material/Person";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
@@ -16,6 +16,7 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import AddIcon from "@mui/icons-material/Add";
 import LockResetIcon from "@mui/icons-material/LockReset";
+import GroupIcon from "@mui/icons-material/Group";
 import BalanceIcon from "@mui/icons-material/Balance";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
@@ -23,8 +24,17 @@ import { Button } from "src/shared";
 
 export const NavigationBar = () => {
   const [openDeleteAlert, setOpenDeleteAlert] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decodedToken: any = jwtDecode(token);
+      decodedToken.nickname === "admin" ? setIsAdmin(true) : setIsAdmin(false);
+    }
+  }, []);
 
   const commonStyle = {
     width: "100%",
@@ -114,6 +124,17 @@ export const NavigationBar = () => {
           <BalanceIcon style={{ marginRight: "10px" }} />
           Сравнения
         </IconButton>
+        {isAdmin && (
+          <IconButton
+            color="primary"
+            style={commonStyle}
+            onClick={() => navigate("/account/users")}
+          >
+            <GroupIcon style={{ marginRight: "10px" }} />
+            Пользователи
+          </IconButton>
+        )}
+
         {/* <IconButton
           color="primary"
           style={commonStyle}

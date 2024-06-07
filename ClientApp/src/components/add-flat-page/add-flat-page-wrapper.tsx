@@ -94,7 +94,13 @@ export const AddFlatPageWrapper = () => {
       } catch (error) {
         console.error("Ошибка ", error);
       } finally {
-        navigate("/account/myListings");
+        const token = localStorage.getItem("token");
+        if (token) {
+          const decodedToken: any = jwtDecode(token);
+          decodedToken.nickname === "admin"
+            ? navigate("/flats")
+            : navigate("/account/myListings");
+        }
       }
     } else {
       navigate("/sign-in");

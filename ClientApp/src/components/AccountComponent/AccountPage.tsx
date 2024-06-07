@@ -11,6 +11,7 @@ import { isLoggedIn } from "src/helpFunctions/tokenCheck";
 import { PasswordPage } from "./Pages/PasswordPage";
 import { PostedListings } from "./Pages/PostedListings";
 import { ComparisonsPage } from "./Pages/Comparisons";
+import { Users } from "./Pages/Users";
 
 export enum ElementType {
   Home,
@@ -53,6 +54,10 @@ export const AccountPage = () => {
     {
       path: `/password`,
       element: <PasswordPage />,
+    },
+    {
+      path: `/users`,
+      element: <Users />,
     },
   ];
 

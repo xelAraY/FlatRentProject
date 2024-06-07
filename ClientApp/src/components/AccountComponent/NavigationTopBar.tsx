@@ -10,6 +10,7 @@ import DomainAddIcon from "@mui/icons-material/DomainAdd";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import LockResetIcon from "@mui/icons-material/LockReset";
 import CompareIcon from "@mui/icons-material/Compare";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 
 export const NavigationTopBar = () => {
   const location = useLocation();
@@ -98,6 +99,18 @@ export const NavigationTopBar = () => {
           >
             <LockResetIcon />
             <Typography>Смена пароля</Typography>
+          </Stack>
+        );
+      case "users":
+        return (
+          <Stack
+            flexDirection={"row"}
+            alignItems={"center"}
+            spacing={"5px"}
+            useFlexGap
+          >
+            <PeopleAltIcon />
+            <Typography>Пользователи</Typography>
           </Stack>
         );
     }

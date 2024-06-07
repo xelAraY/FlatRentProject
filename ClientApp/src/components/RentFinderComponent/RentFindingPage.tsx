@@ -298,6 +298,7 @@ export const RentFindingPage = () => {
             isLoading={loading}
             favourites={favListings}
             onFavouritesChanged={handleFavouriteChange}
+            onUpdate={fetchData}
           />
           {pages !== 0 && (
             <Pagination

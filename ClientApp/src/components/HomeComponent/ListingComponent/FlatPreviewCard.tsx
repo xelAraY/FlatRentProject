@@ -11,7 +11,7 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { RentObjectInformation } from "src/interfaces/RentObj";
 import "react-image-gallery/styles/css/image-gallery.css";
 import {
@@ -22,7 +22,8 @@ import {
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import EmailIcon from "@mui/icons-material/Email";
+import ClearIcon from "@mui/icons-material/Clear";
+import EditIcon from "@mui/icons-material/Edit";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import { isLoggedIn } from "src/helpFunctions/tokenCheck";
 import { jwtDecode } from "jwt-decode";
@@ -35,6 +36,7 @@ interface CardProps {
   onFavouriteChange: (isChange: boolean, objectId?: number) => void;
   onCardClick: (flatId: number) => void;
   customWidth?: string;
+  onUpdate?: () => void;
 }
 
 interface ForPhotos {
@@ -51,6 +53,7 @@ export const FlatPreviewCard = ({
   onCardClick,
   onFavouriteChange,
   customWidth,
+  onUpdate,
 }: CardProps) => {
   const isMedium = useMediaQuery((theme: any) =>
     theme.breakpoints.between("xl", "2000")
@@ -66,6 +69,7 @@ export const FlatPreviewCard = ({
   const [images, setImages] = useState<ForPhotos[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const [contactOpen, setContactOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const navigate = useNavigate();
 
@@ -161,11 +165,84 @@ export const FlatPreviewCard = ({
     setIsAlertOpen(false);
   };
 
+  useEffect(() => {
+    if (isLoggedIn()) {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const decodedToken: any = jwtDecode(token);
+        decodedToken.nickname === "admin"
+          ? setIsAdmin(true)
+          : setIsAdmin(false);
+      }
+    }
+  }, []);
+
+  const handleDeleteListing = async () => {
+    if (isLoggedIn()) {
+      try {
+        const token = localStorage.getItem("token");
+        if (token) {
+          const decodedToken: any = jwtDecode(token);
+          await fetch(
+            `api/account/deleteListing/${rentInformation.rentObject.rentObjId}?userName=${decodedToken.nickname}`,
+            {
+              method: "DELETE",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        onUpdate && (await onUpdate());
+        navigate("/flats");
+      }
+    } else {
+      navigate("/sign-in");
+    }
+  };
+
   return (
     <Card
       key={keyNumber}
-      style={{ width: customWidth || "100%", borderRadius: "1rem" }}
+      style={{
+        width: customWidth || "100%",
+        borderRadius: "1rem",
+        position: "relative",
+      }}
     >
+      {isAdmin && (
+        <Stack
+          flexDirection="row"
+          sx={{ position: "absolute", top: 0, right: 0, zIndex: 999 }}
+        >
+          <IconButton
+            sx={{
+              color: "white",
+            }}
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(
+                `/account/newListing?id=${rentInformation.rentObject.rentObjId}`
+              );
+            }}
+          >
+            <EditIcon />
+          </IconButton>
+          <IconButton
+            sx={{
+              color: "white",
+            }}
+            onClick={handleDeleteListing}
+          >
+            <ClearIcon />
+          </IconButton>
+        </Stack>
+      )}
+
       <CardActionArea
         onClick={() => onCardClick(rentInformation.rentObject.rentObjId)}
         disableTouchRipple
